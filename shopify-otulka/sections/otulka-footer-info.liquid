@@ -1,6 +1,7 @@
 {% comment %}
   Section contract.
-  Footer band: opening hours ("Kiedy pracujemy"), contact details and a short link list.
+  Footer band: opening hours ("Kiedy pracujemy"), contact details, a short link list and a bottom line
+  (copyright + store policies) on the same grid, plus the "back to top" button (assets/otulka-global.js).
   Hours are one line each in "Dzień | godziny" format.
   @example
   <!-- sections/footer-group.json → "otulka_info" -->
@@ -45,7 +46,42 @@
       </div>
     {%- endif -%}
   </div>
+  {%- if section.settings.show_bottom -%}
+    <div class="otk-wrap"><div class="otk-foot__bottom">
+      <span>&copy; {{ 'now' | date: '%Y' }} {{ shop.name }}</span>
+      {%- if shop.policies.size > 0 -%}
+        <ul class="otk-foot__policies">
+          {%- for policy in shop.policies -%}
+            {%- liquid
+              assign policy_title = policy.title
+              if policy.url contains 'refund-policy'
+                assign policy_title = 'Zwroty'
+              elsif policy.url contains 'privacy-policy'
+                assign policy_title = 'Polityka prywatności'
+              elsif policy.url contains 'terms-of-service'
+                assign policy_title = 'Regulamin'
+              elsif policy.url contains 'shipping-policy'
+                assign policy_title = 'Dostawa'
+              elsif policy.url contains 'contact-information'
+                assign policy_title = 'Dane sprzedawcy'
+              elsif policy.url contains 'legal-notice'
+                assign policy_title = 'Nota prawna'
+              endif
+            -%}
+            <li><a href="{{ policy.url }}">{{ policy_title }}</a></li>
+          {%- endfor -%}
+        </ul>
+      {%- endif -%}
+    </div></div>
+  {%- endif -%}
 </div>
+
+{%- if section.settings.show_top -%}
+  <button type="button" class="otk-top" data-otk-top aria-label="{{ section.settings.top_label | escape }}" hidden>
+    {%- render 'otulka-icon', name: 'up' -%}
+  </button>
+{%- endif -%}
+<script src="{{ 'otulka-global.js' | asset_url }}" defer></script>
 
 {% schema %}
 {
@@ -63,7 +99,10 @@
     { "type": "text", "id": "contact_link", "label": "Link do formularza", "default": "/pages/contact" },
     { "type": "text", "id": "contact_note", "label": "Dopisek pod kontaktem", "default": "Odpowiadamy na każdą wiadomość." },
     { "type": "text", "id": "menu_title", "label": "Tytuł linków", "default": "Informacje" },
-    { "type": "link_list", "id": "menu", "label": "Menu z linkami", "default": "footer" }
+    { "type": "link_list", "id": "menu", "label": "Menu z linkami", "default": "footer" },
+    { "type": "checkbox", "id": "show_bottom", "label": "Pokaż prawa autorskie i regulaminy", "default": true },
+    { "type": "checkbox", "id": "show_top", "label": "Pokaż przycisk „do góry”", "default": true },
+    { "type": "text", "id": "top_label", "label": "Opis przycisku „do góry” (dla czytników ekranu)", "default": "Wróć na górę strony" }
   ],
   "presets": [ { "name": "Otulka – godziny pracy" } ]
 }

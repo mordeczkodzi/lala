@@ -1,0 +1,132 @@
+{
+  "sections": {
+    "faq": {
+      "type": "otulka-faq",
+      "settings": {
+        "eyebrow": "Masz pytania?",
+        "heading": "Często zadawane pytania",
+        "background": "cream",
+        "show_guarantee": true,
+        "g1_title": "14 dni na zwrot",
+        "g1_text": "Nie pasuje? Odeślij bez podawania przyczyny.",
+        "g2_title": "Bezpieczne płatności",
+        "g2_text": "Szyfrowana kasa Shopify – nie widzimy danych Twojej karty.",
+        "g3_title": "Jesteśmy dla Ciebie",
+        "g3_text": "Masz pytanie? Napisz – odpowiadamy na każdą wiadomość.",
+        "as_h1": true
+      },
+      "blocks": {
+        "faq1": {
+          "type": "faq",
+          "settings": {
+            "question": "Czy pod ubraniem widać termofor?",
+            "answer": "<p>Pas jest płaski i miękki, więc pod bluzą, swetrem czy luźniejszą koszulą zwykle nikt go nie zauważy. Pod bardzo obcisłymi ubraniami może być lekko widoczny.</p>"
+          }
+        },
+        "faq2": {
+          "type": "faq",
+          "settings": {
+            "question": "Czym różni się zestaw Standard od Przytulnego?",
+            "answer": "<p><strong>Standard</strong> to termofor 1000 ml z regulowanym pasem. <strong>Przytulny</strong> ma dodatkowo pluszowy pokrowiec – jest miękki w dotyku, oddziela skórę od gorącego wkładu i dłużej trzyma ciepło.</p>"
+          }
+        },
+        "faq3": {
+          "type": "faq",
+          "settings": {
+            "question": "Jak długo trzyma ciepło?",
+            "answer": "<p>To zależy od temperatury wody i otoczenia. Pas i pluszowy pokrowiec spowalniają stygnięcie, więc ciepło czujesz dłużej niż przy gołym termoforze. Gdy woda przestygnie, po prostu ją wymień.</p>"
+          }
+        },
+        "faq4": {
+          "type": "faq",
+          "settings": {
+            "question": "Jaką wodą napełniać termofor?",
+            "answer": "<p>Gorącą, ale nie wrzącą (maks. ok. 70°C). Napełnij do ok. 2/3, wypuść powietrze i mocno zakręć korek. Nie podgrzewaj termoforu w mikrofalówce.</p>"
+          }
+        },
+        "faq5": {
+          "type": "faq",
+          "settings": {
+            "question": "Czy pomoże na bóle menstruacyjne?",
+            "answer": "<p>Ciepło pomaga rozluźnić mięśnie i złagodzić skurcze – dlatego tak wiele kobiet sięga po termofor w trudne dni. Otulka nie jest wyrobem medycznym; przy silnym lub nietypowym bólu skonsultuj się z lekarzem.</p>"
+          }
+        },
+        "faq6": {
+          "type": "faq",
+          "settings": {
+            "question": "Czy pas będzie na mnie pasował?",
+            "answer": "<p>Pas ma regulowane zapięcie, więc dopasujesz go do talii albo bioder. Jeśli masz wątpliwości, napisz do nas – podamy dokładne wymiary.</p>"
+          }
+        },
+        "faq7": {
+          "type": "faq",
+          "settings": {
+            "question": "Jak dbać o pas i pokrowiec?",
+            "answer": "<p>Przed praniem wyjmij termofor. Pas i pokrowiec najlepiej prać ręcznie w letniej wodzie i suszyć na płasko.</p>"
+          }
+        },
+        "faq8": {
+          "type": "faq",
+          "settings": {
+            "question": "Ile trwa dostawa?",
+            "answer": "<p>Szacowany czas dostawy zobaczysz przy wyborze metody wysyłki w kasie. Po nadaniu paczki dostaniesz e-mail z numerem śledzenia.</p>"
+          }
+        },
+        "faq9": {
+          "type": "faq",
+          "settings": {
+            "question": "Czy mogę zwrócić produkt?",
+            "answer": "<p>Tak. Masz 14 dni na odstąpienie od umowy bez podawania przyczyny. Napisz do nas, a przeprowadzimy Cię przez zwrot krok po kroku.</p>"
+          }
+        },
+        "faq10": {
+          "type": "faq",
+          "settings": {
+            "question": "Jakie są metody płatności?",
+            "answer": "<p>Płacisz w bezpiecznej, szyfrowanej kasie Shopify. Wszystkie dostępne metody płatności zobaczysz przy składaniu zamówienia.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "faq1",
+        "faq2",
+        "faq3",
+        "faq4",
+        "faq5",
+        "faq6",
+        "faq7",
+        "faq8",
+        "faq9",
+        "faq10"
+      ]
+    },
+    "about": {
+      "type": "otulka-about",
+      "settings": {
+        "background": "white",
+        "show_about": false,
+        "about_media_index": 9,
+        "about_eyebrow": "O nas",
+        "about_heading": "Ciepło, które jest przy Tobie",
+        "about_text": "<p>Otulka powstała z prostej potrzeby: ciepło w trudne dni powinno być przy Tobie – w pracy, na uczelni, w drodze – a nie tylko na kanapie pod kocem.</p><p>Dlatego zamknęliśmy klasyczny termofor w miękkim, regulowanym pasie. Bez kabli, bez ładowania, bez kombinowania. Wystarczy gorąca woda i kilka sekund.</p><p>Każde zamówienie pakujemy tak, żeby dotarło do Ciebie jak mały prezent – dla siebie albo dla kogoś, kto potrzebuje odrobiny ciepła.</p>",
+        "about_sign": "Zespół Otulki",
+        "show_contact": true,
+        "contact_eyebrow": "Kontakt",
+        "contact_heading": "Nie ma tu Twojego pytania?",
+        "contact_text": "Napisz do nas – odpowiemy najszybciej, jak to możliwe.",
+        "hours": "Odpisujemy w dni robocze",
+        "contact_note": "Odpowiadamy na każdą wiadomość",
+        "success_text": "Dziękujemy! Wiadomość dotarła – odezwiemy się najszybciej, jak to możliwe.",
+        "show_final": true,
+        "final_heading": "Zasługujesz na lepsze dni",
+        "final_text": "Zrób sobie ciepło. Wybierz kolor i zestaw – Otulka zajmie się resztą.",
+        "final_button": "Chcę swoją Otulkę",
+        "cta_product": "otulka-termofor-z-pasem"
+      }
+    }
+  },
+  "order": [
+    "faq",
+    "about"
+  ]
+}

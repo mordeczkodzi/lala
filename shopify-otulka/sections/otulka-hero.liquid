@@ -338,17 +338,32 @@
           <div>{% render 'otulka-icon', name: 'truck' %}<span>{{ section.settings.trust_3 }}</span></div>
         </div>
 
+        {%- liquid
+          # Ikony: najpierw metody wpisane w ustawieniach (po polsku, np. „Mastercard”), potem włączone w sklepie.
+          assign pay_known = ',visa,master,maestro,american_express,blik,przelewy24,apple_pay,google_pay,paypal,shopify_pay,klarna,'
+          assign pay_list = ','
+          assign pay_names = section.settings.payment_fallback | downcase | split: ','
+          for raw in pay_names
+            assign pay_key = raw | strip | replace: ' ', '_' | replace: 'mastercard', 'master' | replace: 'amex', 'american_express' | replace: 'p24', 'przelewy24' | replace: 'shop_pay', 'shopify_pay'
+            assign pay_probe = ',' | append: pay_key | append: ','
+            if pay_known contains pay_probe
+              unless pay_list contains pay_probe
+                assign pay_list = pay_list | append: pay_key | append: ','
+              endunless
+            endif
+          endfor
+          for type in shop.enabled_payment_types
+            assign pay_probe = ',' | append: type | append: ','
+            unless pay_list contains pay_probe
+              assign pay_list = pay_list | append: type | append: ','
+            endunless
+          endfor
+          assign pay_types = pay_list | split: ','
+        -%}
         <div class="otk-pay" aria-label="Metody płatności">
-          {%- if shop.enabled_payment_types.size > 0 -%}
-            {%- for type in shop.enabled_payment_types -%}
-              {{ type | payment_type_svg_tag }}
-            {%- endfor -%}
-          {%- else -%}
-            {%- assign pay_pills = section.settings.payment_fallback | split: ',' -%}
-            {%- for pill in pay_pills -%}
-              <span class="otk-pay__pill">{{ pill | strip }}</span>
-            {%- endfor -%}
-          {%- endif -%}
+          {%- for type in pay_types -%}
+            {%- if type != blank -%}{{ type | payment_type_svg_tag }}{%- endif -%}
+          {%- endfor -%}
         </div>
 
         {%- assign acc_blocks = section.blocks | where: 'type', 'accordion' -%}
@@ -474,7 +489,7 @@
     { "type": "text", "id": "trust_1", "label": "Zaufanie 1", "default": "Bezpieczne płatności" },
     { "type": "text", "id": "trust_2", "label": "Zaufanie 2", "default": "14 dni na zwrot" },
     { "type": "text", "id": "trust_3", "label": "Zaufanie 3", "default": "Wysyłka z numerem śledzenia" },
-    { "type": "text", "id": "payment_fallback", "label": "Metody płatności (zapas)", "info": "Pokazywane tylko, gdy sklep nie ma jeszcze włączonych płatności.", "default": "BLIK, Przelewy24, Visa, Mastercard, Apple Pay, Google Pay" }
+    { "type": "text", "id": "payment_fallback", "label": "Ikony płatności", "info": "Oddziel przecinkami: BLIK, Przelewy24, Visa, Mastercard, Apple Pay, Google Pay, PayPal. Metody włączone w sklepie dochodzą same. Zostaw tylko te, które naprawdę przyjmujesz.", "default": "BLIK, Przelewy24, Visa, Mastercard, Apple Pay, Google Pay" }
   ],
   "blocks": [
     {

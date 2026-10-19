@@ -1,4 +1,4 @@
-"""Generuje templates/product.otulka.json, page.otulka.json i index.json (treści po polsku)."""
+"""Generuje templates/product.otulka.json, page.otulka.json, page.faq.json i index.json (treści po polsku)."""
 import json
 import os
 
@@ -315,7 +315,27 @@ page_template = {
     "order": ["about"],
 }
 
-for name, data in [("product.otulka.json", product_template), ("page.otulka.json", page_template), ("index.json", index_template)]:
+# Strona „Częste pytania” (/pages/faq): te same pytania + kontakt i wezwanie do zakupu.
+page_faq = json.loads(json.dumps(faq))
+page_faq["settings"].update({"as_h1": True, "background": "cream"})
+faq_about = dict(about_settings)
+faq_about.update({
+    "show_about": False,
+    "contact_heading": "Nie ma tu Twojego pytania?",
+    "contact_text": "Napisz do nas – odpowiemy najszybciej, jak to możliwe.",
+    "cta_product": "otulka-termofor-z-pasem",
+})
+faq_template = {
+    "sections": {"faq": page_faq, "about": section("otulka-about", faq_about)},
+    "order": ["faq", "about"],
+}
+
+for name, data in [
+    ("product.otulka.json", product_template),
+    ("page.otulka.json", page_template),
+    ("page.faq.json", faq_template),
+    ("index.json", index_template),
+]:
     with open(os.path.join(ROOT, "templates", name), "w", encoding="utf-8") as fh:
         json.dump(data, fh, ensure_ascii=False, indent=2)
         fh.write("\n")

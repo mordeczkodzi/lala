@@ -2,14 +2,14 @@
   Section contract.
   FAQ accordion (native details) followed by a 3-item guarantee band.
   @example
-  <!-- templates/product.otulka.json → "faq" (anchor #faq) -->
+  <!-- templates/product.otulka.json, index.json, page.faq.json → "faq" (anchor #faq; links to /pages/faq scroll here when present) -->
 {% endcomment %}
 {%- render 'otulka-assets' -%}
 <div class="otk otk-sec{% if section.settings.background == 'white' %} otk-sec--white{% elsif section.settings.background == 'peach' %} otk-sec--peach{% endif %}" id="faq">
   <div class="otk-wrap">
     <div class="otk-head">
       {%- if section.settings.eyebrow != blank -%}<span class="otk-eyebrow">{{ section.settings.eyebrow }}</span>{%- endif -%}
-      <h2 class="otk-h2">{{ section.settings.heading }}</h2>
+      {%- if section.settings.as_h1 -%}<h1 class="otk-h2">{{ section.settings.heading }}</h1>{%- else -%}<h2 class="otk-h2">{{ section.settings.heading }}</h2>{%- endif -%}
     </div>
     <div class="otk-faq otk-acc">
       {%- for block in section.blocks -%}
@@ -37,6 +37,7 @@
   "settings": [
     { "type": "text", "id": "eyebrow", "label": "Nadtytuł", "default": "Masz pytania?" },
     { "type": "text", "id": "heading", "label": "Nagłówek", "default": "Często zadawane pytania" },
+    { "type": "checkbox", "id": "as_h1", "label": "Nagłówek jako główny tytuł strony (H1)", "default": false },
     { "type": "select", "id": "background", "label": "Tło", "options": [ { "value": "cream", "label": "Kremowe" }, { "value": "white", "label": "Białe" }, { "value": "peach", "label": "Brzoskwiniowe" } ], "default": "cream" },
     { "type": "header", "content": "Gwarancje" },
     { "type": "checkbox", "id": "show_guarantee", "label": "Pokaż pasek gwarancji", "default": true },
