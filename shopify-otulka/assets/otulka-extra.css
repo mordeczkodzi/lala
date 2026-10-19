@@ -596,3 +596,13 @@ body:has(.otk-sticky.is-visible) .otk-top {
 .cart-items__wrapper > p:has(> a[href*="account"]) {
   display: none;
 }
+
+/* Błąd dodawania do koszyka pod przyciskiem */
+.otk .otk-error {
+  margin: 10px 0 0;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.4;
+  text-align: center;
+  color: #b42318;
+}

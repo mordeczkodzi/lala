@@ -109,6 +109,8 @@
     var dataEl = qs('[data-otk-json]', root);
     if (!dataEl) return;
     var data = JSON.parse(dataEl.textContent);
+    data.t.soldout_error = data.t.soldout_error || 'Ten wariant jest chwilowo niedostępny. Wybierz inny kolor albo zestaw.';
+    data.t.editor_hint = data.t.editor_hint || '(W edytorze motywu koszyk może nie działać – sprawdź w podglądzie sklepu w nowej karcie.)';
     var variants = data.variants || [];
     var state = { o1: data.o1, o2: data.o2 };
     var gallery = initGallery(root);
@@ -267,6 +269,31 @@
       });
     });
 
+    // Błąd pokazujemy pod przyciskiem (po polsku) zamiast okienka przeglądarki.
+    function showError(btn, error) {
+      var text = data.t.error;
+      if (error && /sold out/i.test(error.message || '')) text = data.t.soldout_error;
+      if (window.Shopify && window.Shopify.designMode) text += ' ' + data.t.editor_hint;
+      if (sticky && sticky.contains(btn)) {
+        window.alert(text);
+        return;
+      }
+      var box = qs('[data-otk-error]', root);
+      if (!box) {
+        box = document.createElement('p');
+        box.className = 'otk-error';
+        box.setAttribute('data-otk-error', '');
+        box.setAttribute('role', 'alert');
+        (qs('.otk-buy', root) || root).appendChild(box);
+      }
+      box.textContent = text;
+      box.hidden = false;
+      clearTimeout(box.__otkTimer);
+      box.__otkTimer = setTimeout(function () {
+        box.hidden = true;
+      }, 10000);
+    }
+
     function submit(btn) {
       var v = find(state.o1, state.o2);
       if (!v || !v.av) return;
@@ -279,7 +306,7 @@
       addToCart(lines, root)
         .catch(function (error) {
           if (error && error.name === 'AbortError') return;
-          window.alert(data.t.error + (error && error.message ? '\n' + error.message : ''));
+          showError(btn, error);
         })
         .then(function () {
           btn.classList.remove('is-loading');
