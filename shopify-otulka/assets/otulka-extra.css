@@ -1,4 +1,4 @@
-/* Otulka – baner strony głównej, sekcja „przed i po” i stopka z godzinami. */
+/* Otulka – baner strony głównej, „przed i po”, stopka, przycisk „do góry” i poprawki na telefon. */
 /* ---------- Baner strony głównej ---------- */
 .otk-banner {
   padding-block: 0 44px;
@@ -221,8 +221,14 @@
 
 @media (min-width: 750px) {
   .otk-foot__grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 40px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 36px 40px;
+  }
+}
+
+@media (min-width: 990px) {
+  .otk-foot__grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) minmax(0, 1.25fr);
   }
 }
 
@@ -424,4 +430,169 @@ body:has(.otk-sticky.is-visible) .otk-top {
 
 .otk-pay {
   gap: 6px 8px;
+}
+
+/* ---------- Stopka: newsletter w tym samym rzędzie ---------- */
+.otk .otk-foot__text {
+  margin: 0 0 14px;
+  font-size: 14px;
+  line-height: 1.5;
+  opacity: 0.85;
+}
+
+.otk-news__row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 50px;
+  padding: 4px 4px 4px 18px;
+  border: 1px solid rgb(255 255 255 / 0.55);
+  border-radius: 999px;
+}
+
+.otk-news__row:focus-within {
+  border-color: #fff;
+}
+
+.otk-news__row input {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #fff;
+  font: inherit;
+  font-size: 15px;
+  outline: none;
+}
+
+.otk-news__row input::placeholder {
+  color: rgb(255 255 255 / 0.65);
+}
+
+.otk-news__row button {
+  display: grid;
+  flex: 0 0 40px;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: #fff6ee;
+  color: #3b2a21;
+  cursor: pointer;
+}
+
+.otk-news__row button:hover {
+  background: #f2542d;
+  color: #fff;
+}
+
+.otk .otk-news__msg {
+  margin: 10px 0 0;
+  font-size: 14px;
+}
+
+.otk .otk-news__msg--error {
+  color: #ffb59f;
+}
+
+/* ---------- Drugi pasek z wyborem koloru ---------- */
+.otk-addon-box {
+  border: 1.5px dashed rgb(242 84 45 / 0.45);
+  border-radius: 16px;
+  background: var(--otk-accent-soft);
+}
+
+.otk-addon-box[hidden],
+.otk-addon__colors[hidden] {
+  display: none;
+}
+
+.otk-addon-box .otk-addon {
+  border: 0;
+  background: transparent;
+}
+
+.otk-addon__colors {
+  display: grid;
+  gap: 10px;
+  min-width: 0;
+  margin: 0;
+  padding: 0 14px 14px 48px;
+  border: 0;
+}
+
+.otk-addon__colors .otk-label {
+  font-size: 14px;
+}
+
+.otk-swatches--sm {
+  gap: 10px;
+}
+
+.otk-swatches--sm .otk-swatch {
+  width: 34px;
+  height: 34px;
+}
+
+.otk-swatch.is-soldout {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+/* ---------- Tabela porównania na telefonie: bez przewijania w bok ---------- */
+@media (max-width: 749px) {
+  .otk-table-wrap {
+    overflow: hidden;
+  }
+
+  .otk-table {
+    min-width: 0;
+    table-layout: fixed;
+    font-size: 13px;
+  }
+
+  .otk-table th,
+  .otk-table td {
+    padding: 12px 4px;
+  }
+
+  .otk-table th:first-child,
+  .otk-table td:first-child {
+    width: 36%;
+    padding-right: 6px;
+    padding-left: 12px;
+    line-height: 1.3;
+  }
+
+  .otk-table thead th {
+    font-size: 11px;
+    letter-spacing: 0;
+    text-transform: none;
+  }
+
+  .otk-yes,
+  .otk-no {
+    width: 24px;
+    height: 24px;
+    font-size: 13px;
+  }
+}
+
+/* ---------- Karuzele na telefonie: karta zatrzymuje się z marginesem, zdjęcia bez ucinania ---------- */
+.otk-cards,
+.otk-reviews {
+  scroll-padding-inline: 16px;
+}
+
+.otk-card__img {
+  aspect-ratio: 1 / 1;
+}
+
+/* ---------- Koszyk: bez zachęty do logowania (sklep bez kont klientów) ---------- */
+.cart-items__wrapper > p:has(> a[href*="account"]) {
+  display: none;
 }

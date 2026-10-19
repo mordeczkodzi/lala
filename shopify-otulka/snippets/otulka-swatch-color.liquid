@@ -1,0 +1,30 @@
+{% doc %}
+  Outputs the CSS colour for a colour option value: the swatch colour set in Shopify, or a fallback for
+  the Otulka colour names.
+
+  @param {object} value - Product option value (or its name)
+
+  @example
+  {%- capture sw -%}{% render 'otulka-swatch-color', value: value %}{%- endcapture -%}
+{% enddoc %}
+{%- liquid
+  assign vname = value.name | default: value
+  assign sw = value.swatch.color
+  if sw == blank
+    case vname
+      when 'Jasnoszary'
+        assign sw = '#d9d6d2'
+      when 'Grafitowy'
+        assign sw = '#56555b'
+      when 'Różowy'
+        assign sw = '#f2c1cc'
+      when 'Czekoladowy'
+        assign sw = '#5b4034'
+      when 'Beżowy'
+        assign sw = '#e6d5bf'
+      else
+        assign sw = '#cfc6bd'
+    endcase
+  endif
+  echo sw
+-%}

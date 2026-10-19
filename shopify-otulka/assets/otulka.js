@@ -10,66 +10,26 @@
     return Array.prototype.slice.call((root || document).querySelectorAll(sel));
   }
 
-  function routes() {
-    var r = (window.Theme && window.Theme.routes) || {};
-    var root = (window.Shopify && window.Shopify.routes && window.Shopify.routes.root) || '/';
-    return {
-      add: r.cart_add_url || root + 'cart/add.js',
-      cart: r.cart_url || root + 'cart'
-    };
-  }
-
-  function isDrawerOpen() {
-    var d = document.querySelector('theme-drawer#cart-drawer');
-    return Boolean(d && (d.isOpen || d.hasAttribute('open')));
-  }
-
   /**
-   * Dodaje pozycje do koszyka. Korzysta z Shopify.actions (odświeża i otwiera szufladę koszyka motywu),
-   * a gdy to niedostępne – z AJAX API i przejścia do /cart.
+   * Dodaje pozycje do koszyka przez wspólny helper z otulka-global.js (szuflada koszyka motywu),
+   * a gdy go nie ma – przez AJAX API i przejście do /cart.
    * @param {{id: number, quantity: number}[]} lines
+   * @param {Element} source
    */
-  function addToCart(lines) {
-    var actions = window.Shopify && window.Shopify.actions;
+  function addToCart(lines, source) {
+    if (window.OtulkaCart && typeof window.OtulkaCart.add === 'function') return window.OtulkaCart.add(lines, source);
 
-    function viaAjax() {
-      return fetch(routes().add, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-        body: JSON.stringify({ items: lines })
-      }).then(function (res) {
-        return res.json().then(function (body) {
-          if (!res.ok) throw new Error(body.description || body.message || 'add_failed');
-          window.location.href = routes().cart;
-        });
+    var root = (window.Shopify && window.Shopify.routes && window.Shopify.routes.root) || '/';
+    return fetch(root + 'cart/add.js', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+      body: JSON.stringify({ items: lines })
+    }).then(function (res) {
+      return res.json().then(function (body) {
+        if (!res.ok) throw new Error(body.description || body.message || 'add_failed');
+        window.location.href = root + 'cart';
       });
-    }
-
-    if (!actions || typeof actions.updateCart !== 'function') return viaAjax();
-
-    return actions
-      .updateCart(
-        {
-          lines: lines.map(function (l) {
-            return { merchandiseId: 'gid://shopify/ProductVariant/' + l.id, quantity: l.quantity };
-          })
-        },
-        { event: { context: 'product' } }
-      )
-      .then(
-        function (result) {
-          if (result && result.userErrors && result.userErrors.length) {
-            throw new Error(result.userErrors[0].message);
-          }
-          setTimeout(function () {
-            if (!isDrawerOpen() && typeof actions.openCart === 'function') actions.openCart();
-          }, 200);
-        },
-        function (error) {
-          if (error && error.name === 'AbortError') throw error;
-          return viaAjax();
-        }
-      );
+    });
   }
 
   function initGallery(root) {
@@ -156,7 +116,11 @@
     var idInput = qs('[data-otk-id]', root);
     var mainBtn = qs('[data-otk-main]', root);
     var addonCb = qs('[data-otk-addon-cb]', root);
+    var addonColors = qs('[data-otk-addon-colors]', root);
     var sticky = qs('[data-otk-sticky]', root);
+    // Kolor drugiego paska: dopóki klientka go nie wybierze, idzie za kolorem zestawu.
+    var addonPicked = false;
+    state.addonColor = state.o1;
 
     // Lepki pasek przenosimy do <body>, żeby position: fixed nie zależało od przodków sekcji.
     if (sticky) {
@@ -210,11 +174,28 @@
         if (img && bv.img) img.src = bv.img;
       });
 
-      var belt = find(state.o1, data.addon);
       var addon = qs('[data-otk-addon]', root);
       if (addon) {
+        if (!addonPicked) state.addonColor = state.o1;
+        var belt = find(state.addonColor, data.addon);
+        if (!belt || !belt.av) {
+          for (var i = 0; i < variants.length; i++) {
+            if (variants[i].o2 === data.addon && variants[i].av) {
+              belt = variants[i];
+              state.addonColor = belt.o1;
+              break;
+            }
+          }
+        }
         addon.hidden = !(belt && belt.av);
         if (belt) setText('[data-otk-addon-price]', belt.pf, addon);
+        setText('[data-otk-addon-color-label]', state.addonColor, addon);
+        qsa('[data-otk-addon-swatch]', addon).forEach(function (sw) {
+          var on = sw.getAttribute('data-otk-addon-swatch') === state.addonColor;
+          sw.classList.toggle('is-selected', on);
+          var input = qs('input', sw);
+          if (input) input.checked = on;
+        });
       }
 
       if (!v) return;
@@ -272,16 +253,30 @@
       });
     });
 
+    if (addonCb && addonColors) {
+      addonCb.addEventListener('change', function () {
+        addonColors.hidden = !addonCb.checked;
+      });
+    }
+
+    qsa('[data-otk-addon-color]', root).forEach(function (input) {
+      input.addEventListener('change', function () {
+        state.addonColor = input.value;
+        addonPicked = true;
+        render(false);
+      });
+    });
+
     function submit(btn) {
       var v = find(state.o1, state.o2);
       if (!v || !v.av) return;
       var lines = [{ id: v.id, quantity: 1 }];
-      var belt = find(state.o1, data.addon);
+      var belt = find(state.addonColor, data.addon);
       if (addonCb && addonCb.checked && belt && belt.av) lines.push({ id: belt.id, quantity: 1 });
 
       btn.classList.add('is-loading');
       btn.setAttribute('aria-busy', 'true');
-      addToCart(lines)
+      addToCart(lines, root)
         .catch(function (error) {
           if (error && error.name === 'AbortError') return;
           window.alert(data.t.error + (error && error.message ? '\n' + error.message : ''));
@@ -290,6 +285,7 @@
           btn.classList.remove('is-loading');
           btn.removeAttribute('aria-busy');
           if (addonCb) addonCb.checked = false;
+          if (addonColors) addonColors.hidden = true;
         });
     }
 

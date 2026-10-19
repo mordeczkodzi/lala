@@ -7,10 +7,10 @@
 
 | Plik | Rola |
 | --- | --- |
-| `sections/otulka-hero.liquid` | Galeria (`product.media`), wybór Kolor × Zestaw, dodatek „Sam pasek”, formularz koszyka, lepki pasek „Do koszyka” (działa też na stronie głównej z wybranym produktem) |
+| `sections/otulka-hero.liquid` | Galeria (`product.media`), wybór Kolor × Zestaw, dodatek „Sam pasek” z własnym kolorem, formularz koszyka, lepki pasek „Do koszyka” (działa też na stronie głównej z wybranym produktem) |
 | `sections/otulka-banner.liquid` | Baner na górze strony głównej |
 | `sections/otulka-split.liquid` | „Bez Otulki / Z Otulką” – przed i po |
-| `sections/otulka-footer-info.liquid` + `assets/otulka-global.js` | Stopka: godziny pracy, kontakt, linki i regulaminy na jednym poziomie; przycisk „do góry”; linki FAQ przewijają do pytań na tej samej stronie |
+| `sections/otulka-footer-info.liquid` + `assets/otulka-global.js` | Stopka: godziny pracy, kontakt, linki i newsletter w jednym rzędzie, regulaminy; przycisk „do góry”; linki FAQ przewijają do pytań na tej samej stronie; wspólne dodawanie do koszyka (`window.OtulkaCart`) |
 | `sections/otulka-marquee.liquid` | Przewijany pasek tekstu |
 | `sections/otulka-cards.liquid` | Karty „Przynosimy ulgę” |
 | `sections/otulka-rows.liquid` | Wiersze korzyści (zdjęcie + tekst + punkty) |
@@ -21,6 +21,8 @@
 | `sections/otulka-about.liquid` | O nas, formularz kontaktowy, końcowe wezwanie do zakupu |
 | `snippets/otulka-cart-upsell.liquid` + `assets/otulka-cart.js` | „Klienci też kochali” (sam pasek) w szufladzie koszyka |
 | `snippets/cart-drawer.liquid` | Szuflada koszyka motywu z wpiętym upsellem |
+| `snippets/header-actions.liquid` | Ikony nagłówka motywu – bez ikony konta (`otk_show_account`) |
+| `snippets/otulka-swatch-color.liquid` | Kolor kółka dla wartości opcji Kolor |
 | `assets/otulka.css`, `assets/otulka-extra.css`, `assets/otulka.js` | Wspólne style i logika strony |
 | `templates/product.otulka.json` | Szablon produktu (kolejność sekcji i treści) |
 | `templates/page.otulka.json` | Szablon strony „O nas” |

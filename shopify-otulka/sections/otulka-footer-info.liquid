@@ -1,6 +1,7 @@
 {% comment %}
   Section contract.
-  Footer band: opening hours ("Kiedy pracujemy"), contact details, a short link list and a bottom line
+  Footer band: opening hours ("Kiedy pracujemy"), contact details, a short link list and a newsletter signup
+  in one row, then a bottom line
   (copyright + store policies) on the same grid, plus the "back to top" button (assets/otulka-global.js).
   Hours are one line each in "Dzień | godziny" format.
   @example
@@ -9,6 +10,7 @@
 {%- liquid
   assign contact_email = section.settings.email | default: shop.email
   assign hour_lines = section.settings.hours | newline_to_br | split: '<br />'
+  assign news_form_id = 'otk-news-' | append: section.id
 -%}
 {%- render 'otulka-assets' -%}
 <div class="otk otk-foot">
@@ -45,6 +47,39 @@
         </ul>
       </div>
     {%- endif -%}
+    {%- if section.settings.show_newsletter -%}
+      <div class="otk-foot__col otk-foot__col--news">
+        <p class="otk-foot__title">{{ section.settings.news_title }}</p>
+        {%- if section.settings.news_text != blank -%}<p class="otk-foot__text">{{ section.settings.news_text }}</p>{%- endif -%}
+        {%- form 'customer', id: news_form_id, class: 'otk-news' -%}
+          <input type="hidden" name="contact[tags]" value="newsletter">
+          {%- if form.posted_successfully? -%}
+            <p class="otk-news__msg" role="status">{{ section.settings.news_success }}</p>
+          {%- else -%}
+            <div class="otk-news__row">
+              <label class="otk-vh" for="OtkNews-{{ section.id }}">{{ section.settings.news_placeholder }}</label>
+              <input
+                id="OtkNews-{{ section.id }}"
+                type="email"
+                name="contact[email]"
+                required
+                autocomplete="email"
+                placeholder="{{ section.settings.news_placeholder | escape }}"
+                {% if form.errors %}
+                  aria-invalid="true"
+                {% endif %}
+              >
+              <button type="submit" aria-label="{{ section.settings.news_button | escape }}">
+                {%- render 'otulka-icon', name: 'next' -%}
+              </button>
+            </div>
+            {%- if form.errors -%}
+              <p class="otk-news__msg otk-news__msg--error" role="alert">Sprawdź adres e-mail i spróbuj ponownie.</p>
+            {%- endif -%}
+          {%- endif -%}
+        {%- endform -%}
+      </div>
+    {%- endif -%}
   </div>
   {%- if section.settings.show_bottom -%}
     <div class="otk-wrap"><div class="otk-foot__bottom">
@@ -66,6 +101,8 @@
                 assign policy_title = 'Dane sprzedawcy'
               elsif policy.url contains 'legal-notice'
                 assign policy_title = 'Nota prawna'
+              elsif policy.title contains 'ookie'
+                assign policy_title = 'Ustawienia cookies'
               endif
             -%}
             <li><a href="{{ policy.url }}">{{ policy_title }}</a></li>
@@ -91,7 +128,7 @@
   "enabled_on": { "groups": ["footer"] },
   "settings": [
     { "type": "text", "id": "hours_title", "label": "Tytuł godzin", "default": "Kiedy pracujemy" },
-    { "type": "textarea", "id": "hours", "label": "Godziny (Dzień | godziny, jeden w linii)", "default": "Poniedziałek – piątek | 9:00 – 17:00\nSobota – niedziela | nieczynne" },
+    { "type": "textarea", "id": "hours", "label": "Godziny (Dzień | godziny, jeden w linii)", "default": "Pon – pt | 9:00 – 17:00\nSob – nd | nieczynne" },
     { "type": "text", "id": "hours_note", "label": "Dopisek pod godzinami", "default": "Wiadomości z weekendu odbieramy w poniedziałek." },
     { "type": "text", "id": "contact_title", "label": "Tytuł kontaktu", "default": "Kontakt" },
     { "type": "text", "id": "email", "label": "E-mail", "info": "Puste = e-mail sklepu." },
@@ -100,6 +137,14 @@
     { "type": "text", "id": "contact_note", "label": "Dopisek pod kontaktem", "default": "Odpowiadamy na każdą wiadomość." },
     { "type": "text", "id": "menu_title", "label": "Tytuł linków", "default": "Informacje" },
     { "type": "link_list", "id": "menu", "label": "Menu z linkami", "default": "footer" },
+    { "type": "header", "content": "Newsletter" },
+    { "type": "checkbox", "id": "show_newsletter", "label": "Pokaż zapis do newslettera", "default": true },
+    { "type": "text", "id": "news_title", "label": "Tytuł", "default": "Bądź na bieżąco" },
+    { "type": "text", "id": "news_text", "label": "Tekst", "default": "Nowości i promocje Otulki prosto na Twoją skrzynkę." },
+    { "type": "text", "id": "news_placeholder", "label": "Podpowiedź w polu", "default": "Adres e-mail" },
+    { "type": "text", "id": "news_button", "label": "Opis przycisku (dla czytników ekranu)", "default": "Zapisz się" },
+    { "type": "text", "id": "news_success", "label": "Komunikat po zapisie", "default": "Dzięki! Jesteś na liście." },
+    { "type": "header", "content": "Dół stopki" },
     { "type": "checkbox", "id": "show_bottom", "label": "Pokaż prawa autorskie i regulaminy", "default": true },
     { "type": "checkbox", "id": "show_top", "label": "Pokaż przycisk „do góry”", "default": true },
     { "type": "text", "id": "top_label", "label": "Opis przycisku „do góry” (dla czytników ekranu)", "default": "Wróć na górę strony" }

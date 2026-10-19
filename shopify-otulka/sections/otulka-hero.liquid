@@ -1,7 +1,7 @@
 {% comment %}
   Section contract.
   Otulka buy box: gallery bound to product.media, Kolor × Zestaw picker (option1 × option2),
-  optional add-on variant (e.g. "Sam pasek"), real product form, sticky add-to-cart bar.
+  optional add-on variant (e.g. "Sam pasek") with its own colour choice, real product form, sticky add-to-cart bar.
   Outside a product page (e.g. the home page) it sells the product picked in the "product" setting.
   @example
   <!-- templates/product.otulka.json → section key "hero"; templates/index.json → "shop" -->
@@ -189,26 +189,8 @@
             <legend class="otk-label">{{ color_option.name }}: <span data-otk-color-label>{{ cur.option1 }}</span></legend>
             <div class="otk-swatches">
               {%- for value in color_option.values -%}
-                {%- liquid
-                  assign vname = value.name | default: value
-                  assign sw = value.swatch.color
-                  if sw == blank
-                    case vname
-                      when 'Jasnoszary'
-                        assign sw = '#d9d6d2'
-                      when 'Grafitowy'
-                        assign sw = '#56555b'
-                      when 'Różowy'
-                        assign sw = '#f2c1cc'
-                      when 'Czekoladowy'
-                        assign sw = '#5b4034'
-                      when 'Beżowy'
-                        assign sw = '#e6d5bf'
-                      else
-                        assign sw = '#cfc6bd'
-                    endcase
-                  endif
-                -%}
+                {%- assign vname = value.name | default: value -%}
+                {%- capture sw -%}{% render 'otulka-swatch-color', value: value %}{%- endcapture -%}
                 <label class="otk-swatch{% if vname == cur.option1 %} is-selected{% endif %}" style="--sw: {{ sw }};" title="{{ vname | escape }}" data-otk-swatch="{{ vname | escape }}">
                   <input
                     type="radio"
@@ -294,16 +276,64 @@
         </fieldset>
 
         {%- if section.settings.show_addon and belt -%}
-          <label class="otk-addon" data-otk-addon {% unless belt.available %}hidden{% endunless %}>
-            <input type="checkbox" data-otk-addon-cb>
-            <span class="otk-addon__txt">
-              <strong>{{ section.settings.addon_title }}</strong>
-              {%- if section.settings.addon_text != blank -%}
-                <span>{{ section.settings.addon_text }}</span>
-              {%- endif -%}
-            </span>
-            <span class="otk-addon__price">+<span data-otk-addon-price>{{ belt.price | money }}</span></span>
-          </label>
+          {%- liquid
+            assign addon_any = false
+            for v in p.variants
+              if v.option2 == addon_value and v.available
+                assign addon_any = true
+                break
+              endif
+            endfor
+          -%}
+          <div class="otk-addon-box" data-otk-addon {% unless addon_any %}hidden{% endunless %}>
+            <label class="otk-addon">
+              <input type="checkbox" data-otk-addon-cb>
+              <span class="otk-addon__txt">
+                <strong>{{ section.settings.addon_title }}</strong>
+                {%- if section.settings.addon_text != blank -%}
+                  <span>{{ section.settings.addon_text }}</span>
+                {%- endif -%}
+              </span>
+              <span class="otk-addon__price">+<span data-otk-addon-price>{{ belt.price | money }}</span></span>
+            </label>
+            {%- if section.settings.addon_pick_color and color_option -%}
+              <fieldset class="otk-addon__colors" data-otk-addon-colors hidden>
+                <legend class="otk-label">{{ section.settings.addon_color_label }}: <span data-otk-addon-color-label>{{ belt.option1 }}</span></legend>
+                <div class="otk-swatches otk-swatches--sm">
+                  {%- for value in color_option.values -%}
+                    {%- liquid
+                      assign vname = value.name | default: value
+                      assign av = nil
+                      for v in p.variants
+                        if v.option1 == vname and v.option2 == addon_value
+                          assign av = v
+                          break
+                        endif
+                      endfor
+                    -%}
+                    {%- if av -%}
+                      {%- capture sw -%}{% render 'otulka-swatch-color', value: value %}{%- endcapture -%}
+                      <label class="otk-swatch{% if vname == belt.option1 %} is-selected{% endif %}{% unless av.available %} is-soldout{% endunless %}" style="--sw: {{ sw }};" title="{{ vname | escape }}" data-otk-addon-swatch="{{ vname | escape }}">
+                        <input
+                          type="radio"
+                          name="otk-addon-color-{{ section.id }}"
+                          value="{{ vname | escape }}"
+                          data-otk-addon-color
+                          {% if vname == belt.option1 %}
+                            checked
+                          {% endif %}
+                          {% unless av.available %}
+                            disabled
+                          {% endunless %}
+                        >
+                        <span class="otk-vh">{{ vname }}</span>
+                      </label>
+                    {%- endif -%}
+                  {%- endfor -%}
+                </div>
+              </fieldset>
+            {%- endif -%}
+          </div>
         {%- endif -%}
 
         <div class="otk-buy">
@@ -481,7 +511,9 @@
     { "type": "checkbox", "id": "show_addon", "label": "Pokaż dodatek", "default": true },
     { "type": "text", "id": "addon_value", "label": "Dodatek – wartość opcji", "default": "Sam pasek" },
     { "type": "text", "id": "addon_title", "label": "Dodatek – tytuł", "default": "Dodaj drugi pasek" },
-    { "type": "text", "id": "addon_text", "label": "Dodatek – opis", "default": "Na zmianę albo w prezencie – w tym samym kolorze" },
+    { "type": "text", "id": "addon_text", "label": "Dodatek – opis", "default": "Na zmianę albo w prezencie – w dowolnym kolorze" },
+    { "type": "checkbox", "id": "addon_pick_color", "label": "Pozwól wybrać kolor dodatku", "default": true },
+    { "type": "text", "id": "addon_color_label", "label": "Dodatek – etykieta koloru", "default": "Kolor drugiego paska" },
     { "type": "header", "content": "Zakup" },
     { "type": "text", "id": "urgency_text", "label": "Tekst nad przyciskiem", "default": "Jesienna wyprzedaż trwa – oszczędzasz do [rabat]%" },
     { "type": "text", "id": "cta_label", "label": "Przycisk", "default": "Dodaj do koszyka" },

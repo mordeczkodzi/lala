@@ -137,7 +137,8 @@
         "border_radius": 0,
         "padding-block-start": 48,
         "padding-block-end": 48
-      }
+      },
+      "disabled": true
     },
     "footer_utilities_jLGE8U": {
       "type": "footer-utilities",
@@ -203,14 +204,20 @@
       "type": "otulka-footer-info",
       "settings": {
         "hours_title": "Kiedy pracujemy",
-        "hours": "Poniedziałek – piątek | 9:00 – 17:00\nSobota – niedziela | nieczynne",
+        "hours": "Pon – pt | 9:00 – 17:00\nSob – nd | nieczynne",
         "hours_note": "Wiadomości z weekendu odbieramy w poniedziałek.",
         "contact_title": "Kontakt",
         "contact_link_label": "Formularz kontaktowy",
         "contact_link": "/pages/contact",
         "contact_note": "Odpowiadamy na każdą wiadomość.",
         "menu_title": "Informacje",
-        "menu": "footer"
+        "menu": "footer",
+        "show_newsletter": true,
+        "news_title": "Bądź na bieżąco",
+        "news_text": "Nowości i promocje Otulki prosto na Twoją skrzynkę.",
+        "news_placeholder": "Adres e-mail",
+        "news_button": "Zapisz się",
+        "news_success": "Dzięki! Jesteś na liście."
       }
     }
   },

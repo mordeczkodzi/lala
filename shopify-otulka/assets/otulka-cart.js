@@ -23,31 +23,21 @@
     if (!id) return;
 
     button.disabled = true;
-    var actions = window.Shopify && window.Shopify.actions;
+    var lines = [{ id: Number(id), quantity: 1 }];
     var root = (window.Shopify && window.Shopify.routes && window.Shopify.routes.root) || '/';
 
-    function viaAjax() {
-      return fetch(root + 'cart/add.js', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-        body: JSON.stringify({ items: [{ id: Number(id), quantity: 1 }] })
-      }).then(function (res) {
-        if (!res.ok) throw new Error('add_failed');
-        window.location.href = root + 'cart';
-      });
-    }
-
+    // Wspólny helper z otulka-global.js przerysowuje szufladę; bez niego – AJAX i przejście do /cart.
     var request =
-      actions && typeof actions.updateCart === 'function'
-        ? actions
-            .updateCart(
-              { lines: [{ merchandiseId: 'gid://shopify/ProductVariant/' + id, quantity: 1 }] },
-              { event: { context: 'cart' } }
-            )
-            .then(function (result) {
-              if (result && result.userErrors && result.userErrors.length) throw new Error(result.userErrors[0].message);
-            }, viaAjax)
-        : viaAjax();
+      window.OtulkaCart && typeof window.OtulkaCart.add === 'function'
+        ? window.OtulkaCart.add(lines, card)
+        : fetch(root + 'cart/add.js', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+            body: JSON.stringify({ items: lines })
+          }).then(function (res) {
+            if (!res.ok) throw new Error('add_failed');
+            window.location.href = root + 'cart';
+          });
 
     request
       .catch(function (error) {

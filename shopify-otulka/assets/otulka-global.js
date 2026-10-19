@@ -1,4 +1,5 @@
-/* Otulka – na każdej stronie: przycisk „do góry” i linki FAQ, które przewijają do pytań na tej samej stronie. */
+/* Otulka – na każdej stronie: przycisk „do góry”, linki FAQ przewijające do pytań na tej samej stronie
+   i wspólne dodawanie do koszyka (window.OtulkaCart). */
 (function () {
   'use strict';
 
@@ -93,6 +94,122 @@
       target.scrollIntoView({ behavior: scrollBehavior(), block: 'start' });
     });
   }
+
+  var cartRoot = (window.Shopify && window.Shopify.routes && window.Shopify.routes.root) || '/';
+
+  function cartSectionIds() {
+    var ids = [];
+    Array.prototype.forEach.call(document.querySelectorAll('cart-items-component[data-section-id]'), function (el) {
+      if (ids.indexOf(el.dataset.sectionId) === -1) ids.push(el.dataset.sectionId);
+    });
+    return ids;
+  }
+
+  function loadCartEvents() {
+    try {
+      return import('@shopify/events').catch(function () {
+        return null;
+      });
+    } catch (e) {
+      return Promise.resolve(null);
+    }
+  }
+
+  function openCartDrawer() {
+    var drawer = document.querySelector('theme-drawer#cart-drawer');
+    if (!drawer || typeof drawer.open !== 'function') return false;
+    if (!drawer.isOpen) drawer.open();
+    return true;
+  }
+
+  /**
+   * Dodaje pozycje do koszyka tak jak formularz produktu motywu: /cart/add.js z HTML-em sekcji szuflady
+   * i zdarzenie CartLinesUpdateEvent, na które szuflada się przerysowuje. Potem otwiera szufladę
+   * (albo przechodzi do /cart, gdy jej nie ma).
+   * @param {{id: number, quantity: number}[]} lines
+   * @param {Element} [source] element, z którego wysyłamy zdarzenie
+   */
+  function addToCart(lines, source) {
+    var sectionIds = cartSectionIds();
+    var itemCount = lines.reduce(function (sum, line) {
+      return sum + line.quantity;
+    }, 0);
+
+    return loadCartEvents().then(function (events) {
+      var LinesEvent = events && events.CartLinesUpdateEvent;
+      var deferred = LinesEvent && typeof LinesEvent.createPromise === 'function' ? LinesEvent.createPromise() : null;
+
+      if (deferred) {
+        (source || document).dispatchEvent(
+          new LinesEvent({
+            action: 'add',
+            context: 'product',
+            lines: lines.map(function (line) {
+              return { merchandiseId: String(line.id), quantity: line.quantity };
+            }),
+            promise: deferred.promise
+          })
+        );
+      }
+
+      function fetchCart() {
+        return fetch(cartRoot + 'cart.js', { headers: { Accept: 'application/json' }, credentials: 'same-origin' }).then(
+          function (res) {
+            return res.json();
+          }
+        );
+      }
+
+      return fetch(cartRoot + 'cart/add.js', {
+        method: 'POST',
+        credentials: 'same-origin',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify({ items: lines, sections: sectionIds.join(','), sections_url: window.location.pathname })
+      })
+        .then(function (res) {
+          return res.json().then(function (body) {
+            return { ok: res.ok && !body.status, body: body };
+          });
+        })
+        .then(function (result) {
+          return fetchCart().then(function (cart) {
+            if (deferred) {
+              deferred.resolve({
+                cart: typeof LinesEvent.createCartFromAjaxResponse === 'function' ? LinesEvent.createCartFromAjaxResponse(cart) : cart,
+                detail: {
+                  items: cart.items,
+                  sections: result.ok ? result.body.sections : undefined,
+                  didError: !result.ok,
+                  source: 'otulka',
+                  itemCount: itemCount
+                }
+              });
+            }
+            if (!result.ok) throw new Error(result.body.description || result.body.message || 'add_failed');
+            return cart;
+          });
+        })
+        .then(
+          function (cart) {
+            if (!deferred) {
+              window.location.href = cartRoot + 'cart';
+              return cart;
+            }
+            // Szuflada przerysowuje się w then() zdarzenia – otwieramy ją chwilę później, już z produktem.
+            setTimeout(function () {
+              if (!openCartDrawer()) window.location.href = cartRoot + 'cart';
+            }, 80);
+            return cart;
+          },
+          function (error) {
+            if (deferred) deferred.reject(error);
+            throw error;
+          }
+        );
+    });
+  }
+
+  window.OtulkaCart = { add: addToCart, open: openCartDrawer };
 
   if (!window.__otkGlobal) {
     window.__otkGlobal = true;

@@ -61,7 +61,7 @@
         {{ up_media.preview_image | image_url: width: 160 | image_tag: loading: 'lazy', alt: '', width: 64, height: 64 }}
       {%- endif -%}
       <div>
-        <p class="otk-up__name">Dodatkowy pasek {{ up_product.vendor }}</p>
+        <p class="otk-up__name">Dodatkowy pasek – na zmianę albo w prezencie</p>
         <p class="otk-up__price">
           <span>{{ up_selected.price | money }}</span>
           {%- if up_selected.compare_at_price > up_selected.price -%}
