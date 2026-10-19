@@ -1,0 +1,64 @@
+{% comment %}
+  Section contract.
+  Grid of small tiles: emoji use-cases ("Pomaga wszędzie") or numbered steps ("Jak to działa").
+  Optional CTA link that scrolls back to the buy box and can preselect a bundle.
+  @example
+  <!-- templates/product.otulka.json → "uses", "steps" -->
+{% endcomment %}
+{%- render 'otulka-assets' -%}
+<div class="otk otk-sec{% if section.settings.background == 'white' %} otk-sec--white{% elsif section.settings.background == 'peach' %} otk-sec--peach{% endif %}">
+  <div class="otk-wrap">
+    <div class="otk-head">
+      {%- if section.settings.eyebrow != blank -%}<span class="otk-eyebrow">{{ section.settings.eyebrow }}</span>{%- endif -%}
+      <h2 class="otk-h2">{{ section.settings.heading }}</h2>
+      {%- if section.settings.text != blank -%}<p class="otk-lead">{{ section.settings.text }}</p>{%- endif -%}
+    </div>
+    <div class="otk-tiles{% if section.settings.style == 'steps' %} otk-tiles--steps{% endif %}">
+      {%- for block in section.blocks -%}
+        <div class="otk-tile" {{ block.shopify_attributes }}>
+          {%- if section.settings.style == 'steps' -%}
+            <span class="otk-tile__num" aria-hidden="true">{{ forloop.index }}</span>
+          {%- elsif block.settings.icon != blank -%}
+            <span class="otk-tile__ico" aria-hidden="true">{{ block.settings.icon }}</span>
+          {%- endif -%}
+          <h3 class="otk-tile__title">{{ block.settings.title }}</h3>
+          {%- if block.settings.text != blank -%}<p class="otk-tile__text">{{ block.settings.text }}</p>{%- endif -%}
+        </div>
+      {%- endfor -%}
+    </div>
+    {%- if section.settings.cta_label != blank -%}
+      <div class="otk-cta-row">
+        <a class="otk-btn" href="#otk-buy"{% if section.settings.cta_bundle != blank %} data-otk-pick="{{ section.settings.cta_bundle | escape }}"{% endif %}>{{ section.settings.cta_label }}</a>
+      </div>
+    {%- endif -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Otulka – kafelki",
+  "tag": "section",
+  "class": "otk-section",
+  "settings": [
+    { "type": "select", "id": "style", "label": "Styl", "options": [ { "value": "icons", "label": "Ikony (emoji)" }, { "value": "steps", "label": "Kroki numerowane" } ], "default": "icons" },
+    { "type": "text", "id": "eyebrow", "label": "Nadtytuł" },
+    { "type": "text", "id": "heading", "label": "Nagłówek", "default": "Pomaga wszędzie" },
+    { "type": "textarea", "id": "text", "label": "Tekst" },
+    { "type": "text", "id": "cta_label", "label": "Przycisk (puste = brak)" },
+    { "type": "text", "id": "cta_bundle", "label": "Przycisk zaznacza zestaw", "info": "Np. Przytulny. Puste = bez zmiany." },
+    { "type": "select", "id": "background", "label": "Tło", "options": [ { "value": "cream", "label": "Kremowe" }, { "value": "white", "label": "Białe" }, { "value": "peach", "label": "Brzoskwiniowe" } ], "default": "peach" }
+  ],
+  "blocks": [
+    {
+      "type": "tile",
+      "name": "Kafelek",
+      "settings": [
+        { "type": "text", "id": "icon", "label": "Emoji (dla stylu Ikony)", "default": "🌸" },
+        { "type": "text", "id": "title", "label": "Tytuł", "default": "Trudne dni" },
+        { "type": "textarea", "id": "text", "label": "Tekst" }
+      ]
+    }
+  ],
+  "presets": [ { "name": "Otulka – kafelki", "blocks": [ { "type": "tile" }, { "type": "tile" }, { "type": "tile" } ] } ]
+}
+{% endschema %}

@@ -1,0 +1,62 @@
+{% comment %}
+  Section contract.
+  FAQ accordion (native details) followed by a 3-item guarantee band.
+  @example
+  <!-- templates/product.otulka.json → "faq" (anchor #faq) -->
+{% endcomment %}
+{%- render 'otulka-assets' -%}
+<div class="otk otk-sec{% if section.settings.background == 'white' %} otk-sec--white{% elsif section.settings.background == 'peach' %} otk-sec--peach{% endif %}" id="faq">
+  <div class="otk-wrap">
+    <div class="otk-head">
+      {%- if section.settings.eyebrow != blank -%}<span class="otk-eyebrow">{{ section.settings.eyebrow }}</span>{%- endif -%}
+      <h2 class="otk-h2">{{ section.settings.heading }}</h2>
+    </div>
+    <div class="otk-faq otk-acc">
+      {%- for block in section.blocks -%}
+        <details {{ block.shopify_attributes }}>
+          <summary>{{ block.settings.question }}</summary>
+          <div class="otk-acc__body">{{ block.settings.answer }}</div>
+        </details>
+      {%- endfor -%}
+    </div>
+    {%- if section.settings.show_guarantee -%}
+      <div class="otk-guarantee">
+        <div class="otk-guarantee__item">{% render 'otulka-icon', name: 'return' %}<div><b>{{ section.settings.g1_title }}</b><span>{{ section.settings.g1_text }}</span></div></div>
+        <div class="otk-guarantee__item">{% render 'otulka-icon', name: 'lock' %}<div><b>{{ section.settings.g2_title }}</b><span>{{ section.settings.g2_text }}</span></div></div>
+        <div class="otk-guarantee__item">{% render 'otulka-icon', name: 'heart' %}<div><b>{{ section.settings.g3_title }}</b><span>{{ section.settings.g3_text }}</span></div></div>
+      </div>
+    {%- endif -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Otulka – FAQ",
+  "tag": "section",
+  "class": "otk-section",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Nadtytuł", "default": "Masz pytania?" },
+    { "type": "text", "id": "heading", "label": "Nagłówek", "default": "Często zadawane pytania" },
+    { "type": "select", "id": "background", "label": "Tło", "options": [ { "value": "cream", "label": "Kremowe" }, { "value": "white", "label": "Białe" }, { "value": "peach", "label": "Brzoskwiniowe" } ], "default": "cream" },
+    { "type": "header", "content": "Gwarancje" },
+    { "type": "checkbox", "id": "show_guarantee", "label": "Pokaż pasek gwarancji", "default": true },
+    { "type": "text", "id": "g1_title", "label": "Gwarancja 1 – tytuł", "default": "14 dni na zwrot" },
+    { "type": "text", "id": "g1_text", "label": "Gwarancja 1 – tekst", "default": "Nie pasuje? Odeślij bez podawania przyczyny." },
+    { "type": "text", "id": "g2_title", "label": "Gwarancja 2 – tytuł", "default": "Bezpieczne płatności" },
+    { "type": "text", "id": "g2_text", "label": "Gwarancja 2 – tekst", "default": "Szyfrowana kasa Shopify – nie widzimy danych Twojej karty." },
+    { "type": "text", "id": "g3_title", "label": "Gwarancja 3 – tytuł", "default": "Jesteśmy dla Ciebie" },
+    { "type": "text", "id": "g3_text", "label": "Gwarancja 3 – tekst", "default": "Masz pytanie? Napisz – odpowiadamy na każdą wiadomość." }
+  ],
+  "blocks": [
+    {
+      "type": "faq",
+      "name": "Pytanie",
+      "settings": [
+        { "type": "text", "id": "question", "label": "Pytanie", "default": "Pytanie" },
+        { "type": "richtext", "id": "answer", "label": "Odpowiedź", "default": "<p>Odpowiedź.</p>" }
+      ]
+    }
+  ],
+  "presets": [ { "name": "Otulka – FAQ", "blocks": [ { "type": "faq" }, { "type": "faq" } ] } ]
+}
+{% endschema %}

@@ -1,0 +1,582 @@
+{
+  "sections": {
+    "hero": {
+      "type": "otulka-hero",
+      "blocks": {
+        "usp1": {
+          "type": "usp",
+          "settings": {
+            "text": "Ciepło dokładnie tam, gdzie boli – na brzuchu albo plecach"
+          }
+        },
+        "usp2": {
+          "type": "usp",
+          "settings": {
+            "text": "Pod bluzą nikt jej nie zauważy"
+          }
+        },
+        "usp3": {
+          "type": "usp",
+          "settings": {
+            "text": "Wolne ręce – pracujesz, chodzisz, podróżujesz"
+          }
+        },
+        "usp4": {
+          "type": "usp",
+          "settings": {
+            "text": "Bez prądu i kabli – wystarczy gorąca woda"
+          }
+        },
+        "acc1": {
+          "type": "accordion",
+          "settings": {
+            "title": "Opis produktu",
+            "content": "<p>Opis produktu.</p>",
+            "use_description": true
+          }
+        },
+        "acc2": {
+          "type": "accordion",
+          "settings": {
+            "title": "Co jest w zestawie?",
+            "content": "<ul><li><strong>Przytulny:</strong> termofor 1000 ml, regulowany pas i pluszowy pokrowiec</li><li><strong>Standard:</strong> termofor 1000 ml i regulowany pas</li><li><strong>Sam pasek:</strong> dodatkowy pas na zmianę</li></ul>",
+            "use_description": false
+          }
+        },
+        "acc3": {
+          "type": "accordion",
+          "settings": {
+            "title": "Regulowany rozmiar",
+            "content": "<p>Pas zapinasz i regulujesz, więc dopasujesz go do talii albo bioder. Nie wiesz, czy będzie pasował? Napisz do nas – podamy dokładne wymiary.</p>",
+            "use_description": false
+          }
+        },
+        "acc4": {
+          "type": "accordion",
+          "settings": {
+            "title": "Wysyłka i zwroty",
+            "content": "<p>Każdą paczkę wysyłamy z numerem śledzenia, który dostaniesz e-mailem. Masz 14 dni na zwrot bez podawania przyczyny.</p>",
+            "use_description": false
+          }
+        },
+        "acc5": {
+          "type": "accordion",
+          "settings": {
+            "title": "Bezpieczeństwo",
+            "content": "<p>Napełniaj gorącą, ale nie wrzącą wodą (maks. ok. 70°C) i zawsze mocno zakręcaj korek. Nie podgrzewaj termoforu w mikrofalówce. Otulka nie jest wyrobem medycznym – przy silnym lub nietypowym bólu skonsultuj się z lekarzem.</p>",
+            "use_description": false
+          }
+        }
+      },
+      "block_order": [
+        "usp1",
+        "usp2",
+        "usp3",
+        "usp4",
+        "acc1",
+        "acc2",
+        "acc3",
+        "acc4",
+        "acc5"
+      ],
+      "settings": {
+        "promo_text": "🔥 JESIENNA WYPRZEDAŻ – OSZCZĘDZASZ DO [rabat]%",
+        "sale_badge": "Wyprzedaż",
+        "badge_text": "Bestseller",
+        "display_title": "Otulka",
+        "subtitle": "Termofor do noszenia z pasem",
+        "bundle_label": "Zestaw",
+        "bundle_a_value": "Przytulny",
+        "bundle_a_desc": "Termofor 1000 ml + pas + pluszowy pokrowiec",
+        "bundle_a_ribbon": "Bestseller",
+        "bundle_b_value": "Standard",
+        "bundle_b_desc": "Termofor 1000 ml + regulowany pas",
+        "show_addon": true,
+        "addon_value": "Sam pasek",
+        "addon_title": "Dodaj drugi pasek",
+        "addon_text": "Na zmianę albo w prezencie – w tym samym kolorze",
+        "urgency_text": "Jesienna wyprzedaż trwa – oszczędzasz do [rabat]%",
+        "cta_label": "Dodaj do koszyka",
+        "sticky_label": "Do koszyka",
+        "trust_1": "Bezpieczne płatności",
+        "trust_2": "14 dni na zwrot",
+        "trust_3": "Wysyłka z numerem śledzenia",
+        "payment_fallback": "BLIK, Przelewy24, Visa, Mastercard, Apple Pay, Google Pay"
+      }
+    },
+    "marquee": {
+      "type": "otulka-marquee",
+      "settings": {
+        "items": "Ciepło tam, gdzie boli | Pod bluzą nikt jej nie zauważy | Wolne ręce | Bez prądu i kabli | Mięciutki plusz",
+        "style": "accent",
+        "speed": 32
+      }
+    },
+    "relief": {
+      "type": "otulka-cards",
+      "settings": {
+        "eyebrow": "Dlaczego ją pokochasz",
+        "heading": "Przynosimy ulgę.",
+        "text": "Otulka to termofor, który nosisz jak pas – ciepło trafia tam, gdzie go potrzebujesz, a Ty masz wolne ręce.",
+        "background": "cream"
+      },
+      "blocks": {
+        "card1": {
+          "type": "card",
+          "settings": {
+            "media_index": 2,
+            "title": "Szybko i naturalnie",
+            "text": "Gorąca woda, zakręcony korek i gotowe. Bez kabli, baterii i ładowania."
+          }
+        },
+        "card2": {
+          "type": "card",
+          "settings": {
+            "media_index": 3,
+            "title": "Miękka i wygodna",
+            "text": "Plusz otula brzuch jak ciepły koc – przyjemnie od pierwszej minuty."
+          }
+        },
+        "card3": {
+          "type": "card",
+          "settings": {
+            "media_index": 4,
+            "title": "Dopasowuje się do Ciebie",
+            "text": "Regulowany pas: na brzuch albo na dolny odcinek pleców."
+          }
+        },
+        "card4": {
+          "type": "card",
+          "settings": {
+            "media_index": 5,
+            "title": "Zawsze przy Tobie",
+            "text": "W pracy, na uczelni, w podróży – ciepło idzie razem z Tobą."
+          }
+        }
+      },
+      "block_order": [
+        "card1",
+        "card2",
+        "card3",
+        "card4"
+      ]
+    },
+    "story": {
+      "type": "otulka-rows",
+      "settings": {
+        "eyebrow": "Termofor nowej generacji",
+        "heading": "Ciepło, które idzie z Tobą",
+        "background": "white"
+      },
+      "blocks": {
+        "row1": {
+          "type": "row",
+          "settings": {
+            "media_index": 8,
+            "eyebrow": "Dyskretna",
+            "title": "Pod bluzą nikt jej nie zauważy",
+            "text": "<p>Płaski, miękki pas przylega do ciała, więc spokojnie schowasz go pod bluzą, swetrem czy luźną koszulą. Nikt nie musi wiedzieć, że masz dziś trudny dzień.</p>",
+            "points": "Płaski profil – nie odstaje\nNosisz w pracy, w szkole i w drodze\nCicha – bez kabli i ładowarek"
+          }
+        },
+        "row2": {
+          "type": "row",
+          "settings": {
+            "media_index": 10,
+            "eyebrow": "Celne ciepło",
+            "title": "Ciepło dokładnie tam, gdzie boli",
+            "text": "<p>Termofor 1000 ml siedzi w pasie dokładnie na brzuchu albo na krzyżu. Ciepło pomaga rozluźnić spięte mięśnie i przetrwać skurcze – bez trzymania termoforu w rękach.</p>",
+            "points": "Duży wkład 1000 ml – ciepło na dłużej\nNa brzuch albo na dolny odcinek pleców\nRegulowany pas trzyma się na miejscu"
+          }
+        },
+        "row3": {
+          "type": "row",
+          "settings": {
+            "media_index": 13,
+            "eyebrow": "Zestaw Przytulny",
+            "title": "Mięciutka jak ulubiony koc",
+            "text": "<p>W zestawie Przytulnym termofor dostaje pluszowy pokrowiec. Jest miły dla skóry, oddziela ją od gorącego wkładu i dłużej trzyma ciepło.</p>",
+            "points": "Pluszowy pokrowiec w zestawie\nMiły dla skóry, nie drapie\n5 kolorów do wyboru"
+          }
+        }
+      },
+      "block_order": [
+        "row1",
+        "row2",
+        "row3"
+      ]
+    },
+    "uses": {
+      "type": "otulka-tiles",
+      "settings": {
+        "style": "icons",
+        "eyebrow": "Na co dzień",
+        "heading": "Pomaga wszędzie",
+        "text": "Nie tylko w trudne dni – Otulka przydaje się częściej, niż myślisz.",
+        "background": "peach"
+      },
+      "blocks": {
+        "tile1": {
+          "type": "tile",
+          "settings": {
+            "icon": "🌸",
+            "title": "Trudne kobiece dni",
+            "text": "Ciepło na brzuch, gdy skurcze nie odpuszczają."
+          }
+        },
+        "tile2": {
+          "type": "tile",
+          "settings": {
+            "icon": "💼",
+            "title": "Praca i nauka",
+            "text": "Siedzisz przy biurku, a ciepło robi swoje."
+          }
+        },
+        "tile3": {
+          "type": "tile",
+          "settings": {
+            "icon": "🧘",
+            "title": "Spięte plecy",
+            "text": "Rozluźnia dolny odcinek pleców po długim dniu."
+          }
+        },
+        "tile4": {
+          "type": "tile",
+          "settings": {
+            "icon": "🚗",
+            "title": "Podróż",
+            "text": "W aucie, pociągu czy samolocie – bez gniazdka."
+          }
+        },
+        "tile5": {
+          "type": "tile",
+          "settings": {
+            "icon": "🛋️",
+            "title": "Wieczór z serialem",
+            "text": "Zamiast koca na kolanach – ciepło, które się nie zsuwa."
+          }
+        },
+        "tile6": {
+          "type": "tile",
+          "settings": {
+            "icon": "❄️",
+            "title": "Zimne dni",
+            "text": "Na spacer, mecz czy przystanek – ciepło pod kurtką."
+          }
+        }
+      },
+      "block_order": [
+        "tile1",
+        "tile2",
+        "tile3",
+        "tile4",
+        "tile5",
+        "tile6"
+      ]
+    },
+    "steps": {
+      "type": "otulka-tiles",
+      "settings": {
+        "style": "steps",
+        "eyebrow": "3 proste kroki",
+        "heading": "Jak to działa?",
+        "cta_label": "Wybieram zestaw Przytulny",
+        "cta_bundle": "Przytulny",
+        "background": "white"
+      },
+      "blocks": {
+        "tile1": {
+          "type": "tile",
+          "settings": {
+            "icon": "1",
+            "title": "Napełnij",
+            "text": "Wlej gorącą (nie wrzącą) wodę, wypuść powietrze i mocno zakręć korek."
+          }
+        },
+        "tile2": {
+          "type": "tile",
+          "settings": {
+            "icon": "2",
+            "title": "Włóż do pasa",
+            "text": "Wsuń termofor do kieszeni pasa – w zestawie Przytulnym najpierw załóż pluszowy pokrowiec."
+          }
+        },
+        "tile3": {
+          "type": "tile",
+          "settings": {
+            "icon": "3",
+            "title": "Zapnij i działaj",
+            "text": "Dopasuj pas na brzuchu albo plecach i wracaj do swoich spraw."
+          }
+        }
+      },
+      "block_order": [
+        "tile1",
+        "tile2",
+        "tile3"
+      ]
+    },
+    "marquee2": {
+      "type": "otulka-marquee",
+      "settings": {
+        "items": "Wypróbuj bez ryzyka | 14 dni na zwrot | Bezpieczne płatności | Wysyłka z numerem śledzenia",
+        "style": "dark",
+        "speed": 36
+      }
+    },
+    "compare": {
+      "type": "otulka-compare",
+      "settings": {
+        "eyebrow": "Porównanie",
+        "heading": "Otulka kontra reszta",
+        "text": "Zobacz, dlaczego zwykły termofor zostaje w szafie.",
+        "col_us": "Otulka",
+        "col_a": "Zwykły termofor",
+        "col_b": "Poduszka elektryczna",
+        "cta_label": "Chcę Otulkę",
+        "background": "cream"
+      },
+      "blocks": {
+        "row1": {
+          "type": "row",
+          "settings": {
+            "feature": "Wolne ręce",
+            "us": true,
+            "a": false,
+            "b": true
+          }
+        },
+        "row2": {
+          "type": "row",
+          "settings": {
+            "feature": "Możesz chodzić i pracować",
+            "us": true,
+            "a": false,
+            "b": false
+          }
+        },
+        "row3": {
+          "type": "row",
+          "settings": {
+            "feature": "Dyskretna pod ubraniem",
+            "us": true,
+            "a": false,
+            "b": false
+          }
+        },
+        "row4": {
+          "type": "row",
+          "settings": {
+            "feature": "Bez prądu i kabli",
+            "us": true,
+            "a": true,
+            "b": false
+          }
+        },
+        "row5": {
+          "type": "row",
+          "settings": {
+            "feature": "Nie zsuwa się przy ruchu",
+            "us": true,
+            "a": false,
+            "b": false
+          }
+        },
+        "row6": {
+          "type": "row",
+          "settings": {
+            "feature": "Pluszowy pokrowiec w zestawie",
+            "us": true,
+            "a": false,
+            "b": false
+          }
+        }
+      },
+      "block_order": [
+        "row1",
+        "row2",
+        "row3",
+        "row4",
+        "row5",
+        "row6"
+      ]
+    },
+    "reviews": {
+      "type": "otulka-reviews",
+      "settings": {
+        "enabled": false,
+        "heading": "Opinie, które dostajemy",
+        "background": "white"
+      },
+      "blocks": {
+        "review1": {
+          "type": "review",
+          "settings": {
+            "rating": 5,
+            "title": "Tytuł opinii",
+            "text": "Wklej tutaj prawdziwą opinię klientki.",
+            "author": "Imię, miasto"
+          }
+        },
+        "review2": {
+          "type": "review",
+          "settings": {
+            "rating": 5,
+            "title": "Tytuł opinii",
+            "text": "Wklej tutaj prawdziwą opinię klientki.",
+            "author": "Imię, miasto"
+          }
+        },
+        "review3": {
+          "type": "review",
+          "settings": {
+            "rating": 5,
+            "title": "Tytuł opinii",
+            "text": "Wklej tutaj prawdziwą opinię klientki.",
+            "author": "Imię, miasto"
+          }
+        }
+      },
+      "block_order": [
+        "review1",
+        "review2",
+        "review3"
+      ]
+    },
+    "faq": {
+      "type": "otulka-faq",
+      "settings": {
+        "eyebrow": "Masz pytania?",
+        "heading": "Często zadawane pytania",
+        "background": "white",
+        "show_guarantee": true,
+        "g1_title": "14 dni na zwrot",
+        "g1_text": "Nie pasuje? Odeślij bez podawania przyczyny.",
+        "g2_title": "Bezpieczne płatności",
+        "g2_text": "Szyfrowana kasa Shopify – nie widzimy danych Twojej karty.",
+        "g3_title": "Jesteśmy dla Ciebie",
+        "g3_text": "Masz pytanie? Napisz – odpowiadamy na każdą wiadomość."
+      },
+      "blocks": {
+        "faq1": {
+          "type": "faq",
+          "settings": {
+            "question": "Czy pod ubraniem widać termofor?",
+            "answer": "<p>Pas jest płaski i miękki, więc pod bluzą, swetrem czy luźniejszą koszulą zwykle nikt go nie zauważy. Pod bardzo obcisłymi ubraniami może być lekko widoczny.</p>"
+          }
+        },
+        "faq2": {
+          "type": "faq",
+          "settings": {
+            "question": "Czym różni się zestaw Standard od Przytulnego?",
+            "answer": "<p><strong>Standard</strong> to termofor 1000 ml z regulowanym pasem. <strong>Przytulny</strong> ma dodatkowo pluszowy pokrowiec – jest miękki w dotyku, oddziela skórę od gorącego wkładu i dłużej trzyma ciepło.</p>"
+          }
+        },
+        "faq3": {
+          "type": "faq",
+          "settings": {
+            "question": "Jak długo trzyma ciepło?",
+            "answer": "<p>To zależy od temperatury wody i otoczenia. Pas i pluszowy pokrowiec spowalniają stygnięcie, więc ciepło czujesz dłużej niż przy gołym termoforze. Gdy woda przestygnie, po prostu ją wymień.</p>"
+          }
+        },
+        "faq4": {
+          "type": "faq",
+          "settings": {
+            "question": "Jaką wodą napełniać termofor?",
+            "answer": "<p>Gorącą, ale nie wrzącą (maks. ok. 70°C). Napełnij do ok. 2/3, wypuść powietrze i mocno zakręć korek. Nie podgrzewaj termoforu w mikrofalówce.</p>"
+          }
+        },
+        "faq5": {
+          "type": "faq",
+          "settings": {
+            "question": "Czy pomoże na bóle menstruacyjne?",
+            "answer": "<p>Ciepło pomaga rozluźnić mięśnie i złagodzić skurcze – dlatego tak wiele kobiet sięga po termofor w trudne dni. Otulka nie jest wyrobem medycznym; przy silnym lub nietypowym bólu skonsultuj się z lekarzem.</p>"
+          }
+        },
+        "faq6": {
+          "type": "faq",
+          "settings": {
+            "question": "Czy pas będzie na mnie pasował?",
+            "answer": "<p>Pas ma regulowane zapięcie, więc dopasujesz go do talii albo bioder. Jeśli masz wątpliwości, napisz do nas – podamy dokładne wymiary.</p>"
+          }
+        },
+        "faq7": {
+          "type": "faq",
+          "settings": {
+            "question": "Jak dbać o pas i pokrowiec?",
+            "answer": "<p>Przed praniem wyjmij termofor. Pas i pokrowiec najlepiej prać ręcznie w letniej wodzie i suszyć na płasko.</p>"
+          }
+        },
+        "faq8": {
+          "type": "faq",
+          "settings": {
+            "question": "Ile trwa dostawa?",
+            "answer": "<p>Szacowany czas dostawy zobaczysz przy wyborze metody wysyłki w kasie. Po nadaniu paczki dostaniesz e-mail z numerem śledzenia.</p>"
+          }
+        },
+        "faq9": {
+          "type": "faq",
+          "settings": {
+            "question": "Czy mogę zwrócić produkt?",
+            "answer": "<p>Tak. Masz 14 dni na odstąpienie od umowy bez podawania przyczyny. Napisz do nas, a przeprowadzimy Cię przez zwrot krok po kroku.</p>"
+          }
+        },
+        "faq10": {
+          "type": "faq",
+          "settings": {
+            "question": "Jakie są metody płatności?",
+            "answer": "<p>Płacisz w bezpiecznej, szyfrowanej kasie Shopify. Wszystkie dostępne metody płatności zobaczysz przy składaniu zamówienia.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "faq1",
+        "faq2",
+        "faq3",
+        "faq4",
+        "faq5",
+        "faq6",
+        "faq7",
+        "faq8",
+        "faq9",
+        "faq10"
+      ]
+    },
+    "about": {
+      "type": "otulka-about",
+      "settings": {
+        "background": "cream",
+        "show_about": true,
+        "about_media_index": 9,
+        "about_eyebrow": "O nas",
+        "about_heading": "Ciepło, które jest przy Tobie",
+        "about_text": "<p>Otulka powstała z prostej potrzeby: ciepło w trudne dni powinno być przy Tobie – w pracy, na uczelni, w drodze – a nie tylko na kanapie pod kocem.</p><p>Dlatego zamknęliśmy klasyczny termofor w miękkim, regulowanym pasie. Bez kabli, bez ładowania, bez kombinowania. Wystarczy gorąca woda i kilka sekund.</p><p>Każde zamówienie pakujemy tak, żeby dotarło do Ciebie jak mały prezent – dla siebie albo dla kogoś, kto potrzebuje odrobiny ciepła.</p>",
+        "about_sign": "Zespół Otulki",
+        "show_contact": true,
+        "contact_eyebrow": "Kontakt",
+        "contact_heading": "Skontaktuj się z nami",
+        "contact_text": "Masz pytanie o rozmiar, zamówienie albo zwrot? Napisz do nas – chętnie pomożemy.",
+        "hours": "Odpisujemy w dni robocze",
+        "contact_note": "Odpowiadamy na każdą wiadomość",
+        "success_text": "Dziękujemy! Wiadomość dotarła – odezwiemy się najszybciej, jak to możliwe.",
+        "show_final": true,
+        "final_heading": "Zasługujesz na lepsze dni",
+        "final_text": "Zrób sobie ciepło. Wybierz kolor i zestaw – Otulka zajmie się resztą.",
+        "final_button": "Chcę swoją Otulkę"
+      }
+    }
+  },
+  "order": [
+    "hero",
+    "marquee",
+    "relief",
+    "story",
+    "uses",
+    "steps",
+    "marquee2",
+    "compare",
+    "reviews",
+    "faq",
+    "about"
+  ]
+}

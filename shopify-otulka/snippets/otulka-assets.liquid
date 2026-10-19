@@ -1,0 +1,7 @@
+{% doc %}
+  Loads the shared Otulka stylesheet. Rendered by every Otulka section so each one works on its own.
+
+  @example
+  {% render 'otulka-assets' %}
+{% enddoc %}
+{{ 'otulka.css' | asset_url | stylesheet_tag }}

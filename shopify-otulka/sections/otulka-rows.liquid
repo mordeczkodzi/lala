@@ -1,0 +1,72 @@
+{% comment %}
+  Section contract.
+  Alternating image + text benefit rows with a checklist (one point per line).
+  @example
+  <!-- templates/product.otulka.json → "story" -->
+{% endcomment %}
+{%- render 'otulka-assets' -%}
+<div class="otk otk-sec{% if section.settings.background == 'white' %} otk-sec--white{% elsif section.settings.background == 'peach' %} otk-sec--peach{% endif %}">
+  <div class="otk-wrap">
+    {%- if section.settings.heading != blank -%}
+      <div class="otk-head">
+        {%- if section.settings.eyebrow != blank -%}<span class="otk-eyebrow">{{ section.settings.eyebrow }}</span>{%- endif -%}
+        <h2 class="otk-h2">{{ section.settings.heading }}</h2>
+        {%- if section.settings.text != blank -%}<p class="otk-lead">{{ section.settings.text }}</p>{%- endif -%}
+      </div>
+    {%- endif -%}
+    <div class="otk-rows">
+      {%- for block in section.blocks -%}
+        <div class="otk-row" {{ block.shopify_attributes }}>
+          <div class="otk-row__media">
+            {%- render 'otulka-media', image: block.settings.image, index: block.settings.media_index, sizes: '(min-width: 750px) 50vw, 100vw', alt: block.settings.title -%}
+          </div>
+          <div class="otk-row__body">
+            {%- if block.settings.eyebrow != blank -%}<span class="otk-eyebrow">{{ block.settings.eyebrow }}</span>{%- endif -%}
+            <h3 class="otk-row__title">{{ block.settings.title }}</h3>
+            {%- if block.settings.text != blank -%}<div class="otk-rte">{{ block.settings.text }}</div>{%- endif -%}
+            {%- if block.settings.points != blank -%}
+              {%- assign points = block.settings.points | newline_to_br | split: '<br />' -%}
+              <ul class="otk-checks">
+                {%- for point in points -%}
+                  {%- assign point_text = point | strip -%}
+                  {%- if point_text != blank -%}
+                    <li>{% render 'otulka-icon', name: 'check' %}<span>{{ point_text }}</span></li>
+                  {%- endif -%}
+                {%- endfor -%}
+              </ul>
+            {%- endif -%}
+          </div>
+        </div>
+      {%- endfor -%}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Otulka – korzyści",
+  "tag": "section",
+  "class": "otk-section",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Nadtytuł" },
+    { "type": "text", "id": "heading", "label": "Nagłówek" },
+    { "type": "textarea", "id": "text", "label": "Tekst" },
+    { "type": "select", "id": "background", "label": "Tło", "options": [ { "value": "cream", "label": "Kremowe" }, { "value": "white", "label": "Białe" }, { "value": "peach", "label": "Brzoskwiniowe" } ], "default": "white" }
+  ],
+  "blocks": [
+    {
+      "type": "row",
+      "name": "Wiersz",
+      "settings": [
+        { "type": "image_picker", "id": "image", "label": "Zdjęcie" },
+        { "type": "range", "id": "media_index", "label": "Albo zdjęcie produktu nr", "min": 1, "max": 20, "step": 1, "default": 2 },
+        { "type": "text", "id": "eyebrow", "label": "Nadtytuł" },
+        { "type": "text", "id": "title", "label": "Tytuł", "default": "Niewidoczny pod bluzą" },
+        { "type": "richtext", "id": "text", "label": "Tekst", "default": "<p>Opis korzyści.</p>" },
+        { "type": "textarea", "id": "points", "label": "Punkty (jeden w linii)" }
+      ]
+    }
+  ],
+  "presets": [ { "name": "Otulka – korzyści", "blocks": [ { "type": "row" }, { "type": "row" } ] } ]
+}
+{% endschema %}

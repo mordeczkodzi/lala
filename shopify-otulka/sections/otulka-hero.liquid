@@ -1,0 +1,492 @@
+{% comment %}
+  Section contract.
+  Otulka buy box: gallery bound to product.media, Kolor × Zestaw picker (option1 × option2),
+  optional add-on variant (e.g. "Sam pasek"), real product form, sticky add-to-cart bar.
+  @example
+  <!-- templates/product.otulka.json → section key "hero" -->
+{% endcomment %}
+{%- liquid
+  assign p = product
+  assign bundle_a = section.settings.bundle_a_value
+  assign bundle_b = section.settings.bundle_b_value
+  assign addon_value = section.settings.addon_value
+
+  assign cur = p.selected_or_first_available_variant
+  if cur.option2 != bundle_a and cur.option2 != bundle_b
+    for v in p.variants
+      if v.option1 == cur.option1 and v.option2 == bundle_a
+        assign cur = v
+        break
+      endif
+    endfor
+  endif
+
+  assign max_pct = 0
+  for v in p.variants
+    if v.option2 != addon_value and v.compare_at_price > v.price
+      assign v_pct = v.compare_at_price | minus: v.price | times: 100.0 | divided_by: v.compare_at_price | round
+      if v_pct > max_pct
+        assign max_pct = v_pct
+      endif
+    endif
+  endfor
+  assign max_pct_str = max_pct | append: ''
+
+  assign cur_pct = 0
+  if cur.compare_at_price > cur.price
+    assign cur_pct = cur.compare_at_price | minus: cur.price | times: 100.0 | divided_by: cur.compare_at_price | round
+  endif
+
+  assign belt = nil
+  for v in p.variants
+    if v.option1 == cur.option1 and v.option2 == addon_value
+      assign belt = v
+      break
+    endif
+  endfor
+
+  assign form_id = 'otk-form-' | append: section.id
+  assign display_title = section.settings.display_title | default: p.title
+-%}
+
+{%- render 'otulka-assets' -%}
+<script src="{{ 'otulka.js' | asset_url }}" defer></script>
+
+<div class="otk" data-otk-hero>
+  {%- if section.settings.promo_text != blank -%}
+    <div class="otk-promo">{{ section.settings.promo_text | replace: '[rabat]', max_pct_str }}</div>
+  {%- endif -%}
+
+  <div class="otk-wrap otk-hero">
+    <div class="otk-hero__grid">
+      <div class="otk-gallery">
+        <div class="otk-gallery__stage">
+          <div class="otk-gallery__badges">
+            {%- if max_pct > 0 -%}
+              <span class="otk-badge">{{ section.settings.sale_badge | default: 'Wyprzedaż' }}</span>
+            {%- endif -%}
+            {%- if section.settings.badge_text != blank -%}
+              <span class="otk-badge otk-badge--dark">{{ section.settings.badge_text }}</span>
+            {%- endif -%}
+          </div>
+
+          <div class="otk-gallery__track" data-otk-track>
+            {%- for media in p.media -%}
+              {%- liquid
+                if forloop.first
+                  assign ld = 'eager'
+                  assign fp = 'high'
+                else
+                  assign ld = 'lazy'
+                  assign fp = 'auto'
+                endif
+                assign img_alt = media.alt | default: p.title
+              -%}
+              <div class="otk-gallery__slide" data-otk-slide data-media-id="{{ media.id }}">
+                {{
+                  media.preview_image
+                  | image_url: width: 1400
+                  | image_tag:
+                    widths: '420, 640, 828, 1080, 1400',
+                    sizes: '(min-width: 1200px) 620px, (min-width: 990px) 52vw, 100vw',
+                    loading: ld,
+                    fetchpriority: fp,
+                    alt: img_alt
+                }}
+              </div>
+            {%- else -%}
+              <div class="otk-gallery__slide" data-otk-slide>{{ 'product-1' | placeholder_svg_tag }}</div>
+            {%- endfor -%}
+          </div>
+
+          {%- if p.media.size > 1 -%}
+            <button type="button" class="otk-gallery__nav otk-gallery__nav--prev" data-otk-prev aria-label="Poprzednie zdjęcie">
+              {%- render 'otulka-icon', name: 'prev' -%}
+            </button>
+            <button type="button" class="otk-gallery__nav otk-gallery__nav--next" data-otk-next aria-label="Następne zdjęcie">
+              {%- render 'otulka-icon', name: 'next' -%}
+            </button>
+            <span class="otk-gallery__count" data-otk-count aria-hidden="true">1 / {{ p.media.size }}</span>
+          {%- endif -%}
+        </div>
+
+        {%- if p.media.size > 1 -%}
+          <div class="otk-thumbs" data-otk-thumbs>
+            {%- for media in p.media -%}
+              <button
+                type="button"
+                data-otk-thumb="{{ forloop.index0 }}"
+                aria-label="Pokaż zdjęcie {{ forloop.index }}"
+                {% if forloop.first %}
+                  aria-current="true"
+                {% endif %}
+              >
+                {{ media.preview_image | image_url: width: 160 | image_tag: loading: 'lazy', alt: '', width: 64, height: 64 }}
+              </button>
+            {%- endfor -%}
+          </div>
+        {%- endif -%}
+      </div>
+
+      <div class="otk-info" id="otk-buy">
+        {%- liquid
+          assign rating = p.metafields.reviews.rating.value
+          assign rating_count = p.metafields.reviews.rating_count.value | default: 0
+        -%}
+        {%- if rating != blank and rating_count > 0 -%}
+          <div class="otk-rating">
+            <span class="otk-stars" aria-hidden="true">★★★★★</span>
+            <span>{{ rating.rating | round: 1 }} / 5 · {{ rating_count }} opinii</span>
+          </div>
+        {%- endif -%}
+
+        <h1 class="otk-title">
+          {{- display_title -}}
+          {%- if section.settings.subtitle != blank -%}
+            <span class="otk-title__sub">{{ section.settings.subtitle }}</span>
+          {%- endif -%}
+        </h1>
+
+        {%- assign usp_blocks = section.blocks | where: 'type', 'usp' -%}
+        {%- if usp_blocks.size > 0 -%}
+          <ul class="otk-usps">
+            {%- for block in usp_blocks -%}
+              <li {{ block.shopify_attributes }}>
+                {%- render 'otulka-icon', name: 'check' -%}
+                <span>{{ block.settings.text }}</span>
+              </li>
+            {%- endfor -%}
+          </ul>
+        {%- endif -%}
+
+        <div class="otk-pricebox">
+          <span class="otk-price" data-otk-price>{{ cur.price | money }}</span>
+          <s class="otk-compare" data-otk-compare {% unless cur.compare_at_price > cur.price %}hidden{% endunless %}>
+            {%- if cur.compare_at_price > cur.price %}{{ cur.compare_at_price | money }}{% endif -%}
+          </s>
+          <span class="otk-save" data-otk-pct {% if cur_pct == 0 %}hidden{% endif %}>-{{ cur_pct }}%</span>
+        </div>
+        {%- if section.settings.omnibus_text != blank -%}
+          <p class="otk-omni">{{ section.settings.omnibus_text }}</p>
+        {%- endif -%}
+
+        {%- assign color_option = p.options_with_values[0] -%}
+        {%- if color_option -%}
+          <fieldset class="otk-field">
+            <legend class="otk-label">{{ color_option.name }}: <span data-otk-color-label>{{ cur.option1 }}</span></legend>
+            <div class="otk-swatches">
+              {%- for value in color_option.values -%}
+                {%- liquid
+                  assign vname = value.name | default: value
+                  assign sw = value.swatch.color
+                  if sw == blank
+                    case vname
+                      when 'Jasnoszary'
+                        assign sw = '#d9d6d2'
+                      when 'Grafitowy'
+                        assign sw = '#56555b'
+                      when 'Różowy'
+                        assign sw = '#f2c1cc'
+                      when 'Czekoladowy'
+                        assign sw = '#5b4034'
+                      when 'Beżowy'
+                        assign sw = '#e6d5bf'
+                      else
+                        assign sw = '#cfc6bd'
+                    endcase
+                  endif
+                -%}
+                <label class="otk-swatch{% if vname == cur.option1 %} is-selected{% endif %}" style="--sw: {{ sw }};" title="{{ vname | escape }}" data-otk-swatch="{{ vname | escape }}">
+                  <input
+                    type="radio"
+                    name="otk-color-{{ section.id }}"
+                    value="{{ vname | escape }}"
+                    data-otk-color
+                    {% if vname == cur.option1 %}
+                      checked
+                    {% endif %}
+                  >
+                  <span class="otk-vh">{{ vname }}</span>
+                </label>
+              {%- endfor -%}
+            </div>
+          </fieldset>
+        {%- endif -%}
+
+        <fieldset class="otk-field">
+          <legend class="otk-label">{{ section.settings.bundle_label }}: <span data-otk-bundle-label>{{ cur.option2 }}</span></legend>
+          <div class="otk-bundles">
+            {%- assign bundle_keys = 'a,b' | split: ',' -%}
+            {%- for key in bundle_keys -%}
+              {%- liquid
+                if key == 'a'
+                  assign b_value = bundle_a
+                  assign b_desc = section.settings.bundle_a_desc
+                  assign b_ribbon = section.settings.bundle_a_ribbon
+                else
+                  assign b_value = bundle_b
+                  assign b_desc = section.settings.bundle_b_desc
+                  assign b_ribbon = section.settings.bundle_b_ribbon
+                endif
+                assign bv = nil
+                for v in p.variants
+                  if v.option1 == cur.option1 and v.option2 == b_value
+                    assign bv = v
+                    break
+                  endif
+                endfor
+              -%}
+              {%- if bv -%}
+                <label class="otk-bundle{% if b_value == cur.option2 %} is-selected{% endif %}{% unless bv.available %} is-soldout{% endunless %}" data-otk-bundle="{{ b_value | escape }}">
+                  <input
+                    type="radio"
+                    name="otk-bundle-{{ section.id }}"
+                    value="{{ b_value | escape }}"
+                    data-otk-bundle-input
+                    {% if b_value == cur.option2 %}
+                      checked
+                    {% endif %}
+                  >
+                  <span class="otk-bundle__radio" aria-hidden="true"></span>
+                  <span class="otk-bundle__img">
+                    {%- assign b_media = bv.featured_media | default: p.featured_media -%}
+                    {%- if b_media -%}
+                      {{ b_media.preview_image | image_url: width: 120 | image_tag: loading: 'lazy', alt: '', width: 56, height: 56 }}
+                    {%- endif -%}
+                  </span>
+                  <span class="otk-bundle__main">
+                    <span class="otk-bundle__name">{{ b_value }}</span>
+                    {%- if b_desc != blank -%}
+                      <span class="otk-bundle__desc">{{ b_desc }}</span>
+                    {%- endif -%}
+                    <span class="otk-bundle__tag" data-otk-bsave {% unless bv.compare_at_price > bv.price %}hidden{% endunless %}>
+                      {%- if bv.compare_at_price > bv.price -%}
+                        Oszczędzasz {{ bv.compare_at_price | minus: bv.price | money }}
+                      {%- endif -%}
+                    </span>
+                  </span>
+                  <span class="otk-bundle__price">
+                    <span data-otk-bprice>{{ bv.price | money }}</span>
+                    <s data-otk-bcompare {% unless bv.compare_at_price > bv.price %}hidden{% endunless %}>
+                      {%- if bv.compare_at_price > bv.price %}{{ bv.compare_at_price | money }}{% endif -%}
+                    </s>
+                  </span>
+                  {%- if b_ribbon != blank -%}
+                    <span class="otk-bundle__ribbon">{{ b_ribbon }}</span>
+                  {%- endif -%}
+                </label>
+              {%- endif -%}
+            {%- endfor -%}
+          </div>
+        </fieldset>
+
+        {%- if section.settings.show_addon and belt -%}
+          <label class="otk-addon" data-otk-addon {% unless belt.available %}hidden{% endunless %}>
+            <input type="checkbox" data-otk-addon-cb>
+            <span class="otk-addon__txt">
+              <strong>{{ section.settings.addon_title }}</strong>
+              {%- if section.settings.addon_text != blank -%}
+                <span>{{ section.settings.addon_text }}</span>
+              {%- endif -%}
+            </span>
+            <span class="otk-addon__price">+<span data-otk-addon-price>{{ belt.price | money }}</span></span>
+          </label>
+        {%- endif -%}
+
+        <div class="otk-buy">
+          {%- if section.settings.urgency_text != blank and max_pct > 0 -%}
+            <p class="otk-note"><span class="otk-note__dot" aria-hidden="true"></span>{{ section.settings.urgency_text | replace: '[rabat]', max_pct_str }}</p>
+          {%- endif -%}
+
+          {%- form 'product', p, id: form_id, data-otk-form: '' -%}
+            <input type="hidden" name="id" value="{{ cur.id }}" data-otk-id>
+            <input type="hidden" name="quantity" value="1">
+            <button
+              type="submit"
+              class="otk-btn"
+              data-otk-submit
+              data-otk-main
+              data-label="{{ section.settings.cta_label | escape }}"
+              {% unless cur.available %}
+                disabled
+              {% endunless %}
+            >
+              <span data-otk-cta-label>
+                {%- if cur.available -%}{{ section.settings.cta_label }}{%- else -%}Wyprzedane{%- endif -%}
+              </span>
+              <span class="otk-btn__price" data-otk-cta-price {% unless cur.available %}hidden{% endunless %}>{{ cur.price | money }}</span>
+            </button>
+          {%- endform -%}
+        </div>
+
+        <div class="otk-trust">
+          <div>{% render 'otulka-icon', name: 'lock' %}<span>{{ section.settings.trust_1 }}</span></div>
+          <div>{% render 'otulka-icon', name: 'return' %}<span>{{ section.settings.trust_2 }}</span></div>
+          <div>{% render 'otulka-icon', name: 'truck' %}<span>{{ section.settings.trust_3 }}</span></div>
+        </div>
+
+        <div class="otk-pay" aria-label="Metody płatności">
+          {%- if shop.enabled_payment_types.size > 0 -%}
+            {%- for type in shop.enabled_payment_types -%}
+              {{ type | payment_type_svg_tag }}
+            {%- endfor -%}
+          {%- else -%}
+            {%- assign pay_pills = section.settings.payment_fallback | split: ',' -%}
+            {%- for pill in pay_pills -%}
+              <span class="otk-pay__pill">{{ pill | strip }}</span>
+            {%- endfor -%}
+          {%- endif -%}
+        </div>
+
+        {%- assign acc_blocks = section.blocks | where: 'type', 'accordion' -%}
+        {%- if acc_blocks.size > 0 -%}
+          <div class="otk-acc">
+            {%- for block in acc_blocks -%}
+              <details {{ block.shopify_attributes }}>
+                <summary>{{ block.settings.title }}</summary>
+                <div class="otk-acc__body">
+                  {%- if block.settings.use_description and p.description != blank -%}
+                    {{ p.description }}
+                  {%- else -%}
+                    {{ block.settings.content }}
+                  {%- endif -%}
+                </div>
+              </details>
+            {%- endfor -%}
+          </div>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+
+  <div class="otk otk-sticky" data-otk-sticky aria-hidden="true" inert>
+    <div class="otk-sticky__in">
+      {%- assign sticky_media = cur.featured_media | default: p.featured_media -%}
+      {%- if sticky_media -%}
+        {{ sticky_media.preview_image | image_url: width: 120 | image_tag: class: 'otk-sticky__img', loading: 'lazy', alt: '', width: 48, height: 48 }}
+      {%- endif -%}
+      <div class="otk-sticky__meta">
+        <span class="otk-sticky__name">{{ display_title }} · <span data-otk-sticky-variant>{{ cur.option1 }} / {{ cur.option2 }}</span></span>
+        <span class="otk-sticky__price">
+          <b data-otk-sticky-price>{{ cur.price | money }}</b>
+          <s data-otk-sticky-compare {% unless cur.compare_at_price > cur.price %}hidden{% endunless %}>
+            {%- if cur.compare_at_price > cur.price %}{{ cur.compare_at_price | money }}{% endif -%}
+          </s>
+        </span>
+      </div>
+      <button
+        type="button"
+        class="otk-btn"
+        data-otk-submit
+        data-label="{{ section.settings.sticky_label | escape }}"
+        {% unless cur.available %}
+          disabled
+        {% endunless %}
+      >
+        <span data-otk-cta-label>{{ section.settings.sticky_label }}</span>
+      </button>
+    </div>
+  </div>
+
+  <script type="application/json" data-otk-json>
+    {
+      "o1": {{ cur.option1 | json }},
+      "o2": {{ cur.option2 | json }},
+      "addon": {{ addon_value | json }},
+      "t": {
+        "add": {{ section.settings.cta_label | json }},
+        "soldout": "Wyprzedane",
+        "save": "Oszczędzasz",
+        "error": "Nie udało się dodać do koszyka. Spróbuj ponownie."
+      },
+      "variants": [
+        {%- for v in p.variants -%}
+          {%- liquid
+            assign v_pct = 0
+            if v.compare_at_price > v.price
+              assign v_pct = v.compare_at_price | minus: v.price | times: 100.0 | divided_by: v.compare_at_price | round
+            endif
+          -%}
+          {
+            "id": {{ v.id }},
+            "o1": {{ v.option1 | json }},
+            "o2": {{ v.option2 | json }},
+            "av": {{ v.available | json }},
+            "pf": {{ v.price | money | json }},
+            "cf": {% if v.compare_at_price > v.price %}{{ v.compare_at_price | money | json }}{% else %}""{% endif %},
+            "sf": {% if v.compare_at_price > v.price %}{{ v.compare_at_price | minus: v.price | money | json }}{% else %}""{% endif %},
+            "pct": {{ v_pct }},
+            "m": {% if v.featured_media %}{{ v.featured_media.id }}{% else %}0{% endif %},
+            "img": {% if v.featured_media %}{{ v.featured_media.preview_image | image_url: width: 120 | json }}{% else %}""{% endif %}
+          }{% unless forloop.last %},{% endunless %}
+        {%- endfor -%}
+      ]
+    }
+  </script>
+</div>
+
+{% schema %}
+{
+  "name": "Otulka – zakup",
+  "tag": "section",
+  "class": "otk-section otk-section--hero",
+  "enabled_on": { "templates": ["product"] },
+  "settings": [
+    { "type": "header", "content": "Nagłówek" },
+    { "type": "text", "id": "promo_text", "label": "Pasek promocji", "info": "[rabat] zamienia się na najwyższy rabat w %.", "default": "🔥 JESIENNA WYPRZEDAŻ – OSZCZĘDZASZ DO [rabat]%" },
+    { "type": "text", "id": "sale_badge", "label": "Plakietka wyprzedaży", "default": "Wyprzedaż" },
+    { "type": "text", "id": "badge_text", "label": "Plakietka na zdjęciu", "default": "Bestseller" },
+    { "type": "text", "id": "display_title", "label": "Tytuł (H1)", "info": "Puste = tytuł produktu.", "default": "Otulka" },
+    { "type": "text", "id": "subtitle", "label": "Podtytuł", "default": "Termofor do noszenia z pasem" },
+    { "type": "text", "id": "omnibus_text", "label": "Informacja o najniższej cenie z 30 dni", "info": "Wymóg dyrektywy Omnibus przy obniżkach. Puste = ukryte." },
+    { "type": "header", "content": "Zestawy" },
+    { "type": "text", "id": "bundle_label", "label": "Etykieta wyboru zestawu", "default": "Zestaw" },
+    { "type": "text", "id": "bundle_a_value", "label": "Zestaw 1 – wartość opcji", "default": "Przytulny" },
+    { "type": "text", "id": "bundle_a_desc", "label": "Zestaw 1 – opis", "default": "Termofor 1000 ml + pas + pluszowy pokrowiec" },
+    { "type": "text", "id": "bundle_a_ribbon", "label": "Zestaw 1 – wstążka", "default": "Bestseller" },
+    { "type": "text", "id": "bundle_b_value", "label": "Zestaw 2 – wartość opcji", "default": "Standard" },
+    { "type": "text", "id": "bundle_b_desc", "label": "Zestaw 2 – opis", "default": "Termofor 1000 ml + regulowany pas" },
+    { "type": "text", "id": "bundle_b_ribbon", "label": "Zestaw 2 – wstążka" },
+    { "type": "header", "content": "Dodatek" },
+    { "type": "checkbox", "id": "show_addon", "label": "Pokaż dodatek", "default": true },
+    { "type": "text", "id": "addon_value", "label": "Dodatek – wartość opcji", "default": "Sam pasek" },
+    { "type": "text", "id": "addon_title", "label": "Dodatek – tytuł", "default": "Dodaj drugi pasek" },
+    { "type": "text", "id": "addon_text", "label": "Dodatek – opis", "default": "Na zmianę albo w prezencie – w tym samym kolorze" },
+    { "type": "header", "content": "Zakup" },
+    { "type": "text", "id": "urgency_text", "label": "Tekst nad przyciskiem", "default": "Jesienna wyprzedaż trwa – oszczędzasz do [rabat]%" },
+    { "type": "text", "id": "cta_label", "label": "Przycisk", "default": "Dodaj do koszyka" },
+    { "type": "text", "id": "sticky_label", "label": "Przycisk w pasku na dole", "default": "Do koszyka" },
+    { "type": "text", "id": "trust_1", "label": "Zaufanie 1", "default": "Bezpieczne płatności" },
+    { "type": "text", "id": "trust_2", "label": "Zaufanie 2", "default": "14 dni na zwrot" },
+    { "type": "text", "id": "trust_3", "label": "Zaufanie 3", "default": "Wysyłka z numerem śledzenia" },
+    { "type": "text", "id": "payment_fallback", "label": "Metody płatności (zapas)", "info": "Pokazywane tylko, gdy sklep nie ma jeszcze włączonych płatności.", "default": "BLIK, Przelewy24, Visa, Mastercard, Apple Pay, Google Pay" }
+  ],
+  "blocks": [
+    {
+      "type": "usp",
+      "name": "Zaleta",
+      "settings": [
+        { "type": "text", "id": "text", "label": "Tekst", "default": "Ciepło dokładnie tam, gdzie boli" }
+      ]
+    },
+    {
+      "type": "accordion",
+      "name": "Rozwijana zakładka",
+      "settings": [
+        { "type": "text", "id": "title", "label": "Tytuł", "default": "Opis" },
+        { "type": "checkbox", "id": "use_description", "label": "Pokaż opis produktu", "default": false },
+        { "type": "richtext", "id": "content", "label": "Treść", "default": "<p>Treść zakładki.</p>" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Otulka – zakup",
+      "blocks": [
+        { "type": "usp" },
+        { "type": "accordion" }
+      ]
+    }
+  ]
+}
+{% endschema %}

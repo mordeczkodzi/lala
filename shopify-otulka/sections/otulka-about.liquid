@@ -1,0 +1,120 @@
+{% comment %}
+  Section contract.
+  "O nas" story, "Skontaktuj się z nami" (store contact form) and a final call to action.
+  Works on the product template (CTA scrolls to #otk-buy) and on pages (CTA links to the picked product).
+  @example
+  <!-- templates/product.otulka.json → "about"; templates/page.otulka.json → "about" -->
+{% endcomment %}
+{%- liquid
+  assign contact_email = section.settings.email | default: shop.email
+  assign form_id = 'otk-contact-' | append: section.id
+  if product
+    assign cta_url = '#otk-buy'
+  elsif section.settings.cta_product != blank
+    assign cta_url = section.settings.cta_product.url
+  else
+    assign cta_url = routes.all_products_collection_url
+  endif
+-%}
+{%- render 'otulka-assets' -%}
+<div class="otk otk-sec{% if section.settings.background == 'white' %} otk-sec--white{% elsif section.settings.background == 'peach' %} otk-sec--peach{% endif %}">
+  <div class="otk-wrap">
+    {%- if section.settings.show_about -%}
+      <div class="otk-about" id="o-nas">
+        <div class="otk-about__media">
+          {%- render 'otulka-media', image: section.settings.about_image, index: section.settings.about_media_index, sizes: '(min-width: 990px) 50vw, 100vw', alt: section.settings.about_heading -%}
+        </div>
+        <div class="otk-about__body">
+          {%- if section.settings.about_eyebrow != blank -%}<span class="otk-eyebrow">{{ section.settings.about_eyebrow }}</span>{%- endif -%}
+          <h2 class="otk-h2">{{ section.settings.about_heading }}</h2>
+          <div class="otk-rte">{{ section.settings.about_text }}</div>
+          {%- if section.settings.about_sign != blank -%}<p class="otk-about__sign">{{ section.settings.about_sign }}</p>{%- endif -%}
+        </div>
+      </div>
+    {%- endif -%}
+
+    {%- if section.settings.show_contact -%}
+      <div class="otk-contact" id="kontakt">
+        <div class="otk-contact__info">
+          {%- if section.settings.contact_eyebrow != blank -%}<span class="otk-eyebrow">{{ section.settings.contact_eyebrow }}</span>{%- endif -%}
+          <h2 class="otk-h2">{{ section.settings.contact_heading }}</h2>
+          {%- if section.settings.contact_text != blank -%}<p class="otk-lead">{{ section.settings.contact_text }}</p>{%- endif -%}
+          <ul class="otk-contact__list">
+            {%- if contact_email != blank -%}
+              <li>{% render 'otulka-icon', name: 'mail' %}<a href="mailto:{{ contact_email }}">{{ contact_email }}</a></li>
+            {%- endif -%}
+            {%- if section.settings.hours != blank -%}
+              <li>{% render 'otulka-icon', name: 'clock' %}<span>{{ section.settings.hours }}</span></li>
+            {%- endif -%}
+            <li>{% render 'otulka-icon', name: 'chat' %}<span>{{ section.settings.contact_note }}</span></li>
+          </ul>
+        </div>
+
+        {%- form 'contact', id: form_id, class: 'otk-form' -%}
+          {%- if form.posted_successfully? -%}
+            <p class="otk-alert otk-alert--ok" role="status">{{ section.settings.success_text }}</p>
+          {%- endif -%}
+          {%- if form.errors -%}
+            <div class="otk-alert otk-alert--err" role="alert">{{ form.errors | default_errors }}</div>
+          {%- endif -%}
+          <label>
+            Imię
+            <input type="text" name="contact[name]" autocomplete="name" value="{{ form.name }}">
+          </label>
+          <label>
+            E-mail
+            <input type="email" name="contact[email]" autocomplete="email" required value="{{ form.email }}">
+          </label>
+          <label>
+            Wiadomość
+            <textarea name="contact[body]" required>{{ form.body }}</textarea>
+          </label>
+          <button type="submit" class="otk-btn">Wyślij wiadomość</button>
+        {%- endform -%}
+      </div>
+    {%- endif -%}
+
+    {%- if section.settings.show_final -%}
+      <div class="otk-final">
+        <h2 class="otk-h2">{{ section.settings.final_heading }}</h2>
+        {%- if section.settings.final_text != blank -%}<p>{{ section.settings.final_text }}</p>{%- endif -%}
+        <a class="otk-btn otk-btn--light" href="{{ cta_url }}">{{ section.settings.final_button }}</a>
+      </div>
+    {%- endif -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Otulka – o nas i kontakt",
+  "tag": "section",
+  "class": "otk-section",
+  "settings": [
+    { "type": "select", "id": "background", "label": "Tło", "options": [ { "value": "cream", "label": "Kremowe" }, { "value": "white", "label": "Białe" }, { "value": "peach", "label": "Brzoskwiniowe" } ], "default": "white" },
+    { "type": "header", "content": "O nas" },
+    { "type": "checkbox", "id": "show_about", "label": "Pokaż „O nas”", "default": true },
+    { "type": "image_picker", "id": "about_image", "label": "Zdjęcie" },
+    { "type": "range", "id": "about_media_index", "label": "Albo zdjęcie produktu nr", "min": 1, "max": 20, "step": 1, "default": 3 },
+    { "type": "text", "id": "about_eyebrow", "label": "Nadtytuł", "default": "O nas" },
+    { "type": "text", "id": "about_heading", "label": "Nagłówek", "default": "Ciepło, które jest przy Tobie" },
+    { "type": "richtext", "id": "about_text", "label": "Tekst", "default": "<p>Otulka powstała z prostej potrzeby: ciepło w trudne dni powinno być przy Tobie.</p>" },
+    { "type": "text", "id": "about_sign", "label": "Podpis", "default": "Zespół Otulki" },
+    { "type": "header", "content": "Kontakt" },
+    { "type": "checkbox", "id": "show_contact", "label": "Pokaż kontakt", "default": true },
+    { "type": "text", "id": "contact_eyebrow", "label": "Nadtytuł", "default": "Kontakt" },
+    { "type": "text", "id": "contact_heading", "label": "Nagłówek", "default": "Skontaktuj się z nami" },
+    { "type": "textarea", "id": "contact_text", "label": "Tekst", "default": "Masz pytanie o rozmiar, zamówienie albo zwrot? Napisz do nas." },
+    { "type": "text", "id": "email", "label": "E-mail", "info": "Puste = e-mail sklepu." },
+    { "type": "text", "id": "hours", "label": "Godziny", "default": "Odpisujemy w dni robocze" },
+    { "type": "text", "id": "contact_note", "label": "Dopisek", "default": "Odpowiadamy na każdą wiadomość" },
+    { "type": "text", "id": "success_text", "label": "Komunikat po wysłaniu", "default": "Dziękujemy! Wiadomość dotarła – odezwiemy się najszybciej, jak to możliwe." },
+    { "type": "header", "content": "Wezwanie do zakupu" },
+    { "type": "checkbox", "id": "show_final", "label": "Pokaż wezwanie do zakupu", "default": true },
+    { "type": "text", "id": "final_heading", "label": "Nagłówek", "default": "Zasługujesz na lepsze dni" },
+    { "type": "textarea", "id": "final_text", "label": "Tekst" },
+    { "type": "text", "id": "final_button", "label": "Przycisk", "default": "Chcę swoją Otulkę" },
+    { "type": "product", "id": "cta_product", "label": "Produkt (dla stron)", "info": "Na stronie produktu przycisk przewija do koszyka." }
+  ],
+  "presets": [ { "name": "Otulka – o nas i kontakt" } ]
+}
+{% endschema %}

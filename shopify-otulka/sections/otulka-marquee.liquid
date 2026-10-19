@@ -1,0 +1,35 @@
+{% comment %}
+  Section contract.
+  Scrolling text band. Items are separated with "|" in one setting.
+  @example
+  <!-- templates/product.otulka.json → "marquee" -->
+{% endcomment %}
+{%- render 'otulka-assets' -%}
+{%- assign items = section.settings.items | split: '|' -%}
+<div class="otk otk-marquee{% if section.settings.style == 'dark' %} otk-marquee--dark{% endif %}" style="--otk-marquee-speed: {{ section.settings.speed }}s;">
+  <div class="otk-marquee__track">
+    {%- for round in (1..2) -%}
+      <div class="otk-marquee__group"{% if forloop.last %} aria-hidden="true"{% endif %}>
+        {%- for pass in (1..2) -%}
+          {%- for item in items -%}
+            <span>{{ item | strip }}</span>
+          {%- endfor -%}
+        {%- endfor -%}
+      </div>
+    {%- endfor -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Otulka – pasek tekstu",
+  "tag": "section",
+  "class": "otk-section",
+  "settings": [
+    { "type": "textarea", "id": "items", "label": "Teksty (oddzielone |)", "default": "Ciepło tam, gdzie boli | Wolne ręce | Dyskretny pod bluzą | Bez prądu i kabli | Mięciutki plusz" },
+    { "type": "select", "id": "style", "label": "Kolor", "options": [ { "value": "accent", "label": "Pomarańczowy" }, { "value": "dark", "label": "Ciemny" } ], "default": "accent" },
+    { "type": "range", "id": "speed", "label": "Prędkość (s na pętlę)", "min": 10, "max": 60, "step": 2, "unit": "s", "default": 32 }
+  ],
+  "presets": [ { "name": "Otulka – pasek tekstu" } ]
+}
+{% endschema %}

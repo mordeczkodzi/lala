@@ -1,0 +1,57 @@
+{% comment %}
+  Section contract.
+  Heading plus image cards (horizontal swipe on phones, 4 columns on desktop).
+  Card images fall back to product.media by index.
+  @example
+  <!-- templates/product.otulka.json → "relief" ("Przynosimy ulgę") -->
+{% endcomment %}
+{%- render 'otulka-assets' -%}
+<div class="otk otk-sec{% if section.settings.background == 'white' %} otk-sec--white{% elsif section.settings.background == 'peach' %} otk-sec--peach{% endif %}">
+  <div class="otk-wrap">
+    <div class="otk-head">
+      {%- if section.settings.eyebrow != blank -%}<span class="otk-eyebrow">{{ section.settings.eyebrow }}</span>{%- endif -%}
+      <h2 class="otk-h2">{{ section.settings.heading }}</h2>
+      {%- if section.settings.text != blank -%}<p class="otk-lead">{{ section.settings.text }}</p>{%- endif -%}
+    </div>
+    <div class="otk-cards">
+      {%- for block in section.blocks -%}
+        <article class="otk-card" {{ block.shopify_attributes }}>
+          <div class="otk-card__img">
+            {%- render 'otulka-media', image: block.settings.image, index: block.settings.media_index, sizes: '(min-width: 750px) 25vw, 74vw', alt: block.settings.title -%}
+          </div>
+          <div class="otk-card__body">
+            <h3 class="otk-card__title">{{ block.settings.title }}</h3>
+            {%- if block.settings.text != blank -%}<p class="otk-card__text">{{ block.settings.text }}</p>{%- endif -%}
+          </div>
+        </article>
+      {%- endfor -%}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Otulka – karty",
+  "tag": "section",
+  "class": "otk-section",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Nadtytuł" },
+    { "type": "text", "id": "heading", "label": "Nagłówek", "default": "Przynosimy ulgę." },
+    { "type": "textarea", "id": "text", "label": "Tekst" },
+    { "type": "select", "id": "background", "label": "Tło", "options": [ { "value": "cream", "label": "Kremowe" }, { "value": "white", "label": "Białe" }, { "value": "peach", "label": "Brzoskwiniowe" } ], "default": "cream" }
+  ],
+  "blocks": [
+    {
+      "type": "card",
+      "name": "Karta",
+      "settings": [
+        { "type": "image_picker", "id": "image", "label": "Zdjęcie" },
+        { "type": "range", "id": "media_index", "label": "Albo zdjęcie produktu nr", "min": 1, "max": 20, "step": 1, "default": 1 },
+        { "type": "text", "id": "title", "label": "Tytuł", "default": "Szybko i naturalnie" },
+        { "type": "textarea", "id": "text", "label": "Tekst" }
+      ]
+    }
+  ],
+  "presets": [ { "name": "Otulka – karty", "blocks": [ { "type": "card" }, { "type": "card" }, { "type": "card" }, { "type": "card" } ] } ]
+}
+{% endschema %}

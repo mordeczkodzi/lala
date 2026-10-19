@@ -1,0 +1,92 @@
+{% doc %}
+  "Klienci też kochali" card inside the cart drawer: offers the add-on variant (option2 "Sam pasek")
+  of the Otulka product, preselecting the colour already in the cart. Hidden when the add-on is in the cart.
+  Click handling lives in assets/otulka-cart.js (delegated, survives drawer re-renders).
+
+  @example
+  {% render 'otulka-cart-upsell' %}
+{% enddoc %}
+{%- liquid
+  assign up_product = all_products['otulka-termofor-z-pasem']
+  assign up_value = 'Sam pasek'
+  assign up_show = false
+  assign up_color = ''
+
+  if up_product != blank and up_product.available and cart.item_count > 0
+    assign up_show = true
+    for item in cart.items
+      if item.product_id == up_product.id
+        if item.variant.option2 == up_value
+          assign up_show = false
+        elsif up_color == ''
+          assign up_color = item.variant.option1
+        endif
+      endif
+    endfor
+  endif
+
+  if up_show
+    assign up_variants = up_product.variants | where: 'option2', up_value | where: 'available', true
+    if up_variants.size == 0
+      assign up_show = false
+    else
+      assign up_selected = up_variants.first
+      for v in up_variants
+        if v.option1 == up_color
+          assign up_selected = v
+        endif
+      endfor
+    endif
+  endif
+-%}
+{%- if up_show -%}
+  <div class="otk-up" data-otk-up>
+    <style>
+      .otk-up { margin: 4px 0 20px; padding: 14px; border-radius: 16px; background: #fff3ea; color: #3b2a21; }
+      .otk-up__title { margin: 0 0 10px; font-size: 12px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; text-align: center; }
+      .otk-up__card { display: grid; grid-template-columns: 64px 1fr; gap: 12px; align-items: center; }
+      .otk-up__card img { width: 64px; height: 64px; border-radius: 12px; object-fit: cover; background: #fff; }
+      .otk-up__name { margin: 0; font-size: 14px; font-weight: 700; line-height: 1.3; }
+      .otk-up__price { margin: 2px 0 8px; font-size: 14px; }
+      .otk-up__price s { margin-left: 4px; opacity: .55; }
+      .otk-up__row { display: flex; gap: 8px; }
+      .otk-up__row select { flex: 1; min-width: 0; height: 38px; padding: 0 10px; border: 1px solid rgb(59 42 33 / .2); border-radius: 10px; background: #fff; color: inherit; font: inherit; font-size: 13px; }
+      .otk-up__btn { flex: 0 0 auto; height: 38px; padding: 0 14px; border: 0; border-radius: 999px; background: #f2542d; color: #fff; font: inherit; font-size: 13px; font-weight: 700; cursor: pointer; }
+      .otk-up__btn[disabled] { opacity: .6; cursor: progress; }
+    </style>
+    <p class="otk-up__title">Klienci też kochali</p>
+    <div class="otk-up__card">
+      {%- assign up_media = up_selected.featured_media | default: up_product.featured_media -%}
+      {%- if up_media -%}
+        {{ up_media.preview_image | image_url: width: 160 | image_tag: loading: 'lazy', alt: '', width: 64, height: 64 }}
+      {%- endif -%}
+      <div>
+        <p class="otk-up__name">Dodatkowy pasek {{ up_product.vendor }}</p>
+        <p class="otk-up__price">
+          <span>{{ up_selected.price | money }}</span>
+          {%- if up_selected.compare_at_price > up_selected.price -%}
+            <s>{{ up_selected.compare_at_price | money }}</s>
+          {%- endif -%}
+        </p>
+        <div class="otk-up__row">
+          <select data-otk-up-select aria-label="Kolor paska">
+            {%- for v in up_variants -%}
+              <option
+                value="{{ v.id }}"
+                {% if v.featured_media %}
+                  data-img="{{ v.featured_media.preview_image | image_url: width: 160 }}"
+                {% endif %}
+                {% if v.id == up_selected.id %}
+                  selected
+                {% endif %}
+              >
+                {{- v.option1 -}}
+              </option>
+            {%- endfor -%}
+          </select>
+          <button type="button" class="otk-up__btn" data-otk-up-add>+ Dodaj</button>
+        </div>
+      </div>
+    </div>
+  </div>
+{%- endif -%}

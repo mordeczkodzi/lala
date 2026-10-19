@@ -1,0 +1,68 @@
+{% comment %}
+  Section contract.
+  Customer reviews with photos. Hidden on the storefront until "Pokaż opinie" is enabled,
+  so placeholder content never goes live – fill blocks with real customer reviews first.
+  @example
+  <!-- templates/product.otulka.json → "reviews" -->
+{% endcomment %}
+{%- if section.settings.enabled or request.design_mode -%}
+  {%- render 'otulka-assets' -%}
+  <div class="otk otk-sec{% if section.settings.background == 'white' %} otk-sec--white{% elsif section.settings.background == 'peach' %} otk-sec--peach{% endif %}">
+    <div class="otk-wrap">
+      {%- unless section.settings.enabled -%}
+        <p class="otk-editor-note">Ta sekcja jest ukryta w sklepie. Wpisz prawdziwe opinie klientek (z ich zgodą na zdjęcia), a potem zaznacz „Pokaż opinie”.</p>
+      {%- endunless -%}
+      <div class="otk-head">
+        <h2 class="otk-h2">{{ section.settings.heading }}</h2>
+        {%- if section.settings.text != blank -%}<p class="otk-lead">{{ section.settings.text }}</p>{%- endif -%}
+      </div>
+      <div class="otk-reviews">
+        {%- for block in section.blocks -%}
+          <article class="otk-review" {{ block.shopify_attributes }}>
+            {%- if block.settings.image != blank -%}
+              <div class="otk-review__img">
+                {{ block.settings.image | image_url: width: 800 | image_tag: widths: '320, 480, 640, 800', sizes: '(min-width: 750px) 33vw, 82vw', loading: 'lazy', alt: block.settings.author }}
+              </div>
+            {%- endif -%}
+            <div class="otk-review__body">
+              <span class="otk-stars" aria-label="Ocena {{ block.settings.rating }} na 5">
+                {%- for i in (1..block.settings.rating) -%}★{%- endfor -%}
+              </span>
+              <h3 class="otk-review__title">{{ block.settings.title }}</h3>
+              <p class="otk-review__text">{{ block.settings.text }}</p>
+              <p class="otk-review__author">{{ block.settings.author }}</p>
+            </div>
+          </article>
+        {%- endfor -%}
+      </div>
+    </div>
+  </div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Otulka – opinie",
+  "tag": "section",
+  "class": "otk-section",
+  "settings": [
+    { "type": "checkbox", "id": "enabled", "label": "Pokaż opinie w sklepie", "info": "Włącz dopiero po wpisaniu prawdziwych opinii.", "default": false },
+    { "type": "text", "id": "heading", "label": "Nagłówek", "default": "Opinie, które dostajemy" },
+    { "type": "textarea", "id": "text", "label": "Tekst" },
+    { "type": "select", "id": "background", "label": "Tło", "options": [ { "value": "cream", "label": "Kremowe" }, { "value": "white", "label": "Białe" }, { "value": "peach", "label": "Brzoskwiniowe" } ], "default": "white" }
+  ],
+  "blocks": [
+    {
+      "type": "review",
+      "name": "Opinia",
+      "settings": [
+        { "type": "image_picker", "id": "image", "label": "Zdjęcie klientki" },
+        { "type": "range", "id": "rating", "label": "Ocena", "min": 1, "max": 5, "step": 1, "default": 5 },
+        { "type": "text", "id": "title", "label": "Tytuł", "default": "Tytuł opinii" },
+        { "type": "textarea", "id": "text", "label": "Treść", "default": "Wklej tutaj prawdziwą opinię klientki." },
+        { "type": "text", "id": "author", "label": "Podpis", "default": "Imię, miasto" }
+      ]
+    }
+  ],
+  "presets": [ { "name": "Otulka – opinie", "blocks": [ { "type": "review" }, { "type": "review" }, { "type": "review" } ] } ]
+}
+{% endschema %}
