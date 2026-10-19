@@ -209,6 +209,8 @@
       setText('[data-otk-pct]', v.pct ? '-' + v.pct + '%' : '');
       toggle('[data-otk-pct]', v.pct > 0);
 
+      showCountryNote(v);
+
       var buttons = qsa('[data-otk-submit]', root).concat(sticky ? qsa('[data-otk-submit]', sticky) : []);
       buttons.forEach(function (b) {
         b.disabled = !v.av;
@@ -268,6 +270,32 @@
         render(false);
       });
     });
+
+    // Shopify blokuje zakup poza krajami rynku (Polska) – wtedy mówimy, jaki kraj widzi sklep, zamiast samego „Wyprzedane”.
+    function showCountryNote(v) {
+      var country = window.Shopify && window.Shopify.country;
+      var markets = data.market_countries || ['PL'];
+      var show = Boolean(country) && !v.av && markets.indexOf(country) === -1;
+      var note = qs('[data-otk-country-note]', root);
+      if (!show) {
+        if (note) note.hidden = true;
+        return;
+      }
+      var name = country;
+      try {
+        name = new Intl.DisplayNames(['pl'], { type: 'region' }).of(country) || country;
+      } catch (e) {
+        /* stara przeglądarka – zostaje kod kraju */
+      }
+      if (!note) {
+        note = document.createElement('p');
+        note.className = 'otk-error';
+        note.setAttribute('data-otk-country-note', '');
+        (qs('.otk-buy', root) || root).appendChild(note);
+      }
+      note.textContent = 'Wysyłamy tylko do Polski – sklep widzi Twój kraj jako: ' + name + '.';
+      note.hidden = false;
+    }
 
     // Błąd pokazujemy pod przyciskiem (po polsku) zamiast okienka przeglądarki.
     function showError(btn, error) {
