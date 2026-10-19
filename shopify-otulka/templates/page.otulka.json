@@ -3,7 +3,7 @@
     "about": {
       "type": "otulka-about",
       "settings": {
-        "background": "cream",
+        "background": "white",
         "show_about": true,
         "about_media_index": 1,
         "about_eyebrow": "O nas",

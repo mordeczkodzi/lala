@@ -1,0 +1,290 @@
+/* Otulka – baner strony głównej, sekcja „przed i po” i stopka z godzinami. */
+/* ---------- Baner strony głównej ---------- */
+.otk-banner {
+  padding-block: 0 44px;
+  background: var(--otk-cream-2);
+}
+
+@media (min-width: 750px) {
+  .otk-banner {
+    padding-block: 40px 72px;
+  }
+}
+
+.otk-banner__grid {
+  display: grid;
+  gap: 24px;
+}
+
+@media (min-width: 990px) {
+  .otk-banner__grid {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+    align-items: center;
+    gap: 64px;
+  }
+}
+
+.otk-banner__media {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  margin-inline: -16px;
+  overflow: hidden;
+  background: var(--otk-paper);
+}
+
+@media (min-width: 750px) {
+  .otk-banner__media {
+    margin-inline: 0;
+    border-radius: 28px;
+  }
+}
+
+@media (min-width: 990px) {
+  .otk-banner__media {
+    order: 2;
+    aspect-ratio: 4 / 5;
+  }
+}
+
+.otk-banner__media img,
+.otk-banner__media svg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.otk-banner__badge {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+}
+
+.otk-banner__body {
+  display: grid;
+  gap: 16px;
+}
+
+.otk-banner__title {
+  font-size: clamp(34px, 9.4vw, 60px);
+  line-height: 1.05;
+}
+
+.otk-banner__actions {
+  display: grid;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+@media (min-width: 750px) {
+  .otk-banner__actions {
+    grid-auto-flow: column;
+    justify-content: start;
+  }
+
+  .otk-banner__actions .otk-btn {
+    width: auto;
+  }
+}
+
+.otk-btn--ghost {
+  background: transparent;
+  color: var(--otk-ink);
+  box-shadow: inset 0 0 0 2px var(--otk-ink);
+}
+
+.otk-btn--ghost:hover {
+  background: var(--otk-ink);
+  color: #fff;
+}
+
+.otk-banner__trust {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+  font-size: 13px;
+  color: var(--otk-muted);
+}
+
+.otk-banner__trust span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.otk-banner__trust svg {
+  width: 18px;
+  height: 18px;
+  color: var(--otk-accent);
+}
+
+/* ---------- Przed i po ---------- */
+.otk-split {
+  display: grid;
+  gap: 14px;
+}
+
+@media (min-width: 750px) {
+  .otk-split {
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+}
+
+.otk-split__col {
+  display: grid;
+  align-content: start;
+  gap: 16px;
+  padding: 24px 20px;
+  border-radius: var(--otk-radius);
+}
+
+@media (min-width: 750px) {
+  .otk-split__col {
+    padding: 32px 28px;
+  }
+}
+
+.otk-split__col--before {
+  border: 1.5px solid var(--otk-line);
+  background: var(--otk-paper);
+}
+
+.otk-split__col--after {
+  background: var(--otk-accent);
+  color: #fff;
+  box-shadow: var(--otk-shadow);
+}
+
+.otk .otk-split__col h3 {
+  font-size: 23px;
+}
+
+.otk .otk-split__col--after h3 {
+  color: #fff;
+}
+
+.otk-split__col ul {
+  display: grid;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.otk-split__col li {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  font-size: 15px;
+  line-height: 1.45;
+}
+
+.otk-split__col--before li {
+  color: var(--otk-muted);
+}
+
+.otk-split__ico {
+  display: grid;
+  flex: 0 0 26px;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.otk-split__col--before .otk-split__ico {
+  background: rgb(59 42 33 / 0.08);
+  color: rgb(59 42 33 / 0.45);
+}
+
+.otk-split__col--after .otk-split__ico {
+  background: #fff;
+  color: var(--otk-accent);
+}
+
+/* ---------- Stopka: godziny i kontakt ---------- */
+.otk-foot {
+  padding-block: 44px 12px;
+  background: var(--otk-ink);
+  color: #f4e9e1;
+}
+
+.otk-foot__grid {
+  display: grid;
+  gap: 32px;
+}
+
+@media (min-width: 750px) {
+  .otk-foot__grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 40px;
+  }
+}
+
+.otk-foot__col {
+  display: grid;
+  align-content: start;
+  gap: 10px;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.otk .otk-foot__title {
+  margin-bottom: 4px;
+  font-family: var(--otk-serif);
+  font-size: 21px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.otk-foot__hours,
+.otk-foot__links {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.otk-foot__hours li {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgb(255 255 255 / 0.14);
+}
+
+.otk-foot__hours b {
+  color: #fff;
+  white-space: nowrap;
+}
+
+.otk-foot__line {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.otk-foot__line svg {
+  flex: 0 0 20px;
+  width: 20px;
+  height: 20px;
+  color: #ffb59f;
+}
+
+.otk-foot__note {
+  font-size: 13px;
+  opacity: 0.75;
+}
+
+.otk-foot a:not(.otk-btn) {
+  color: #fff;
+  text-decoration: none;
+  overflow-wrap: anywhere;
+}
+
+.otk-foot a:not(.otk-btn):hover {
+  text-decoration: underline;
+}

@@ -1,0 +1,70 @@
+{% comment %}
+  Section contract.
+  Footer band: opening hours ("Kiedy pracujemy"), contact details and a short link list.
+  Hours are one line each in "Dzień | godziny" format.
+  @example
+  <!-- sections/footer-group.json → "otulka_info" -->
+{% endcomment %}
+{%- liquid
+  assign contact_email = section.settings.email | default: shop.email
+  assign hour_lines = section.settings.hours | newline_to_br | split: '<br />'
+-%}
+{%- render 'otulka-assets' -%}
+<div class="otk otk-foot">
+  <div class="otk-wrap otk-foot__grid">
+    <div class="otk-foot__col">
+      <p class="otk-foot__title">{{ section.settings.hours_title }}</p>
+      <ul class="otk-foot__hours">
+        {%- for line in hour_lines -%}
+          {%- assign line_text = line | strip -%}
+          {%- if line_text != blank -%}
+            {%- assign parts = line_text | split: '|' -%}
+            <li><span>{{ parts[0] | strip }}</span><b>{{ parts[1] | strip }}</b></li>
+          {%- endif -%}
+        {%- endfor -%}
+      </ul>
+      {%- if section.settings.hours_note != blank -%}<p class="otk-foot__note">{{ section.settings.hours_note }}</p>{%- endif -%}
+    </div>
+    <div class="otk-foot__col">
+      <p class="otk-foot__title">{{ section.settings.contact_title }}</p>
+      {%- if contact_email != blank -%}
+        <p class="otk-foot__line">{% render 'otulka-icon', name: 'mail' %}<a href="mailto:{{ contact_email }}">{{ contact_email }}</a></p>
+      {%- endif -%}
+      <p class="otk-foot__line">{% render 'otulka-icon', name: 'chat' %}<a href="{{ section.settings.contact_link | default: '/pages/contact' }}">{{ section.settings.contact_link_label }}</a></p>
+      {%- if section.settings.contact_note != blank -%}<p class="otk-foot__note">{{ section.settings.contact_note }}</p>{%- endif -%}
+    </div>
+    {%- assign foot_menu = section.settings.menu -%}
+    {%- if foot_menu != blank and foot_menu.links.size > 0 -%}
+      <div class="otk-foot__col">
+        <p class="otk-foot__title">{{ section.settings.menu_title }}</p>
+        <ul class="otk-foot__links">
+          {%- for link in foot_menu.links -%}
+            <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+          {%- endfor -%}
+        </ul>
+      </div>
+    {%- endif -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Otulka – godziny pracy",
+  "tag": "section",
+  "class": "otk-section",
+  "enabled_on": { "groups": ["footer"] },
+  "settings": [
+    { "type": "text", "id": "hours_title", "label": "Tytuł godzin", "default": "Kiedy pracujemy" },
+    { "type": "textarea", "id": "hours", "label": "Godziny (Dzień | godziny, jeden w linii)", "default": "Poniedziałek – piątek | 9:00 – 17:00\nSobota – niedziela | nieczynne" },
+    { "type": "text", "id": "hours_note", "label": "Dopisek pod godzinami", "default": "Wiadomości z weekendu odbieramy w poniedziałek." },
+    { "type": "text", "id": "contact_title", "label": "Tytuł kontaktu", "default": "Kontakt" },
+    { "type": "text", "id": "email", "label": "E-mail", "info": "Puste = e-mail sklepu." },
+    { "type": "text", "id": "contact_link_label", "label": "Link do formularza – tekst", "default": "Formularz kontaktowy" },
+    { "type": "text", "id": "contact_link", "label": "Link do formularza", "default": "/pages/contact" },
+    { "type": "text", "id": "contact_note", "label": "Dopisek pod kontaktem", "default": "Odpowiadamy na każdą wiadomość." },
+    { "type": "text", "id": "menu_title", "label": "Tytuł linków", "default": "Informacje" },
+    { "type": "link_list", "id": "menu", "label": "Menu z linkami", "default": "footer" }
+  ],
+  "presets": [ { "name": "Otulka – godziny pracy" } ]
+}
+{% endschema %}

@@ -1,28 +1,42 @@
 {% doc %}
-  Renders a merchant-picked image, falling back to the Nth product image, then to a placeholder.
+  Renders a merchant-picked image, falling back to the Nth image of the current product
+  (or of the Otulka product outside product pages), then to a placeholder.
 
   @param {object} [image] - Image from an image_picker setting
   @param {number} [index] - 1-based index into product.media used when no image is picked
   @param {string} [sizes] - The sizes attribute for the responsive image
   @param {string} [alt] - Fallback alt text
+  @param {boolean} [eager] - Load immediately with high priority (above-the-fold images)
 
   @example
   {% render 'otulka-media', image: block.settings.image, index: 2, sizes: '(min-width: 750px) 50vw, 100vw' %}
 {% enddoc %}
 {%- liquid
   assign src = image
-  if src == blank and product and index
-    assign media_index = index | minus: 1
-    assign src = product.media[media_index].preview_image
+  if src == blank and index
+    assign media_product = product
+    if media_product == blank
+      assign media_product = all_products['otulka-termofor-z-pasem']
+    endif
+    if media_product != blank
+      assign media_index = index | minus: 1
+      assign src = media_product.media[media_index].preview_image
+    endif
   endif
   assign sizes = sizes | default: '100vw'
   assign img_alt = alt | default: ''
   if src.alt != blank
     assign img_alt = src.alt
   endif
+  assign img_loading = 'lazy'
+  assign img_priority = 'auto'
+  if eager
+    assign img_loading = 'eager'
+    assign img_priority = 'high'
+  endif
 -%}
 {%- if src -%}
-  {{ src | image_url: width: 1200 | image_tag: widths: '360, 540, 720, 960, 1200', sizes: sizes, loading: 'lazy', alt: img_alt }}
+  {{ src | image_url: width: 1400 | image_tag: widths: '360, 540, 720, 960, 1200, 1400', sizes: sizes, loading: img_loading, fetchpriority: img_priority, alt: img_alt }}
 {%- else -%}
   {{ 'lifestyle-1' | placeholder_svg_tag }}
 {%- endif -%}

@@ -1,0 +1,78 @@
+{% comment %}
+  Section contract.
+  Home page hero: big product photo, headline (H1), short pitch, checklist, two buttons and a trust line.
+  The primary button scrolls to the buy box (#otk-buy) on the same page by default.
+  @example
+  <!-- templates/index.json → "banner" -->
+{% endcomment %}
+{%- render 'otulka-assets' -%}
+<div class="otk otk-banner">
+  <div class="otk-wrap otk-banner__grid">
+    <div class="otk-banner__media">
+      {%- render 'otulka-media', image: section.settings.image, index: section.settings.media_index, sizes: '(min-width: 990px) 50vw, 100vw', alt: section.settings.heading, eager: true -%}
+      {%- if section.settings.badge != blank -%}
+        <span class="otk-badge otk-banner__badge">{{ section.settings.badge }}</span>
+      {%- endif -%}
+    </div>
+    <div class="otk-banner__body">
+      {%- if section.settings.eyebrow != blank -%}<span class="otk-eyebrow">{{ section.settings.eyebrow }}</span>{%- endif -%}
+      {%- if section.settings.as_h1 -%}
+        <h1 class="otk-banner__title">{{ section.settings.heading }}</h1>
+      {%- else -%}
+        <h2 class="otk-banner__title">{{ section.settings.heading }}</h2>
+      {%- endif -%}
+      {%- if section.settings.text != blank -%}<p class="otk-lead">{{ section.settings.text }}</p>{%- endif -%}
+      {%- if section.settings.points != blank -%}
+        {%- assign points = section.settings.points | newline_to_br | split: '<br />' -%}
+        <ul class="otk-checks">
+          {%- for point in points -%}
+            {%- assign point_text = point | strip -%}
+            {%- if point_text != blank -%}
+              <li>{% render 'otulka-icon', name: 'check' %}<span>{{ point_text }}</span></li>
+            {%- endif -%}
+          {%- endfor -%}
+        </ul>
+      {%- endif -%}
+      <div class="otk-banner__actions">
+        {%- if section.settings.button_label != blank -%}
+          <a class="otk-btn" href="{{ section.settings.button_link | default: '#otk-buy' }}">{{ section.settings.button_label }}</a>
+        {%- endif -%}
+        {%- if section.settings.button2_label != blank -%}
+          <a class="otk-btn otk-btn--ghost" href="{{ section.settings.button2_link | default: '#faq' }}">{{ section.settings.button2_label }}</a>
+        {%- endif -%}
+      </div>
+      {%- if section.settings.trust != blank -%}
+        {%- assign trust_items = section.settings.trust | split: '|' -%}
+        <p class="otk-banner__trust">
+          {%- for item in trust_items -%}
+            <span>{% render 'otulka-icon', name: 'shield' %}{{ item | strip }}</span>
+          {%- endfor -%}
+        </p>
+      {%- endif -%}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Otulka – baner",
+  "tag": "section",
+  "class": "otk-section",
+  "settings": [
+    { "type": "image_picker", "id": "image", "label": "Zdjęcie" },
+    { "type": "range", "id": "media_index", "label": "Albo zdjęcie produktu nr", "min": 1, "max": 20, "step": 1, "default": 1 },
+    { "type": "text", "id": "badge", "label": "Plakietka na zdjęciu", "default": "Bestseller" },
+    { "type": "text", "id": "eyebrow", "label": "Nadtytuł", "default": "Termofor do noszenia" },
+    { "type": "checkbox", "id": "as_h1", "label": "Nagłówek jako H1", "info": "Zostaw włączone na stronie głównej.", "default": true },
+    { "type": "text", "id": "heading", "label": "Nagłówek", "default": "Ciepło, które idzie z Tobą" },
+    { "type": "textarea", "id": "text", "label": "Tekst" },
+    { "type": "textarea", "id": "points", "label": "Punkty (jeden w linii)" },
+    { "type": "text", "id": "button_label", "label": "Przycisk 1", "default": "Kup teraz" },
+    { "type": "text", "id": "button_link", "label": "Przycisk 1 – link", "info": "Np. #otk-buy (koszyk na tej stronie) albo /products/…", "default": "#otk-buy" },
+    { "type": "text", "id": "button2_label", "label": "Przycisk 2" },
+    { "type": "text", "id": "button2_link", "label": "Przycisk 2 – link", "default": "#faq" },
+    { "type": "text", "id": "trust", "label": "Pasek zaufania (oddzielone |)", "default": "14 dni na zwrot | Bezpieczne płatności | Wysyłka z numerem śledzenia" }
+  ],
+  "presets": [ { "name": "Otulka – baner" } ]
+}
+{% endschema %}

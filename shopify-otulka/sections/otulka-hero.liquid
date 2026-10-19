@@ -2,11 +2,19 @@
   Section contract.
   Otulka buy box: gallery bound to product.media, Kolor × Zestaw picker (option1 × option2),
   optional add-on variant (e.g. "Sam pasek"), real product form, sticky add-to-cart bar.
+  Outside a product page (e.g. the home page) it sells the product picked in the "product" setting.
   @example
-  <!-- templates/product.otulka.json → section key "hero" -->
+  <!-- templates/product.otulka.json → section key "hero"; templates/index.json → "shop" -->
 {% endcomment %}
 {%- liquid
   assign p = product
+  if p == blank
+    assign p = section.settings.product
+  endif
+  assign title_tag = 'h2'
+  if template.name == 'product'
+    assign title_tag = 'h1'
+  endif
   assign bundle_a = section.settings.bundle_a_value
   assign bundle_b = section.settings.bundle_b_value
   assign addon_value = section.settings.addon_value
@@ -49,6 +57,11 @@
   assign display_title = section.settings.display_title | default: p.title
 -%}
 
+{%- if p == blank -%}
+  {%- if request.design_mode -%}
+    <p style="padding: 40px 16px; text-align: center;">Wybierz produkt w ustawieniach sekcji „Otulka – zakup”.</p>
+  {%- endif -%}
+{%- else -%}
 {%- render 'otulka-assets' -%}
 <script src="{{ 'otulka.js' | asset_url }}" defer></script>
 
@@ -140,12 +153,12 @@
           </div>
         {%- endif -%}
 
-        <h1 class="otk-title">
+        <{{ title_tag }} class="otk-title">
           {{- display_title -}}
           {%- if section.settings.subtitle != blank -%}
             <span class="otk-title__sub">{{ section.settings.subtitle }}</span>
           {%- endif -%}
-        </h1>
+        </{{ title_tag }}>
 
         {%- assign usp_blocks = section.blocks | where: 'type', 'usp' -%}
         {%- if usp_blocks.size > 0 -%}
@@ -424,14 +437,16 @@
     }
   </script>
 </div>
+{%- endif -%}
 
 {% schema %}
 {
   "name": "Otulka – zakup",
   "tag": "section",
   "class": "otk-section otk-section--hero",
-  "enabled_on": { "templates": ["product"] },
+  "enabled_on": { "templates": ["product", "index"] },
   "settings": [
+    { "type": "product", "id": "product", "label": "Produkt", "info": "Używany poza stroną produktu, np. na stronie głównej." },
     { "type": "header", "content": "Nagłówek" },
     { "type": "text", "id": "promo_text", "label": "Pasek promocji", "info": "[rabat] zamienia się na najwyższy rabat w %.", "default": "🔥 JESIENNA WYPRZEDAŻ – OSZCZĘDZASZ DO [rabat]%" },
     { "type": "text", "id": "sale_badge", "label": "Plakietka wyprzedaży", "default": "Wyprzedaż" },

@@ -1,4 +1,4 @@
-"""Generuje templates/product.otulka.json i templates/page.otulka.json (treści po polsku)."""
+"""Generuje templates/product.otulka.json, page.otulka.json i index.json (treści po polsku)."""
 import json
 import os
 
@@ -78,9 +78,9 @@ marquee = section("otulka-marquee", {
 })
 
 relief = section("otulka-cards", {
-    "eyebrow": "Dlaczego ją pokochasz",
-    "heading": "Przynosimy ulgę.",
-    "text": "Otulka to termofor, który nosisz jak pas – ciepło trafia tam, gdzie go potrzebujesz, a Ty masz wolne ręce.",
+    "eyebrow": "Po co",
+    "heading": "Po co jest Otulka?",
+    "text": "Bo ból brzucha czy pleców nie powinien zatrzymywać Cię w domu. Otulka to termofor, który nosisz jak pas – ciepło trafia tam, gdzie go potrzebujesz, a Ty normalnie działasz.",
     "background": "cream",
 }, [
     {"media_index": 2, "title": "Szybko i naturalnie", "text": "Gorąca woda, zakręcony korek i gotowe. Bez kabli, baterii i ładowania."},
@@ -92,7 +92,7 @@ relief = section("otulka-cards", {
 story = section("otulka-rows", {
     "eyebrow": "Termofor nowej generacji",
     "heading": "Ciepło, które idzie z Tobą",
-    "background": "white",
+    "background": "cream",
 }, [
     {"media_index": 8, "eyebrow": "Dyskretna", "title": "Pod bluzą nikt jej nie zauważy",
      "text": "<p>Płaski, miękki pas przylega do ciała, więc spokojnie schowasz go pod bluzą, swetrem czy luźną koszulą. Nikt nie musi wiedzieć, że masz dziś trudny dzień.</p>",
@@ -105,20 +105,48 @@ story = section("otulka-rows", {
      "points": "Pluszowy pokrowiec w zestawie\nMiły dla skóry, nie drapie\n5 kolorów do wyboru"},
 ], "row")
 
-uses = section("otulka-tiles", {
+benefits = section("otulka-tiles", {
     "style": "icons",
-    "eyebrow": "Na co dzień",
-    "heading": "Pomaga wszędzie",
-    "text": "Nie tylko w trudne dni – Otulka przydaje się częściej, niż myślisz.",
+    "eyebrow": "Korzyści",
+    "heading": "Co daje Otulka?",
+    "text": "Wszystko, za co lubisz termofor – bez trzymania go w rękach i leżenia pod kocem.",
+    "background": "white",
+}, [
+    {"icon": "🔥", "title": "Ciepło, które koi", "text": "Ciepło pomaga rozluźnić spięte mięśnie i złagodzić skurcze w trudne dni."},
+    {"icon": "🙌", "title": "Wolne ręce", "text": "Pas trzyma termofor za Ciebie – pracujesz, gotujesz, uczysz się, spacerujesz."},
+    {"icon": "🧥", "title": "Niewidoczna pod ubraniem", "text": "Płaska i miękka – schowasz ją pod bluzą albo swetrem."},
+    {"icon": "🎯", "title": "Ciepło tam, gdzie trzeba", "text": "Na brzuch albo na plecy – przesuwasz pas tak, jak potrzebujesz."},
+    {"icon": "🔌", "title": "Bez prądu i kabli", "text": "Wystarczy gorąca woda. Działa w domu, w pracy i w podróży."},
+    {"icon": "🧸", "title": "Mięciutka jak koc", "text": "Plusz jest miły dla skóry i dłużej trzyma ciepło."},
+], "tile")
+
+forwhom = section("otulka-tiles", {
+    "style": "icons",
+    "eyebrow": "Dla kogo",
+    "heading": "Dla kogo jest Otulka?",
+    "text": "Dla każdego, kto chce mieć ciepło przy sobie – nie tylko w trudne dni.",
     "background": "peach",
 }, [
-    {"icon": "🌸", "title": "Trudne kobiece dni", "text": "Ciepło na brzuch, gdy skurcze nie odpuszczają."},
-    {"icon": "💼", "title": "Praca i nauka", "text": "Siedzisz przy biurku, a ciepło robi swoje."},
-    {"icon": "🧘", "title": "Spięte plecy", "text": "Rozluźnia dolny odcinek pleców po długim dniu."},
-    {"icon": "🚗", "title": "Podróż", "text": "W aucie, pociągu czy samolocie – bez gniazdka."},
-    {"icon": "🛋️", "title": "Wieczór z serialem", "text": "Zamiast koca na kolanach – ciepło, które się nie zsuwa."},
-    {"icon": "❄️", "title": "Zimne dni", "text": "Na spacer, mecz czy przystanek – ciepło pod kurtką."},
+    {"icon": "🌸", "title": "Dla kobiet w trudne dni", "text": "Ciepło na podbrzusze, kiedy okres daje się we znaki – bez leżenia pod kocem."},
+    {"icon": "💻", "title": "Dla pracujących przy biurku", "text": "Grzeje, gdy pracujesz – w biurze, zdalnie albo w drodze na spotkanie."},
+    {"icon": "🎓", "title": "Dla uczennic i studentek", "text": "Dyskretna pod bluzą – na lekcji i na wykładzie nikt jej nie zauważy."},
+    {"icon": "🧘", "title": "Dla zmęczonych pleców", "text": "Ciepło na krzyż po dniu na nogach, za kierownicą albo po treningu."},
+    {"icon": "🥶", "title": "Dla zmarzluchów", "text": "Ciepło przy ciele, gdy w domu chłodno, a nie chcesz podkręcać ogrzewania."},
+    {"icon": "🎁", "title": "Na prezent", "text": "Dla siostry, przyjaciółki czy mamy – prezent, który naprawdę się przydaje."},
 ], "tile")
+
+split = section("otulka-split", {
+    "eyebrow": "Co ułatwia",
+    "heading": "Mniej kombinowania, więcej ulgi",
+    "text": "Koniec z upychaniem termoforu w spodniach i leżeniem pod kocem przez pół dnia.",
+    "left_title": "Bez Otulki",
+    "left_points": "Leżysz pod kocem i czekasz, aż przejdzie\nTrzymasz termofor w dłoniach albo upychasz go za pasek spodni\nTermofor zsuwa się, gdy tylko wstaniesz\nW pracy i na uczelni zostaje Ci zaciskanie zębów\nPodkręcasz ogrzewanie, żeby było Ci ciepło",
+    "right_title": "Z Otulką",
+    "right_points": "Normalnie działasz – ciepło idzie razem z Tobą\nMasz wolne ręce do pracy, nauki i telefonu\nPas trzyma termofor dokładnie tam, gdzie boli\nDyskretnie pod bluzą – nikt nie musi wiedzieć\nGrzejesz siebie, a nie cały pokój – bez prądu i kabli",
+    "cta_label": "Chcę mieć ciepło przy sobie",
+    "cta_bundle": "Przytulny",
+    "background": "white",
+})
 
 steps = section("otulka-tiles", {
     "style": "steps",
@@ -126,7 +154,7 @@ steps = section("otulka-tiles", {
     "heading": "Jak to działa?",
     "cta_label": "Wybieram zestaw Przytulny",
     "cta_bundle": "Przytulny",
-    "background": "white",
+    "background": "cream",
 }, [
     {"icon": "1", "title": "Napełnij", "text": "Wlej gorącą (nie wrzącą) wodę, wypuść powietrze i mocno zakręć korek."},
     {"icon": "2", "title": "Włóż do pasa", "text": "Wsuń termofor do kieszeni pasa – w zestawie Przytulnym najpierw załóż pluszowy pokrowiec."},
@@ -147,7 +175,7 @@ compare = section("otulka-compare", {
     "col_a": "Zwykły termofor",
     "col_b": "Poduszka elektryczna",
     "cta_label": "Chcę Otulkę",
-    "background": "cream",
+    "background": "white",
 }, [
     {"feature": "Wolne ręce", "us": True, "a": False, "b": True},
     {"feature": "Możesz chodzić i pracować", "us": True, "a": False, "b": False},
@@ -170,7 +198,7 @@ reviews = section("otulka-reviews", {
 faq = section("otulka-faq", {
     "eyebrow": "Masz pytania?",
     "heading": "Często zadawane pytania",
-    "background": "white",
+    "background": "cream",
     "show_guarantee": True,
     "g1_title": "14 dni na zwrot",
     "g1_text": "Nie pasuje? Odeślij bez podawania przyczyny.",
@@ -192,7 +220,7 @@ faq = section("otulka-faq", {
 ], "faq")
 
 about_settings = {
-    "background": "cream",
+    "background": "white",
     "show_about": True,
     "about_media_index": 9,
     "about_eyebrow": "O nas",
@@ -218,8 +246,10 @@ product_template = {
         "hero": hero,
         "marquee": marquee,
         "relief": relief,
+        "benefits": benefits,
         "story": story,
-        "uses": uses,
+        "forwhom": forwhom,
+        "split": split,
         "steps": steps,
         "marquee2": marquee2,
         "compare": compare,
@@ -227,7 +257,55 @@ product_template = {
         "faq": faq,
         "about": about,
     },
-    "order": ["hero", "marquee", "relief", "story", "uses", "steps", "marquee2", "compare", "reviews", "faq", "about"],
+    "order": ["hero", "marquee", "relief", "benefits", "story", "forwhom", "split", "steps", "marquee2", "compare", "reviews", "faq", "about"],
+}
+
+# Strona główna: baner + te same klocki co na stronie produktu, z koszykiem w środku.
+banner = section("otulka-banner", {
+    "media_index": 1,
+    "badge": "Bestseller",
+    "eyebrow": "Termofor do noszenia z pasem",
+    "as_h1": True,
+    "heading": "Ciepło, które idzie z Tobą",
+    "text": "Otulka to termofor w miękkim, regulowanym pasie. Koi w trudne kobiece dni, rozgrzewa zmęczone plecy, a pod bluzą nikt jej nie zauważy.",
+    "points": "Ciepło na brzuch albo plecy – z wolnymi rękami\nPłaska i dyskretna pod ubraniem\nBez prądu i kabli – wystarczy gorąca woda",
+    "button_label": "Wybierz swoją Otulkę",
+    "button_link": "#otk-buy",
+    "button2_label": "Zobacz szczegóły",
+    "button2_link": "/products/otulka-termofor-z-pasem",
+    "trust": "14 dni na zwrot | Bezpieczne płatności | Wysyłka z numerem śledzenia",
+})
+shop_box = json.loads(json.dumps(hero))
+shop_box["settings"].update({
+    "product": "otulka-termofor-z-pasem",
+    "promo_text": "",
+    "subtitle": "Wybierz kolor i zestaw",
+})
+home_story = json.loads(json.dumps(story))
+home_compare = json.loads(json.dumps(compare))
+home_compare["settings"]["background"] = "cream"
+home_faq = json.loads(json.dumps(faq))
+home_faq["settings"]["background"] = "white"
+home_about = json.loads(json.dumps(about))
+home_about["settings"]["background"] = "cream"
+home_steps = json.loads(json.dumps(steps))
+home_steps["settings"]["background"] = "white"
+index_template = {
+    "sections": {
+        "banner": banner,
+        "marquee": marquee,
+        "benefits": benefits,
+        "shop": shop_box,
+        "forwhom": forwhom,
+        "split": split,
+        "story": home_story,
+        "steps": home_steps,
+        "marquee2": marquee2,
+        "compare": home_compare,
+        "faq": home_faq,
+        "about": home_about,
+    },
+    "order": ["banner", "marquee", "benefits", "shop", "forwhom", "split", "story", "steps", "marquee2", "compare", "faq", "about"],
 }
 
 page_about = dict(about_settings)
@@ -237,7 +315,7 @@ page_template = {
     "order": ["about"],
 }
 
-for name, data in [("product.otulka.json", product_template), ("page.otulka.json", page_template)]:
+for name, data in [("product.otulka.json", product_template), ("page.otulka.json", page_template), ("index.json", index_template)]:
     with open(os.path.join(ROOT, "templates", name), "w", encoding="utf-8") as fh:
         json.dump(data, fh, ensure_ascii=False, indent=2)
         fh.write("\n")

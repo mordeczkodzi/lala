@@ -1,14 +1,14 @@
 {% comment %}
   Section contract.
   "O nas" story, "Skontaktuj się z nami" (store contact form) and a final call to action.
-  Works on the product template (CTA scrolls to #otk-buy) and on pages (CTA links to the picked product).
+  Works on the product and home templates (CTA scrolls to #otk-buy) and on pages (CTA links to the picked product).
   @example
   <!-- templates/product.otulka.json → "about"; templates/page.otulka.json → "about" -->
 {% endcomment %}
 {%- liquid
   assign contact_email = section.settings.email | default: shop.email
   assign form_id = 'otk-contact-' | append: section.id
-  if product
+  if product or template.name == 'index'
     assign cta_url = '#otk-buy'
   elsif section.settings.cta_product != blank
     assign cta_url = section.settings.cta_product.url
