@@ -11,6 +11,7 @@
 | `sections/otulka-banner.liquid` | Baner na górze strony głównej |
 | `sections/otulka-split.liquid` | „Bez Otulki / Z Otulką” – przed i po |
 | `sections/otulka-footer-info.liquid` + `assets/otulka-global.js` | Stopka: godziny pracy, kontakt, linki i newsletter w jednym rzędzie, regulaminy; przycisk „do góry”; linki FAQ przewijają do pytań na tej samej stronie; wspólne dodawanie do koszyka (`window.OtulkaCart`) |
+| `sections/otulka-announcement.liquid` | Pasek promocji nad nagłówkiem (grupa nagłówka), [rabat] = najwyższy rabat w % |
 | `sections/otulka-marquee.liquid` | Przewijany pasek tekstu |
 | `sections/otulka-cards.liquid` | Karty „Przynosimy ulgę” |
 | `sections/otulka-rows.liquid` | Wiersze korzyści (zdjęcie + tekst + punkty) |

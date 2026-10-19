@@ -69,9 +69,18 @@
         "enable_transparent_header_collection": false,
         "text_color_transparent_collection": "#111111cc"
       }
+    },
+    "otulka_promo": {
+      "type": "otulka-announcement",
+      "settings": {
+        "text": "🔥 JESIENNA WYPRZEDAŻ – OSZCZĘDZASZ DO [rabat]%",
+        "product": "otulka-termofor-z-pasem",
+        "link": "/products/otulka-termofor-z-pasem"
+      }
     }
   },
   "order": [
+    "otulka_promo",
     "header_section"
   ]
 }

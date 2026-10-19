@@ -1,0 +1,52 @@
+{% comment %}
+  Section contract.
+  Promo bar above the header (header group), shown on every page. "[rabat]" becomes the highest discount
+  in % of the chosen product; the bar hides itself when the text uses [rabat] and nothing is discounted.
+  @example
+  <!-- sections/header-group.json → "otulka_promo" (before "header_section") -->
+{% endcomment %}
+{%- liquid
+  assign p = section.settings.product
+  assign max_pct = 0
+  for v in p.variants
+    if v.compare_at_price > v.price
+      assign v_pct = v.compare_at_price | minus: v.price | times: 100.0 | divided_by: v.compare_at_price | round
+      if v_pct > max_pct
+        assign max_pct = v_pct
+      endif
+    endif
+  endfor
+  assign max_pct_str = max_pct | append: ''
+  assign promo_text = section.settings.text | replace: '[rabat]', max_pct_str
+  assign show_promo = true
+  if section.settings.text == blank
+    assign show_promo = false
+  elsif section.settings.text contains '[rabat]' and max_pct == 0
+    assign show_promo = false
+  endif
+-%}
+{%- if show_promo -%}
+  {%- render 'otulka-assets' -%}
+  <div class="otk otk-promo">
+    {%- if section.settings.link != blank -%}
+      <a href="{{ section.settings.link }}">{{ promo_text }}</a>
+    {%- else -%}
+      {{ promo_text }}
+    {%- endif -%}
+  </div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Otulka – pasek promocji",
+  "tag": "aside",
+  "class": "otk-section",
+  "enabled_on": { "groups": ["header"] },
+  "settings": [
+    { "type": "text", "id": "text", "label": "Tekst", "info": "[rabat] zamienia się na najwyższy rabat w % wybranego produktu.", "default": "🔥 JESIENNA WYPRZEDAŻ – OSZCZĘDZASZ DO [rabat]%" },
+    { "type": "product", "id": "product", "label": "Produkt (do wyliczenia rabatu)" },
+    { "type": "url", "id": "link", "label": "Link po kliknięciu" }
+  ],
+  "presets": [ { "name": "Otulka – pasek promocji" } ]
+}
+{% endschema %}

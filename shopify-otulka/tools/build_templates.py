@@ -46,7 +46,7 @@ hero = {
     "blocks": hero_blocks,
     "block_order": hero_order,
     "settings": {
-        "promo_text": "🔥 JESIENNA WYPRZEDAŻ – OSZCZĘDZASZ DO [rabat]%",
+        "promo_text": "",  # pasek promocji jest nad nagłówkiem (sections/otulka-announcement.liquid)
         "sale_badge": "Wyprzedaż",
         "badge_text": "Bestseller",
         "display_title": "Otulka",
