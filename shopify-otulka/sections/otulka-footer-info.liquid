@@ -8,7 +8,7 @@
   <!-- sections/footer-group.json → "otulka_info" -->
 {% endcomment %}
 {%- liquid
-  assign contact_email = section.settings.email | default: shop.email
+  assign contact_email = section.settings.email | default: 'kontakt@otully.pl'
   assign hour_lines = section.settings.hours | newline_to_br | split: '<br />'
   assign news_form_id = 'otk-news-' | append: section.id
 -%}
@@ -136,7 +136,7 @@
     { "type": "textarea", "id": "hours", "label": "Godziny (Dzień | godziny, jeden w linii)", "default": "Pon – pt | 9:00 – 17:00\nSob – nd | nieczynne" },
     { "type": "text", "id": "hours_note", "label": "Dopisek pod godzinami", "default": "Wiadomości z weekendu odbieramy w poniedziałek." },
     { "type": "text", "id": "contact_title", "label": "Tytuł kontaktu", "default": "Kontakt" },
-    { "type": "text", "id": "email", "label": "E-mail", "info": "Puste = e-mail sklepu." },
+    { "type": "text", "id": "email", "label": "E-mail", "info": "Puste = kontakt@otully.pl." },
     { "type": "text", "id": "contact_link_label", "label": "Link do formularza – tekst", "default": "Formularz kontaktowy" },
     { "type": "text", "id": "contact_link", "label": "Link do formularza", "default": "/pages/contact" },
     { "type": "text", "id": "contact_note", "label": "Dopisek pod kontaktem", "default": "Odpowiadamy na każdą wiadomość." },

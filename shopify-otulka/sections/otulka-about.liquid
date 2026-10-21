@@ -6,7 +6,7 @@
   <!-- templates/product.otulka.json → "about"; templates/page.otulka.json → "about" -->
 {% endcomment %}
 {%- liquid
-  assign contact_email = section.settings.email | default: shop.email
+  assign contact_email = section.settings.email | default: 'kontakt@otully.pl'
   assign form_id = 'otk-contact-' | append: section.id
   if product or template.name == 'index'
     assign cta_url = '#otk-buy'
@@ -104,7 +104,7 @@
     { "type": "text", "id": "contact_eyebrow", "label": "Nadtytuł", "default": "Kontakt" },
     { "type": "text", "id": "contact_heading", "label": "Nagłówek", "default": "Skontaktuj się z nami" },
     { "type": "textarea", "id": "contact_text", "label": "Tekst", "default": "Masz pytanie o rozmiar, zamówienie albo zwrot? Napisz do nas." },
-    { "type": "text", "id": "email", "label": "E-mail", "info": "Puste = e-mail sklepu." },
+    { "type": "text", "id": "email", "label": "E-mail", "info": "Puste = kontakt@otully.pl." },
     { "type": "text", "id": "hours", "label": "Godziny", "default": "Odpisujemy w dni robocze" },
     { "type": "text", "id": "contact_note", "label": "Dopisek", "default": "Odpowiadamy na każdą wiadomość" },
     { "type": "text", "id": "success_text", "label": "Komunikat po wysłaniu", "default": "Dziękujemy! Wiadomość dotarła – odezwiemy się najszybciej, jak to możliwe." },
