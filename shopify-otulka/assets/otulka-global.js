@@ -1,5 +1,5 @@
 /* Otulka – na każdej stronie: przycisk „do góry”, linki FAQ przewijające do pytań na tej samej stronie
-   i wspólne dodawanie do koszyka (window.OtulkaCart). */
+   i wspólne dodawanie do koszyka oraz czyszczenie koszyka (window.OtulkaCart). */
 (function () {
   'use strict';
 
@@ -209,7 +209,67 @@
     });
   }
 
-  window.OtulkaCart = { add: addToCart, open: openCartDrawer };
+  /**
+   * Opróżnia koszyk przez /cart/clear.js i przerysowuje szufladę tym samym zdarzeniem co dodawanie
+   * (bez zdarzeń – przeładowuje stronę).
+   */
+  function clearCart() {
+    var sectionIds = cartSectionIds();
+    var keys = [];
+    Array.prototype.forEach.call(document.querySelectorAll('cart-items-component [data-key]'), function (row) {
+      if (keys.indexOf(row.dataset.key) === -1) keys.push(row.dataset.key);
+    });
+
+    return loadCartEvents().then(function (events) {
+      var LinesEvent = events && events.CartLinesUpdateEvent;
+      var deferred = LinesEvent && typeof LinesEvent.createPromise === 'function' ? LinesEvent.createPromise() : null;
+
+      if (deferred) {
+        document.dispatchEvent(
+          new LinesEvent({
+            action: 'remove',
+            context: 'cart',
+            lines: keys.map(function (key) {
+              return { id: key, quantity: 0 };
+            }),
+            promise: deferred.promise
+          })
+        );
+      }
+
+      return fetch(cartRoot + 'cart/clear.js', {
+        method: 'POST',
+        credentials: 'same-origin',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify({ sections: sectionIds.join(','), sections_url: window.location.pathname })
+      })
+        .then(function (res) {
+          return res.json().then(function (body) {
+            if (!res.ok || body.status) throw new Error(body.description || body.message || 'clear_failed');
+            return body;
+          });
+        })
+        .then(
+          function (cart) {
+            if (!deferred) {
+              window.location.reload();
+              return cart;
+            }
+            deferred.resolve({
+              cart: typeof LinesEvent.createCartFromAjaxResponse === 'function' ? LinesEvent.createCartFromAjaxResponse(cart) : cart,
+              detail: { items: [], sections: cart.sections, didError: false, source: 'otulka', itemCount: 0 }
+            });
+            return cart;
+          },
+          function (error) {
+            if (deferred) deferred.reject(error);
+            throw error;
+          }
+        );
+    });
+  }
+
+  window.OtulkaCart = { add: addToCart, open: openCartDrawer, clear: clearCart };
 
   if (!window.__otkGlobal) {
     window.__otkGlobal = true;

@@ -1,16 +1,9 @@
-/* Otulka – „Klienci też kochali” w szufladzie koszyka. Delegowane zdarzenia przeżywają przerysowanie szuflady. */
+/* Otulka – „Tobie też może się spodobać” i „Wyczyść koszyk” w szufladzie koszyka.
+   Delegowane zdarzenia przeżywają przerysowanie szuflady. */
 (function () {
   'use strict';
   if (window.__otkCartUpsell) return;
   window.__otkCartUpsell = true;
-
-  document.addEventListener('change', function (event) {
-    var select = event.target.closest ? event.target.closest('[data-otk-up-select]') : null;
-    if (!select) return;
-    var option = select.options[select.selectedIndex];
-    var img = select.closest('[data-otk-up]').querySelector('img');
-    if (img && option && option.getAttribute('data-img')) img.src = option.getAttribute('data-img');
-  });
 
   document.addEventListener('click', function (event) {
     var button = event.target.closest ? event.target.closest('[data-otk-up-add]') : null;
@@ -42,6 +35,30 @@
     request
       .catch(function (error) {
         window.alert('Nie udało się dodać do koszyka.' + (error && error.message ? '\n' + error.message : ''));
+      })
+      .then(function () {
+        if (document.body.contains(button)) button.disabled = false;
+      });
+  });
+
+  document.addEventListener('click', function (event) {
+    var button = event.target.closest ? event.target.closest('[data-otk-cart-clear]') : null;
+    if (!button) return;
+    event.preventDefault();
+    button.disabled = true;
+    var root = (window.Shopify && window.Shopify.routes && window.Shopify.routes.root) || '/';
+
+    var request =
+      window.OtulkaCart && typeof window.OtulkaCart.clear === 'function'
+        ? window.OtulkaCart.clear()
+        : fetch(root + 'cart/clear.js', { method: 'POST', headers: { Accept: 'application/json' } }).then(function (res) {
+            if (!res.ok) throw new Error('clear_failed');
+            window.location.reload();
+          });
+
+    request
+      .catch(function () {
+        window.alert('Nie udało się wyczyścić koszyka. Odśwież stronę i spróbuj ponownie.');
       })
       .then(function () {
         if (document.body.contains(button)) button.disabled = false;

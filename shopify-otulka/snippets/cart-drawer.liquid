@@ -21,7 +21,8 @@
     src="{{ 'cart-drawer.js' | asset_url }}"
     fetchpriority="low"
   ></script>
-  {% # Otulka: obsługa karty „Klienci też kochali” (snippets/otulka-cart-upsell.liquid) %}
+  {% # Otulka: wygląd szuflady, karta „Tobie też może się spodobać” i „Wyczyść koszyk” %}
+  {{ 'otulka-cart.css' | asset_url | stylesheet_tag }}
   <script
     src="{{ 'otulka-cart.js' | asset_url }}"
     defer
@@ -116,6 +117,7 @@
                 aria-label="{{ 'accessibility.cart' | t }}"
               >
                 <scroll-hint class="cart-drawer__items">
+                  {% render 'otulka-cart-shipping' %}
                   {% render 'cart-products', context: 'drawer' %}
                   {% render 'otulka-cart-upsell' %}
                 </scroll-hint>

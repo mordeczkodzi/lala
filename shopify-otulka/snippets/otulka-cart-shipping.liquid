@@ -1,0 +1,50 @@
+{% doc %}
+  Pasek postępu do darmowej wysyłki i „Wyczyść koszyk” na górze szuflady koszyka.
+  Próg musi się zgadzać ze stawką „Standardowa – 0 zł od 200 zł” w Ustawieniach → Wysyłka.
+  Kliknięcie „Wyczyść koszyk” obsługuje assets/otulka-cart.js.
+
+  @param {number} [threshold] - Próg darmowej wysyłki w groszach (domyślnie 20000 = 200 zł).
+
+  @example
+  {% render 'otulka-cart-shipping' %}
+{% enddoc %}
+{%- liquid
+  assign ship_threshold = threshold | default: 20000
+  assign ship_missing = ship_threshold | minus: cart.total_price
+  if ship_missing < 0
+    assign ship_missing = 0
+  endif
+  assign ship_percent = cart.total_price | times: 100 | divided_by: ship_threshold
+  if ship_percent > 100
+    assign ship_percent = 100
+  endif
+-%}
+<div class="otk-ship{% if ship_missing == 0 %} is-free{% endif %}">
+  <p class="otk-ship__text">
+    <span class="otk-ship__icon">{% render 'otulka-icon', name: 'truck' %}</span>
+    {%- if ship_missing == 0 -%}
+      <span>Masz <strong>darmową wysyłkę</strong></span>
+    {%- else -%}
+      <span>Brakuje Ci <strong>{{ ship_missing | money }}</strong> do darmowej wysyłki</span>
+    {%- endif -%}
+  </p>
+  <div
+    class="otk-ship__bar"
+    role="progressbar"
+    aria-label="Postęp do darmowej wysyłki"
+    aria-valuemin="0"
+    aria-valuemax="100"
+    aria-valuenow="{{ ship_percent }}"
+  >
+    <span style="width: {{ ship_percent }}%"></span>
+  </div>
+</div>
+<div class="otk-cart-tools">
+  <button
+    type="button"
+    class="otk-cart-clear"
+    data-otk-cart-clear
+  >
+    Wyczyść koszyk
+  </button>
+</div>
