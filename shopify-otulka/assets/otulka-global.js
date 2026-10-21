@@ -107,7 +107,8 @@
 
   function loadCartEvents() {
     try {
-      return import('@shopify/events').catch(function () {
+      return import('@shopify/events').catch(function (error) {
+        console.warn('[otulka] @shopify/events niedostępne – szufladę odświeżamy ręcznie.', error);
         return null;
       });
     } catch (e) {
@@ -115,10 +116,40 @@
     }
   }
 
-  function openCartDrawer() {
+  // Szuflada bywa jeszcze nieulepszona (moduł motywu ładuje się z niskim priorytetem) – czekamy na nią chwilę.
+  function cartDrawer() {
     var drawer = document.querySelector('theme-drawer#cart-drawer');
-    if (!drawer || typeof drawer.open !== 'function') return false;
-    if (!drawer.isOpen) drawer.open();
+    if (!drawer) return Promise.resolve(null);
+    if (typeof drawer.open === 'function' || !window.customElements) {
+      return Promise.resolve(typeof drawer.open === 'function' ? drawer : null);
+    }
+    return Promise.race([
+      window.customElements.whenDefined('theme-drawer').then(function () {
+        return typeof drawer.open === 'function' ? drawer : null;
+      }),
+      new Promise(function (resolve) {
+        setTimeout(resolve, 3000, null);
+      })
+    ]);
+  }
+
+  /** @returns {Promise<boolean>} czy szuflada jest otwarta */
+  function openCartDrawer() {
+    return cartDrawer().then(function (drawer) {
+      if (!drawer) return false;
+      if (!drawer.isOpen) drawer.open();
+      return true;
+    });
+  }
+
+  // Bez zdarzeń motywu podmieniamy wnętrze szuflady na HTML sekcji z odpowiedzi /cart/add.js.
+  function replaceDrawerContent(sections) {
+    var html = sections && sections['cart-drawer-section'];
+    var current = document.querySelector('#cart-drawer .cart-drawer__inner');
+    if (!html || !current) return false;
+    var next = new DOMParser().parseFromString(html, 'text/html').querySelector('.cart-drawer__inner');
+    if (!next) return false;
+    current.replaceWith(document.importNode(next, true));
     return true;
   }
 
@@ -152,6 +183,8 @@
         );
       }
 
+      var sections;
+
       function fetchCart() {
         return fetch(cartRoot + 'cart.js', { headers: { Accept: 'application/json' }, credentials: 'same-origin' }).then(
           function (res) {
@@ -172,13 +205,14 @@
           });
         })
         .then(function (result) {
+          sections = result.ok ? result.body.sections : undefined;
           return fetchCart().then(function (cart) {
             if (deferred) {
               deferred.resolve({
                 cart: typeof LinesEvent.createCartFromAjaxResponse === 'function' ? LinesEvent.createCartFromAjaxResponse(cart) : cart,
                 detail: {
                   items: cart.items,
-                  sections: result.ok ? result.body.sections : undefined,
+                  sections: sections,
                   didError: !result.ok,
                   source: 'otulka',
                   itemCount: itemCount
@@ -191,13 +225,13 @@
         })
         .then(
           function (cart) {
-            if (!deferred) {
-              window.location.href = cartRoot + 'cart';
-              return cart;
-            }
+            if (!deferred) replaceDrawerContent(sections);
             // Szuflada przerysowuje się w then() zdarzenia – otwieramy ją chwilę później, już z produktem.
+            // Na stronę koszyka przechodzimy tylko wtedy, gdy szuflady w ogóle nie ma.
             setTimeout(function () {
-              if (!openCartDrawer()) window.location.href = cartRoot + 'cart';
+              openCartDrawer().then(function (opened) {
+                if (!opened) window.location.href = cartRoot + 'cart';
+              });
             }, 80);
             return cart;
           },
