@@ -215,11 +215,8 @@
   {% endif %}
 
   {%- liquid
-    if settings.currency_code_enabled_cart_total
-      assign total_price = cart.total_price | money_with_currency
-    else
-      assign total_price = cart.total_price | money
-    endif
+    # Otulka: zawsze „185,00 zł” jak przy produktach, bez „PLN”
+    assign total_price = cart.total_price | money
   -%}
 
   <div class="cart-totals__container{% if settings.show_installments %} cart-totals__container--has-installments{% endif %}">

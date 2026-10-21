@@ -118,6 +118,11 @@
     {%- render 'otulka-icon', name: 'up' -%}
   </button>
 {%- endif -%}
+{% # Moduł udostępnia zdarzenia koszyka motywu skryptowi otulka-global.js (import() w zwykłym skrypcie bywa zawodny). %}
+<script type="module">
+  import * as events from '@shopify/events';
+  window.OtulkaEvents = events;
+</script>
 <script src="{{ 'otulka-global.js' | asset_url }}" defer></script>
 
 {% schema %}

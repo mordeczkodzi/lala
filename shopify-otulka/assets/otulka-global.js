@@ -106,6 +106,7 @@
   }
 
   function loadCartEvents() {
+    if (window.OtulkaEvents && window.OtulkaEvents.CartLinesUpdateEvent) return Promise.resolve(window.OtulkaEvents);
     try {
       return import('@shopify/events').catch(function (error) {
         console.warn('[otulka] @shopify/events niedostępne – szufladę odświeżamy ręcznie.', error);
@@ -142,13 +143,24 @@
     });
   }
 
-  // Bez zdarzeń motywu podmieniamy wnętrze szuflady na HTML sekcji z odpowiedzi /cart/add.js.
+  // Bez zdarzeń motywu podmieniamy wnętrze szuflady na HTML sekcji z odpowiedzi /cart/add.js – razem ze stylami
+  // podsumowania, których pusta szuflada nie ma (tak samo robi motyw przy pierwszym dodaniu).
   function replaceDrawerContent(sections) {
     var html = sections && sections['cart-drawer-section'];
     var current = document.querySelector('#cart-drawer .cart-drawer__inner');
     if (!html || !current) return false;
-    var next = new DOMParser().parseFromString(html, 'text/html').querySelector('.cart-drawer__inner');
+    var doc = new DOMParser().parseFromString(html, 'text/html');
+    var next = doc.querySelector('.cart-drawer__inner');
     if (!next) return false;
+
+    var style = doc.querySelector('style[data-section-stylesheet]');
+    var section = current.closest('.shopify-section') || document.getElementById('shopify-section-cart-drawer-section');
+    if (style && section) {
+      var existing = section.querySelector('style[data-section-stylesheet]');
+      if (existing) existing.textContent = style.textContent;
+      else section.prepend(document.importNode(style, true));
+    }
+
     current.replaceWith(document.importNode(next, true));
     return true;
   }
