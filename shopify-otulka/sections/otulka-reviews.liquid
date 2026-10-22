@@ -21,7 +21,7 @@
           <article class="otk-review" {{ block.shopify_attributes }}>
             {%- if block.settings.image != blank -%}
               <div class="otk-review__img">
-                {{ block.settings.image | image_url: width: 800 | image_tag: widths: '320, 480, 640, 800', sizes: '(min-width: 750px) 33vw, 82vw', loading: 'lazy', alt: block.settings.author }}
+                {{ block.settings.image | image_url: width: 800 | image_tag: widths: '320, 480, 640, 800', sizes: '(min-width: 750px) 33vw, 82vw', loading: 'lazy', alt: block.settings.title }}
               </div>
             {%- endif -%}
             <div class="otk-review__body">
@@ -30,7 +30,7 @@
               </span>
               <h3 class="otk-review__title">{{ block.settings.title }}</h3>
               <p class="otk-review__text">{{ block.settings.text }}</p>
-              <p class="otk-review__author">{{ block.settings.author }}</p>
+              {%- if block.settings.author != blank -%}<p class="otk-review__author">{{ block.settings.author }}</p>{%- endif -%}
             </div>
           </article>
         {%- endfor -%}
