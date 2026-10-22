@@ -102,6 +102,47 @@
     };
   }
 
+  // Karty opinii pod przyciskiem: kropki pokazują, która karta jest widoczna, i przewijają do wybranej.
+  function initUgc(root) {
+    var track = qs('[data-otk-ugc-track]', root);
+    var dotsWrap = qs('[data-otk-ugc-dots]', root);
+    if (!track || !dotsWrap || track.__otk) return;
+    track.__otk = true;
+    var dots = qsa('button', dotsWrap);
+
+    function current() {
+      return Math.round(track.scrollLeft / Math.max(track.clientWidth, 1));
+    }
+
+    function mark() {
+      var index = current();
+      dots.forEach(function (dot, i) {
+        if (i === index) dot.setAttribute('aria-current', 'true');
+        else dot.removeAttribute('aria-current');
+      });
+    }
+
+    var ticking = false;
+    track.addEventListener(
+      'scroll',
+      function () {
+        if (ticking) return;
+        ticking = true;
+        requestAnimationFrame(function () {
+          ticking = false;
+          mark();
+        });
+      },
+      { passive: true }
+    );
+
+    dots.forEach(function (dot, i) {
+      dot.addEventListener('click', function () {
+        track.scrollTo({ left: i * track.clientWidth, behavior: 'smooth' });
+      });
+    });
+  }
+
   function initHero(root) {
     if (root.__otk) return;
     root.__otk = true;
@@ -114,6 +155,7 @@
     var variants = data.variants || [];
     var state = { o1: data.o1, o2: data.o2 };
     var gallery = initGallery(root);
+    initUgc(root);
     var form = qs('[data-otk-form]', root);
     var idInput = qs('[data-otk-id]', root);
     var mainBtn = qs('[data-otk-main]', root);
