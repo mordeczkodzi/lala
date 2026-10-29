@@ -1,0 +1,11 @@
+{
+  "base": "filmB/v/joined.mp4",
+  "audio": "filmB_lektor.mp3",
+  "subs": "filmB/subs/meta.json",
+  "hook": ["filmB/hook.png", 3.0],
+  "end": 18.2,
+  "card": "assets/logocard_mid.png",
+  "badges": [],
+  "duration": 20.2,
+  "out": "Otulka_FilmB_final.mp4"
+}

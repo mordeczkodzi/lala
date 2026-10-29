@@ -1,0 +1,13 @@
+# Film C „3 powody” – lektor 23.1 s
+Filling_hot_water_bottle_1080p.mp4      0.0 3.4
+Woman_placing_hot_water_belt.mp4        0.0 3.8
+Woman_placing_hot_water_belt.mp4        5.2 0.8
+Woman_walking_in_autumn_park.mp4        1.0 1.2
+Woman_fastens_belt_1080p.mp4            0.0 1.6
+Woman_fastens_belt_1080p.mp4            6.0 1.5
+Woman_working_on_laptop_1080p.mp4       2.2 0.9
+Woman_making_tea_in_kitchen.mp4         3.2 1.5
+Woman_placing_hot_water_belt.mp4        6.0 2.1
+Woman_wearing_plush_belt_hoodie.mp4     4.0 2.8   # tylko 4–6.8 s, wcześniej pas NA bluzie
+Woman_making_tea_in_kitchen.mp4         6.9 1.5
+Woman_taking_mirror_selfie_1080p.mp4    5.5 2.0

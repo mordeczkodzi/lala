@@ -1,0 +1,9 @@
+# Film A „Termofor, który się nosi” – lektor 16.8 s. Kolumny: klip  start  długość
+Woman_stroking_plush_belt_in.mp4        0.3 3.5
+Woman_lying_in_bed_1080p.mp4            0.0 2.7
+Woman_walking_in_autumn_park.mp4        3.6 2.6
+Woman_drinking_coffee_at_cafe.mp4       0.3 2.0
+Woman_working_on_laptop_1080p.mp4       2.2 0.9   # tylko krótko – szerszy kadr wyglądał jak brzuch ciążowy
+Woman_taking_mirror_selfie_1080p.mp4    5.7 0.8
+Woman_sitting_with_cat_and.mp4          0.0 1.8
+Woman_twirls_in_bedroom_1080p.mp4       0.0 2.5   # po 2.5 s błąd odbicia w lustrze
