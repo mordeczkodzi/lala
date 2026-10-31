@@ -1,15 +1,15 @@
 {% doc %}
   Pasek postępu do darmowej wysyłki i „Wyczyść koszyk” na górze szuflady koszyka.
-  Próg musi się zgadzać ze stawką „Standardowa – 0 zł od 200 zł” w Ustawieniach → Wysyłka.
+  Próg musi się zgadzać ze stawką „Darmowa dostawa – 0 zł od 185 zł” w Ustawieniach → Wysyłka.
   Kliknięcie „Wyczyść koszyk” obsługuje assets/otulka-cart.js.
 
-  @param {number} [threshold] - Próg darmowej wysyłki w groszach (domyślnie 20000 = 200 zł).
+  @param {number} [threshold] - Próg darmowej wysyłki w groszach (domyślnie 18500 = 185 zł).
 
   @example
   {% render 'otulka-cart-shipping' %}
 {% enddoc %}
 {%- liquid
-  assign ship_threshold = threshold | default: 20000
+  assign ship_threshold = threshold | default: 18500
   assign ship_missing = ship_threshold | minus: cart.total_price
   if ship_missing < 0
     assign ship_missing = 0
