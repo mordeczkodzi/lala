@@ -17,10 +17,11 @@
   endif
   assign bundle_a = section.settings.bundle_a_value
   assign bundle_b = section.settings.bundle_b_value
+  assign bundle_c = section.settings.bundle_c_value
   assign addon_value = section.settings.addon_value
 
   assign cur = p.selected_or_first_available_variant
-  if cur.option2 != bundle_a and cur.option2 != bundle_b
+  if cur.option2 != bundle_a and cur.option2 != bundle_b and cur.option2 != bundle_c
     for v in p.variants
       if v.option1 == cur.option1 and v.option2 == bundle_a
         assign cur = v
@@ -83,15 +84,51 @@
             {%- endif -%}
           </div>
 
+          {%- liquid
+            # Galeria: najpierw zdjęcie wybranego wariantu, potem zdjęcia bez przypisanego wariantu.
+            # Zdjęcia pozostałych wariantów nie trafiają do galerii, podmienia je otulka.js przy zmianie koloru.
+            assign variant_media_ids = ','
+            for v in p.variants
+              if v.featured_media
+                assign variant_media_ids = variant_media_ids | append: v.featured_media.id | append: ','
+              endif
+            endfor
+            assign lead_media = cur.featured_media | default: p.featured_media
+            assign lead_id = ''
+            assign gallery_size = 0
+            if lead_media
+              assign lead_id = lead_media.id | append: ''
+              assign gallery_size = 1
+            endif
+            for media in p.media
+              assign probe = ',' | append: media.id | append: ','
+              assign media_id = media.id | append: ''
+              unless variant_media_ids contains probe or media_id == lead_id
+                assign gallery_size = gallery_size | plus: 1
+              endunless
+            endfor
+          -%}
           <div class="otk-gallery__track" data-otk-track>
+            {%- if lead_media -%}
+              <div class="otk-gallery__slide" data-otk-slide data-otk-variant-slide data-media-id="{{ lead_media.id }}">
+                {{
+                  lead_media.preview_image
+                  | image_url: width: 1400
+                  | image_tag:
+                    widths: '420, 640, 828, 1080, 1400',
+                    sizes: '(min-width: 1200px) 620px, (min-width: 990px) 52vw, 100vw',
+                    loading: 'eager',
+                    fetchpriority: 'high',
+                    alt: lead_media.alt | default: p.title
+                }}
+              </div>
+            {%- endif -%}
             {%- for media in p.media -%}
               {%- liquid
-                if forloop.first
-                  assign ld = 'eager'
-                  assign fp = 'high'
-                else
-                  assign ld = 'lazy'
-                  assign fp = 'auto'
+                assign probe = ',' | append: media.id | append: ','
+                assign media_id = media.id | append: ''
+                if variant_media_ids contains probe or media_id == lead_id
+                  continue
                 endif
                 assign img_alt = media.alt | default: p.title
               -%}
@@ -102,40 +139,48 @@
                   | image_tag:
                     widths: '420, 640, 828, 1080, 1400',
                     sizes: '(min-width: 1200px) 620px, (min-width: 990px) 52vw, 100vw',
-                    loading: ld,
-                    fetchpriority: fp,
+                    loading: 'lazy',
                     alt: img_alt
                 }}
               </div>
-            {%- else -%}
-              <div class="otk-gallery__slide" data-otk-slide>{{ 'product-1' | placeholder_svg_tag }}</div>
             {%- endfor -%}
+            {%- if gallery_size == 0 -%}
+              <div class="otk-gallery__slide" data-otk-slide>{{ 'product-1' | placeholder_svg_tag }}</div>
+            {%- endif -%}
           </div>
 
-          {%- if p.media.size > 1 -%}
+          {%- if gallery_size > 1 -%}
             <button type="button" class="otk-gallery__nav otk-gallery__nav--prev" data-otk-prev aria-label="Poprzednie zdjęcie">
               {%- render 'otulka-icon', name: 'prev' -%}
             </button>
             <button type="button" class="otk-gallery__nav otk-gallery__nav--next" data-otk-next aria-label="Następne zdjęcie">
               {%- render 'otulka-icon', name: 'next' -%}
             </button>
-            <span class="otk-gallery__count" data-otk-count aria-hidden="true">1 / {{ p.media.size }}</span>
+            <span class="otk-gallery__count" data-otk-count aria-hidden="true">1 / {{ gallery_size }}</span>
           {%- endif -%}
         </div>
 
-        {%- if p.media.size > 1 -%}
+        {%- if gallery_size > 1 -%}
           <div class="otk-thumbs" data-otk-thumbs>
+            {%- assign thumb_n = 0 -%}
+            {%- if lead_media -%}
+              <button type="button" data-otk-thumb="0" data-otk-variant-thumb aria-label="Pokaż zdjęcie 1" aria-current="true">
+                {{ lead_media.preview_image | image_url: width: 160 | image_tag: loading: 'lazy', alt: '', width: 64, height: 64 }}
+              </button>
+              {%- assign thumb_n = 1 -%}
+            {%- endif -%}
             {%- for media in p.media -%}
-              <button
-                type="button"
-                data-otk-thumb="{{ forloop.index0 }}"
-                aria-label="Pokaż zdjęcie {{ forloop.index }}"
-                {% if forloop.first %}
-                  aria-current="true"
-                {% endif %}
-              >
+              {%- liquid
+                assign probe = ',' | append: media.id | append: ','
+                assign media_id = media.id | append: ''
+                if variant_media_ids contains probe or media_id == lead_id
+                  continue
+                endif
+              -%}
+              <button type="button" data-otk-thumb="{{ thumb_n }}" aria-label="Pokaż zdjęcie {{ thumb_n | plus: 1 }}">
                 {{ media.preview_image | image_url: width: 160 | image_tag: loading: 'lazy', alt: '', width: 64, height: 64 }}
               </button>
+              {%- assign thumb_n = thumb_n | plus: 1 -%}
             {%- endfor -%}
           </div>
         {%- endif -%}
@@ -211,17 +256,21 @@
         <fieldset class="otk-field">
           <legend class="otk-label">{{ section.settings.bundle_label }}: <span data-otk-bundle-label>{{ cur.option2 }}</span></legend>
           <div class="otk-bundles">
-            {%- assign bundle_keys = 'a,b' | split: ',' -%}
+            {%- assign bundle_keys = 'a,b,c' | split: ',' -%}
             {%- for key in bundle_keys -%}
               {%- liquid
                 if key == 'a'
                   assign b_value = bundle_a
                   assign b_desc = section.settings.bundle_a_desc
                   assign b_ribbon = section.settings.bundle_a_ribbon
-                else
+                elsif key == 'b'
                   assign b_value = bundle_b
                   assign b_desc = section.settings.bundle_b_desc
                   assign b_ribbon = section.settings.bundle_b_ribbon
+                else
+                  assign b_value = bundle_c
+                  assign b_desc = section.settings.bundle_c_desc
+                  assign b_ribbon = section.settings.bundle_c_ribbon
                 endif
                 assign bv = nil
                 for v in p.variants
@@ -232,7 +281,7 @@
                 endfor
               -%}
               {%- if bv -%}
-                <label class="otk-bundle{% if b_value == cur.option2 %} is-selected{% endif %}{% unless bv.available %} is-soldout{% endunless %}" data-otk-bundle="{{ b_value | escape }}">
+                <label class="otk-bundle{% if key == 'c' %} otk-bundle--hot{% endif %}{% if b_value == cur.option2 %} is-selected{% endif %}{% unless bv.available %} is-soldout{% endunless %}" data-otk-bundle="{{ b_value | escape }}">
                   <input
                     type="radio"
                     name="otk-bundle-{{ section.id }}"
@@ -559,7 +608,8 @@
             "sf": {% if v.compare_at_price > v.price %}{{ v.compare_at_price | minus: v.price | money | json }}{% else %}""{% endif %},
             "pct": {{ v_pct }},
             "m": {% if v.featured_media %}{{ v.featured_media.id }}{% else %}0{% endif %},
-            "img": {% if v.featured_media %}{{ v.featured_media.preview_image | image_url: width: 120 | json }}{% else %}""{% endif %}
+            "img": {% if v.featured_media %}{{ v.featured_media.preview_image | image_url: width: 120 | json }}{% else %}""{% endif %},
+            "bg": {% if v.featured_media %}{{ v.featured_media.preview_image | image_url: width: 1400 | json }}{% else %}""{% endif %}
           }{% unless forloop.last %},{% endunless %}
         {%- endfor -%}
       ]
@@ -567,6 +617,33 @@
   </script>
 </div>
 {%- endif -%}
+
+{% stylesheet %}
+  .otk-bundle--hot {
+    border: 2px solid #c2410c;
+    background: linear-gradient(135deg, #fff4ec 0%, #ffe8d6 100%);
+  }
+
+  .otk-bundle--hot.is-selected,
+  .otk-bundle--hot:has(input:checked) {
+    border-color: #c2410c;
+    background: linear-gradient(135deg, #ffeedd 0%, #ffdcc2 100%);
+    box-shadow: 0 12px 28px -14px #c2410c;
+  }
+
+  .otk-bundle--hot .otk-bundle__ribbon {
+    background: #c2410c;
+  }
+
+  .otk-bundle--hot .otk-bundle__tag {
+    width: fit-content;
+    margin-top: 4px;
+    padding: 2px 8px;
+    border-radius: 999px;
+    background: #c2410c;
+    color: #fff;
+  }
+{% endstylesheet %}
 
 {% schema %}
 {
@@ -591,6 +668,9 @@
     { "type": "text", "id": "bundle_b_value", "label": "Zestaw 2 – wartość opcji", "default": "Standard" },
     { "type": "text", "id": "bundle_b_desc", "label": "Zestaw 2 – opis", "default": "Termofor 1000 ml + regulowany pas" },
     { "type": "text", "id": "bundle_b_ribbon", "label": "Zestaw 2 – wstążka" },
+    { "type": "text", "id": "bundle_c_value", "label": "Zestaw 3 (wyróżniony) – wartość opcji", "info": "Puste = trzeci zestaw ukryty", "default": "2× Przytulny" },
+    { "type": "text", "id": "bundle_c_desc", "label": "Zestaw 3 – opis", "default": "Dla siebie i na prezent – druga Otulka -50%" },
+    { "type": "text", "id": "bundle_c_ribbon", "label": "Zestaw 3 – wstążka", "default": "🔥 Najlepsza oferta" },
     { "type": "header", "content": "Dodatek" },
     { "type": "checkbox", "id": "show_addon", "label": "Pokaż dodatek", "default": true },
     { "type": "text", "id": "addon_value", "label": "Dodatek – wartość opcji", "default": "Sam pasek" },
@@ -658,3 +738,4 @@
   ]
 }
 {% endschema %}
+
