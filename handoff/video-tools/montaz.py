@@ -20,8 +20,12 @@ config.json (przykład):
   "logo": "logo.png",                      # PNG z przezroczystym tłem (opcjonalnie)
   "logo_url": "twojsklep.pl",
   "cta": {"lines": ["BLACK MONTH", "Drugi zestaw -50%", "Zamów na twojsklep.pl"], "emoji": "emoji/1f447.png"},
-  "segments": [["klip1.mp4", 0.0, 2.4], ["klip2.mp4", 1.2, 0.95]]   # [plik, start_s, długość_s]
+  "end_blur": 6,                           # rozmycie tła planszy końcowej (0 = ostre, 18 = mocne)
+  "segments": [["klip1.mp4", 0.0, 2.4], ["klip2.mp4", 1.2, 0.95, 0.25]]
 }
+segments: [plik, start_s, długość_s, (opcjonalnie) przytnij_gore]. przytnij_gore = ułamek wysokości
+odcinany od góry (np. 0.25), obraz jest przybliżany do 1080x1920 – sposób na cudze napisy u góry kadru
+bez używania rozmytych wersji „bez napisów”.
 Suma długości segmentów powinna być równa "duration".
 Wymaga: ffmpeg, Python 3 + Pillow, font Inter (Debian/Ubuntu: pakiet fonts-inter).
 """
@@ -133,10 +137,13 @@ def main(cfg_path):
 
     # 1) cięcie i sklejanie ujęć
     names = []
-    for i, (src, start, dur) in enumerate(cfg['segments']):
+    for i, seg in enumerate(cfg['segments']):
+        src, start, dur = seg[:3]
+        top = float(seg[3]) if len(seg) > 3 else 0.0
+        crop = f'crop=iw*{1 - top}:ih*{1 - top}:iw*{top / 2}:ih*{top},' if top > 0 else ''
         out = f'{work}/c{i:02d}.mp4'
         subprocess.run(['ffmpeg', '-nostdin', '-v', 'error', '-y', '-ss', str(start), '-i', p(src), '-t', str(dur), '-an',
-                        '-vf', 'scale=1080:1920,fps=30,setsar=1', '-c:v', 'libx264', '-preset', 'fast', '-crf', '18',
+                        '-vf', f'{crop}scale=1080:1920:flags=lanczos,fps=30,setsar=1', '-c:v', 'libx264', '-preset', 'fast', '-crf', '18',
                         '-pix_fmt', 'yuv420p', out], check=True)
         names.append(out)
     with open(f'{work}/list.txt', 'w') as f:
@@ -176,7 +183,9 @@ def main(cfg_path):
     cmd = ['ffmpeg', '-nostdin', '-v', 'error', '-y', '-i', joined, '-i', p(cfg['voice'])]
     for path, _, _ in overlays:
         cmd += ['-i', path]
-    fc = f"[0:v]boxblur=luma_radius=18:luma_power=2:enable='gte(t,{end})',eq=brightness=0.04:enable='gte(t,{end})'[v0]"
+    blur = int(cfg.get('end_blur', 6))
+    fc = (f"[0:v]boxblur=luma_radius={blur}:luma_power=2:enable='gte(t,{end})',eq=brightness=-0.06:enable='gte(t,{end})'[v0]"
+          if blur > 0 else f"[0:v]eq=brightness=-0.06:enable='gte(t,{end})'[v0]")
     last = 'v0'
     for i, (_, a, b) in enumerate(overlays):
         fc += f";[{last}][{i + 2}:v]overlay=0:0:enable='between(t,{a},{b - 0.001})'[v{i + 1}]"
