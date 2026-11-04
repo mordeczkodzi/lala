@@ -7,7 +7,7 @@ Co robi:
   2. pierwsze sekundy: DUŻY hook (biały tekst z obrysem, bez tła) – potem znika,
   3. napisy do lektora: zwykłe, białe, cienki obrys, lekko przezroczyste, bez tła,
   4. koniec: rozmyte tło + karta z logo + kremowa ramka z wezwaniem do zakupu (CTA),
-  5. dźwięk: lektor znormalizowany do -14 LUFS, wyciszenie na ostatnie 0,3 s.
+  5. dźwięk: delikatne odszumianie, stałe podbicie do ~-15 LUFS (bez pompowania), ogranicznik szczytów, wyciszenie na końcu.
 
 config.json (przykład):
 {
@@ -190,7 +190,15 @@ def main(cfg_path):
     for i, (_, a, b) in enumerate(overlays):
         fc += f";[{last}][{i + 2}:v]overlay=0:0:enable='between(t,{a},{b - 0.001})'[v{i + 1}]"
         last = f'v{i + 1}'
-    fc += f";[1:a]loudnorm=I=-14:TP=-1.5:LRA=11,apad,atrim=0:{D},afade=t=out:st={D - 0.3}:d=0.3[a]"
+    # dźwięk: delikatne odszumianie, potem STAŁE podbicie do ~-15 LUFS i łagodny ogranicznik szczytów
+    # (bez dynamicznego loudnorm, który pompował głośność i podbijał szum tła z ElevenLabs)
+    pre = 'highpass=f=80,afftdn=nf=-45:nr=12'
+    meas = subprocess.run(['ffmpeg', '-nostdin', '-hide_banner', '-i', p(cfg['voice']), '-af', f'{pre},ebur128',
+                           '-f', 'null', '-'], capture_output=True, text=True).stderr
+    integ = float(meas[meas.rindex('I:'):].split()[1])
+    gain = max(-10.0, min(15.0, -15.0 - integ))
+    fc += (f";[1:a]{pre},volume={gain:.2f}dB,alimiter=limit=0.89:attack=5:release=50:level=false,"
+           f"apad,atrim=0:{D},afade=t=out:st={D - 0.3}:d=0.3[a]")
     cmd += ['-filter_complex', fc, '-map', f'[{last}]', '-map', '[a]', '-c:v', 'libx264', '-preset', 'slow', '-crf', '18',
             '-pix_fmt', 'yuv420p', '-c:a', 'aac', '-b:a', '192k', '-movflags', '+faststart', '-t', str(D), p(cfg['out'])]
     subprocess.run(cmd, check=True)
