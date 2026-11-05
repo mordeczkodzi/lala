@@ -171,18 +171,29 @@ def main(cfg_path):
             if txt:
                 plain(img, wrap(txt, F_SUB, 880), F_SUB, 0.66, 60, 3, 225)
         if mid >= end:
-            logo_card(img, p(cfg['logo']) if cfg.get('logo') else None, cfg.get('logo_url', ''))
-            cta = cfg.get('cta') or {}
-            if cta.get('lines'):
-                cream_box(img, cta['lines'], F_CTA, 0.385, 80, p(cta['emoji']) if cta.get('emoji') else None)
+            if cfg.get('end_card'):
+                # gotowa plansza końcowa (pełny PNG 1080x1920 z przezroczystym tłem) zamiast logo i kremowej ramki
+                img.alpha_composite(Image.open(p(cfg['end_card'])).convert('RGBA').resize((W, H)))
+            else:
+                logo_card(img, p(cfg['logo']) if cfg.get('logo') else None, cfg.get('logo_url', ''))
+                cta = cfg.get('cta') or {}
+                if cta.get('lines'):
+                    cream_box(img, cta['lines'], F_CTA, 0.385, 80, p(cta['emoji']) if cta.get('emoji') else None)
         path = f'{work}/o{i:02d}.png'
         img.save(path)
         overlays.append((path, a, b))
 
-    # 3) składanie: rozmycie końcówki, nakładki, lektor
-    cmd = ['ffmpeg', '-nostdin', '-v', 'error', '-y', '-i', joined, '-i', p(cfg['voice'])]
+    # 3) składanie: rozmycie końcówki, nakładki, lektor albo sama muzyka
+    voice = cfg.get('voice')
+    music = cfg.get('music')
+    audio_in = p(voice) if voice else p(music)
+    cmd = ['ffmpeg', '-nostdin', '-v', 'error', '-y', '-i', joined, '-i', audio_in]
     for path, _, _ in overlays:
         cmd += ['-i', path]
+    music_idx = None
+    if voice and music:
+        cmd += ['-i', p(music)]
+        music_idx = len(overlays) + 2
     blur = int(cfg.get('end_blur', 6))
     fc = (f"[0:v]boxblur=luma_radius={blur}:luma_power=2:enable='gte(t,{end})',eq=brightness=-0.06:enable='gte(t,{end})'[v0]"
           if blur > 0 else f"[0:v]eq=brightness=-0.06:enable='gte(t,{end})'[v0]")
@@ -192,13 +203,22 @@ def main(cfg_path):
         last = f'v{i + 1}'
     # dźwięk: delikatne odszumianie, potem STAŁE podbicie do ~-15 LUFS i łagodny ogranicznik szczytów
     # (bez dynamicznego loudnorm, który pompował głośność i podbijał szum tła z ElevenLabs)
-    pre = 'highpass=f=80,afftdn=nf=-45:nr=12'
-    meas = subprocess.run(['ffmpeg', '-nostdin', '-hide_banner', '-i', p(cfg['voice']), '-af', f'{pre},ebur128',
+    # sama muzyka (bez lektora): bez odszumiania, stała głośność ~-16 LUFS
+    pre = 'highpass=f=80,afftdn=nf=-45:nr=12' if voice else 'anull'
+    target = -15.0 if voice else -16.0
+    meas = subprocess.run(['ffmpeg', '-nostdin', '-hide_banner', '-i', audio_in, '-af', f'{pre},ebur128',
                            '-f', 'null', '-'], capture_output=True, text=True).stderr
     integ = float(meas[meas.rindex('I:'):].split()[1])
-    gain = max(-10.0, min(15.0, -15.0 - integ))
-    fc += (f";[1:a]{pre},volume={gain:.2f}dB,alimiter=limit=0.89:attack=5:release=50:level=false,"
-           f"apad,atrim=0:{D},afade=t=out:st={D - 0.3}:d=0.3[a]")
+    gain = max(-10.0, min(15.0, target - integ))
+    fade = 0.3 if voice else 1.2
+    if music_idx is None:
+        fc += (f";[1:a]{pre},volume={gain:.2f}dB,alimiter=limit=0.89:attack=5:release=50:level=false,"
+               f"apad,atrim=0:{D},afade=t=out:st={D - fade}:d={fade}[a]")
+    else:
+        # muzyka pod lektorem: cicho, ok. 18 dB pod głosem
+        fc += (f";[1:a]{pre},volume={gain:.2f}dB[vo];[{music_idx}:a]volume=-20dB,apad,atrim=0:{D}[mu]"
+               f";[vo][mu]amix=inputs=2:duration=longest:normalize=0,alimiter=limit=0.89:attack=5:release=50:level=false,"
+               f"apad,atrim=0:{D},afade=t=out:st={D - 0.8}:d=0.8[a]")
     cmd += ['-filter_complex', fc, '-map', f'[{last}]', '-map', '[a]', '-c:v', 'libx264', '-preset', 'slow', '-crf', '18',
             '-pix_fmt', 'yuv420p', '-c:a', 'aac', '-b:a', '192k', '-movflags', '+faststart', '-t', str(D), p(cfg['out'])]
     subprocess.run(cmd, check=True)
