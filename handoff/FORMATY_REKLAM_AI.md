@@ -124,6 +124,24 @@ Przykładowe plansze końcowe:
 - „6 światów w jednej lampce”
 - „Koniec ze strachem przed ciemnością”
 
+## Te same kroki bez Higgsfield (właściciel ma ChatGPT i narzędzia Google, Higgsfield ma kolega)
+
+| Krok | Higgsfield (kolega) | U nas |
+|---|---|---|
+| Kadr B-roll z produktem | Image → GPT Image 2 | ChatGPT (generowanie obrazów) albo generator obrazów Google; zdjęcie produktu jako referencja, ten sam prompt „Image” |
+| Ruch 5 s z kadru | Video → Kling 3.0 | wideo Google (image → video), ten sam prompt „Video”, pionowo 9:16 |
+| Polski lektor | Audio → ElevenLabs | ElevenLabs (głos Kinga, już używany) |
+| Osoba mówi po polsku, usta zgrane | Seedance 2.5 + kadr + `glos.mp3` | brak pewnego odpowiednika; polska mowa generowana w wideo zwykle ma akcent → formaty z osobą mówiącą (1, 5, 6) robi kolega w Seedance albo zamieniamy je na lektora z offu |
+| Montaż | Claude + ffmpeg | `video-tools/montaz.py` (nasz styl napisów) |
+
+Bez Higgsfield najlepiej wychodzą formaty bez gadania do kamery: 2, 3, 4 i 7, z lektorem z offu albo z samą muzyką.
+
+## Nasze gotowe filmy Winterly a formaty
+
+- **`Winterly_reklama_lektor_v2.mp4`** („Zwykłe lampki w 2026? Serio?”): format **2, problem → rozwiązanie**, z montażem efektów jak w formacie 3. Problem: plątanina i nuda. Rozwiązanie: pudełko, montaż, aplikacja, efekt, sąsiedzi. Lektor z offu, nikt nie mówi do kamery. Ujęcia z cudzych reklam są tylko szkicem pod podmianę na nasze.
+- **`Winterly_historia_lektor.mp4`** („Pięć minut montażu… i mój balkon stał się atrakcją osiedla”): format **7, kopia zwycięzcy**, czyli układ narracyjnej reklamy GlowMax. Opowieść w 1. osobie brzmi jak UGC (format 1), ale bez osoby w kadrze.
+- Brakuje nam jeszcze: **4 unboxing prezentu** (najlepszy na IV kwartał), **5 recenzji z obiekcją** (cena) i czystego **3 „wow”** bez lektora.
+
 ## Jak to przekładamy na Winterly (lampki na choinkę i kurtyna LED)
 
 Propozycje do sprawdzenia researchem, zanim powstanie skrypt:
