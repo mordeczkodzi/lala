@@ -1,6 +1,6 @@
 // Service worker: aplikacja działa bez internetu.
 // Strona główna: najpierw sieć (żeby dostawać aktualizacje), a bez sieci kopia z pamięci.
-const CACHE = 'korepetycje-v6';
+const CACHE = 'korepetycje-v7';
 const FILES = ['./', './index.html', './manifest.webmanifest', './icons/icon-192.png', './icons/icon-512.png', './icons/apple-touch-icon.png', './icons/maskable-512.png'];
 
 self.addEventListener('install', e => {

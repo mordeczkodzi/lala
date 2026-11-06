@@ -338,12 +338,12 @@ const ic = (n, style = '') => `<svg class="i" viewBox="0 0 24 24" aria-hidden="t
 
 /* ---------- dane ---------- */
 function emptyDb(){
-  return {version:2, students:[], groups:[], lessons:[], payments:[], settings:{defaultRate:80, defaultDuration:60, lastBackup:null}};
+  return {version:2, students:[], groups:[], lessons:[], payments:[], carry:[], settings:{defaultRate:80, defaultDuration:60, extraWeekly:0, lastBackup:null}};
 }
 function normalize(d){
   const e = emptyDb();
   const out = {...e, ...d, settings:{...e.settings, ...(d.settings || {})}};
-  for(const k of ['students','groups','lessons','payments']) if(!Array.isArray(out[k])) out[k] = [];
+  for(const k of ['students','groups','lessons','payments','carry']) if(!Array.isArray(out[k])) out[k] = [];
   out.version = 2;
   return out;
 }
@@ -649,7 +649,7 @@ function viewHome(){
       <div class="tile" data-act="tab" data-tab="students">${ic('users')}<div class="v">${active}</div><div class="l">Aktywni uczniowie</div></div>
     </div>
     <div class="tiles">
-      <div class="tile" data-act="tab" data-tab="fin">${ic('chart')}<div class="v">${zl(sumEvents(mEv, 'earned'))}</div><div class="l">Zarobione w tym miesiącu</div></div>
+      <div class="tile" data-act="tab" data-tab="fin">${ic('chart')}<div class="v">${zl(sumEvents(mEv, 'earned') + carryAmt(t.slice(0, 7)))}</div><div class="l">Zarobione w tym miesiącu</div></div>
       <div class="tile" data-act="tab" data-tab="fin">${ic('cash')}<div class="v">${zl(sumAmt(paymentsIn(ms, me)))}</div><div class="l">Otrzymane w tym miesiącu</div></div>
       <div class="tile" data-act="debtors">${ic('alert')}<div class="v ${debt ? 'neg' : ''}">${zl(debt)}</div><div class="l">Zadłużenie uczniów</div></div>
     </div>
@@ -850,9 +850,21 @@ function viewCal(){
 }
 
 /* ---------- FINANSE ---------- */
+// Przychód przeniesiony z poprzedniej aplikacji (kwota za miesiąc, bez szczegółów lekcji)
+const carryFor = ym => db.carry.filter(c => c.month === ym);
+const carryAmt = ym => round2(carryFor(ym).reduce((a, c) => a + (+c.amount || 0), 0));
+const carryLessons = ym => carryFor(ym).reduce((a, c) => a + (+c.lessons || 0), 0);
+const carryYear = y => round2(db.carry.filter(c => c.month.startsWith(y)).reduce((a, c) => a + (+c.amount || 0), 0));
+// Szacunek lekcji poza stałym planem (zł/tydzień) – tylko na dni od dziś do końca okresu
+function extraFor(from, to){
+  const w = +db.settings.extraWeekly || 0;
+  const a = from > today() ? from : today();
+  if(!w || a > to) return 0;
+  return round2(w * (daysBetween(a, to) + 1) / 7);
+}
 function monthEarned(ym){
   const ms = ym + '-01', me = monthEnd(ms);
-  return round2(db.lessons.filter(l => l.date >= ms && l.date <= me && isCharged(l)).reduce((a, l) => a + value(l), 0));
+  return round2(db.lessons.filter(l => l.date >= ms && l.date <= me && isCharged(l)).reduce((a, l) => a + value(l), 0) + carryAmt(ym));
 }
 function viewFin(){
   setBar('', 'Finanse', `<button class="bar-btn" data-act="addPayment" aria-label="Dodaj wpłatę">${ic('plus')}</button>`);
@@ -861,16 +873,20 @@ function viewFin(){
   const evs = events(ms, me);
   const nonCancelled = evs.filter(e => e.status !== 'cancelled');
   const charged = evs.filter(isCharged);
-  const earned = sumEvents(evs, 'earned'), forecast = sumEvents(evs, 'forecast');
+  const carry = carryAmt(ym), carryN = carryLessons(ym);
+  const inApp = sumEvents(evs, 'forecast'), extraM = extraFor(ms, me);
+  const earned = round2(sumEvents(evs, 'earned') + carry), forecast = round2(inApp + carry + extraM);
   const pays = paymentsIn(ms, me), received = sumAmt(pays);
-  const pct = nonCancelled.length ? Math.round(charged.length / nonCancelled.length * 100) : 0;
+  const doneN = charged.length + carryN, allN = nonCancelled.length + carryN;
+  const pct = allN ? Math.round(doneN / allN * 100) : 0;
   const bals = db.students.map(s => ({s, b:balance(s.id)}));
   const debtors = bals.filter(x => x.b < 0), over = bals.filter(x => x.b > 0);
   const debt = round2(debtors.reduce((a, x) => a - x.b, 0)), overSum = round2(over.reduce((a, x) => a + x.b, 0));
   const sw = scheduleWeekly();
-  const f7 = sumEvents(events(t, addDays(t, 6)), 'forecast');
-  const f14 = sumEvents(events(t, addDays(t, 13)), 'forecast');
-  const nms = shiftMonth(t.slice(0, 7), 1), fNext = sumEvents(events(nms + '-01', monthEnd(nms + '-01')), 'forecast');
+  const f7 = round2(sumEvents(events(t, addDays(t, 6)), 'forecast') + extraFor(t, addDays(t, 6)));
+  const f14 = round2(sumEvents(events(t, addDays(t, 13)), 'forecast') + extraFor(t, addDays(t, 13)));
+  const nms = shiftMonth(t.slice(0, 7), 1);
+  const fNext = round2(sumEvents(events(nms + '-01', monthEnd(nms + '-01')), 'forecast') + extraFor(nms + '-01', monthEnd(nms + '-01')));
 
   const endYm = ym > t.slice(0, 7) ? ym : t.slice(0, 7);
   const months = []; for(let i = 5; i >= 0; i--) months.push(shiftMonth(endYm, -i));
@@ -892,17 +908,17 @@ function viewFin(){
   }).filter(r => r.n || r.paid).sort((a, b) => b.e - a.e);
   const year = ym.slice(0, 4);
   const yPays = db.payments.filter(p => p.date.startsWith(year));
-  const yEarned = round2(db.lessons.filter(l => l.date.startsWith(year) && isCharged(l)).reduce((a, l) => a + value(l), 0));
+  const yEarned = round2(db.lessons.filter(l => l.date.startsWith(year) && isCharged(l)).reduce((a, l) => a + value(l), 0) + carryYear(year));
 
   return `<div class="monthbar">
       <button data-act="finNav" data-dir="-1" aria-label="Poprzedni miesiąc">${ic('left')}</button><b>${monthLabel(ym)}</b>
       <button data-act="finNav" data-dir="1" aria-label="Następny miesiąc">${ic('right')}</button></div>
     <div class="fhero">
       <div class="lbl">Przeprowadzono lekcji za ${mName}</div>
-      <div class="big">${charged.length}<small>/${nonCancelled.length}</small></div>
+      <div class="big">${doneN}<small>/${allN}</small></div>
       <div class="prog"><i style="width:${pct}%"></i></div>
       <div class="fgrid">
-        <div><div class="l">Przepracowano</div><div class="v">${zl2(earned)}</div><div class="s">odbyte lub odwołane z opłatą</div></div>
+        <div><div class="l">Przepracowano</div><div class="v">${zl2(earned)}</div><div class="s">${carry ? `w tym ${zl(carry)} z poprzedniej aplikacji` : 'odbyte lub odwołane z opłatą'}</div></div>
         <div><div class="l">Otrzymano</div><div class="v">${zl2(received)}</div><div class="s">w tym gotówką ${zl(methods[0].v)}</div></div>
       </div>
     </div>
@@ -911,14 +927,20 @@ function viewFin(){
 
     <div class="sec">Prognoza przychodu</div>
     <div class="card">
-      <div class="muted small">${mName} – odbyte + zaplanowane</div>
-      <div style="font-size:28px;font-weight:800" class="num">${zl(forecast)}</div>
+      <div class="muted small">${mName} – szacunek całego miesiąca</div>
+      <div style="font-size:28px;font-weight:800" class="num">≈ ${zl(forecast)}</div>
+      <div class="small muted" style="margin-top:6px;line-height:1.6">
+        ${carry ? `• z poprzedniej aplikacji: <b>${zl(carry)}</b><br>` : ''}
+        • lekcje w aplikacji (odbyte + zaplanowane): <b>${zl(inApp)}</b><br>
+        ${extraM ? `• poza stałym planem (szacunek): <b>${zl(extraM)}</b><br>` : ''}
+      </div>
+      ${!carry && !db.settings.extraWeekly ? `<div class="hint">Wynik zaniża miesiąc, jeśli część lekcji była w innej aplikacji albo masz uczniów bez stałego terminu – uzupełnisz to w <a href="#" data-act="tab" data-tab="set">Ustawieniach → Prognoza</a>.</div>` : ''}
       <div class="stat3">
         <div><div class="l">7 dni</div><div class="v">${zl(f7)}</div></div>
         <div><div class="l">2 tygodnie</div><div class="v">${zl(f14)}</div></div>
         <div><div class="l">${MONTHS[+nms.slice(5) - 1]}</div><div class="v">${zl(fNext)}</div></div>
       </div>
-      <div class="hint">Stały plan: <b>${zl(sw.amount)}</b> / tydzień · ${zl(sw.amount * 2)} / 2 tygodnie · ≈ ${zl(sw.amount * 52 / 12)} / miesiąc (${String(sw.count).replace('.', ',')} lekcji w tygodniu)</div>
+      <div class="hint">Stały plan: <b>${zl(sw.amount)}</b>${db.settings.extraWeekly ? ` + ok. ${zl(db.settings.extraWeekly)} poza planem` : ''} / tydzień · ${zl(sw.amount * 2)} / 2 tygodnie · ≈ ${zl(sw.amount * 52 / 12)} / miesiąc (${String(sw.count).replace('.', ',')} lekcji w tygodniu)</div>
     </div>
 
     <div class="sec">Dynamika dochodu</div>
@@ -980,6 +1002,20 @@ function viewSet(){
         <label>Stawka zł / h<input name="defaultRate" type="number" inputmode="decimal" step="0.01" min="0" value="${esc(st.defaultRate)}"></label>
         <label>Długość lekcji (min)<input name="defaultDuration" type="number" inputmode="numeric" step="5" min="15" value="${esc(st.defaultDuration)}"></label>
       </div>
+      <button class="btn primary">Zapisz</button>
+    </form>
+    <div class="sec">Prognoza</div>
+    <form class="card f" data-form="forecast">
+      <div class="small muted">Żeby szacunek miesiąca był pełny, uzupełnij dwie rzeczy:</div>
+      <label>Lekcje poza stałym planem – ok. ile zł tygodniowo?<input name="extraWeekly" type="number" inputmode="decimal" step="1" min="0" value="${esc(st.extraWeekly || '')}" placeholder="np. 140"></label>
+      <div class="hint" style="margin-top:-6px">Uczniowie bez stałego terminu (np. ci, z którymi umawiasz się na bieżąco). Liczy się tylko w prognozie, nie w zarobku.</div>
+      <div><b class="small">Zarobione w poprzedniej aplikacji</b></div>
+      <div class="f3">
+        <label>Miesiąc<input name="cMonth" type="month" value="${today().slice(0, 7)}"></label>
+        <label>Kwota zł<input name="cAmount" type="number" inputmode="decimal" step="0.01" min="0" placeholder="np. 1290"></label>
+        <label>Lekcji<input name="cLessons" type="number" inputmode="numeric" min="0" placeholder="19"></label>
+      </div>
+      ${db.carry.length ? db.carry.slice().sort((a, b) => b.month.localeCompare(a.month)).map(c => `<div class="row small"><span class="grow">${monthLabel(c.month)}: <b>${zl(c.amount)}</b>${c.lessons ? ` · ${c.lessons} lekcji` : ''}</span><button type="button" class="xbtn" data-act="delCarry" data-m="${esc(c.month)}" aria-label="Usuń">${ic('x')}</button></div>`).join('') : ''}
       <button class="btn primary">Zapisz</button>
     </form>
     <div class="sec">Kopia zapasowa</div>
@@ -1248,6 +1284,15 @@ const forms = {
     else db.payments.push({id:uid(), ...data});
     save(); closeModal(); render(); toast('Zapisano wpłatę: ' + zl(data.amount));
   },
+  forecast(f){
+    const v = Object.fromEntries(new FormData(f));
+    db.settings.extraWeekly = +v.extraWeekly || 0;
+    if(v.cMonth && v.cAmount !== ''){
+      db.carry = db.carry.filter(c => c.month !== v.cMonth);
+      db.carry.push({month:v.cMonth, amount:round2(+v.cAmount), lessons:+v.cLessons || 0});
+    }
+    save(); render(); toast('Zapisano – prognoza zaktualizowana');
+  },
   settings(f){
     const v = Object.fromEntries(new FormData(f));
     db.settings.defaultRate = +v.defaultRate || 0;
@@ -1393,6 +1438,7 @@ const actions = {
     try{ runImport(parseImport(raw)); }
     catch(err){ alert('Nie udało się odczytać kodu: ' + err.message); }
   },
+  delCarry(d){ db.carry = db.carry.filter(c => c.month !== d.m); save(); render(); },
   wipe(){
     if(!confirm('Usunąć WSZYSTKIE dane (uczniów, grupy, lekcje, wpłaty)? Zrób najpierw kopię zapasową!')) return;
     if(!confirm('Na pewno? Tego nie da się cofnąć.')) return;
@@ -1468,10 +1514,22 @@ function methodKey(t){
   return 'other';
 }
 function parseTextImport(txt){
-  const students = [], payments = [], lessons = [], bad = [];
+  const students = [], payments = [], lessons = [], carry = [], bad = []; let extraWeekly = null;
   for(let line of txt.split(/\r?\n/)){
     line = line.trim();
     if(!line || /^WP[ŁL]ATY:?$/i.test(line)) continue;
+    const mc = line.match(/^PRZYCH[ÓO]D\s*:\s*(.+)$/i);
+    if(mc){
+      const [mon, amt, n] = mc[1].split(';').map(x => x.trim());
+      const mm = String(mon || '').match(/^(\d{1,2})[.\/-](\d{4})$/) || String(mon || '').match(/^(\d{4})-(\d{1,2})$/);
+      const month = mm ? (mm[2].length === 4 ? `${mm[2]}-${pad(+mm[1])}` : `${mm[1]}-${pad(+mm[2])}`) : '';
+      const amount = +String(amt || '').replace(/z[łl]/i, '').replace(',', '.').trim();
+      if(!month || !amount){ bad.push(line); continue; }
+      carry.push({month, amount:round2(amount), lessons:+n || 0});
+      continue;
+    }
+    const mx = line.match(/^POZA PLANEM\s*:\s*([\d.,]+)/i);
+    if(mx){ extraWeekly = +mx[1].replace(',', '.'); continue; }
     const ml = line.match(/^LEKCJ[AE]\s*:\s*(.+)$/i);
     if(ml){
       const [name, dt, time, price, dur, st] = ml[1].split(';').map(x => x.trim());
@@ -1496,7 +1554,7 @@ function parseTextImport(txt){
     payments.push({name, amount, date, method:methodKey(method), note:note || ''});
   }
   if(bad.length) alert('Pominięto niezrozumiałe linijki:\n' + bad.join('\n'));
-  return {keepBalance:true, partial:true, students, payments, lessons};
+  return {keepBalance:true, partial:true, students, payments, lessons, carry, extraWeekly};
 }
 function parseImport(raw){
   raw = raw.trim().replace(/^.*#import=/, '');
@@ -1573,12 +1631,21 @@ function runImport(data){
   const list = Array.isArray(data) ? data : (Array.isArray(data?.students) ? data.students : []);
   const pays = Array.isArray(data?.payments) ? data.payments : [];
   const less = data?.partial && Array.isArray(data.lessons) ? data.lessons : [];
-  if(!list.length && !pays.length && !less.length) throw new Error('brak uczniów, lekcji i wpłat w kodzie');
+  const carry = data?.partial && Array.isArray(data.carry) ? data.carry : [];
+  const extra = data?.partial && data.extraWeekly != null ? +data.extraWeekly : null;
+  if(!list.length && !pays.length && !less.length && !carry.length && extra == null) throw new Error('nic do zaimportowania');
+  if(!list.length && !pays.length && !less.length){
+    for(const c of carry){ db.carry = db.carry.filter(x => x.month !== c.month); db.carry.push(c); }
+    if(extra != null) db.settings.extraWeekly = extra;
+    save(); state.tab = 'fin'; render(); toast('Zapisano – prognoza zaktualizowana'); return;
+  }
   const what = [list.length ? `${list.length} uczniów` : '', less.length ? `${less.length} lekcji` : '', pays.length ? `${pays.length} wpłat` : ''].filter(Boolean).join(', ');
   if(!confirm(`Dodać ${what} do aplikacji?`)) return;
   const r = importStudents(list);
   const rp = importPayments(pays, data?.keepBalance !== false);
   const rl = importLessons(less, data?.keepBalance !== false);
+  for(const c of carry){ db.carry = db.carry.filter(x => x.month !== c.month); db.carry.push(c); }
+  if(extra != null) db.settings.extraWeekly = extra;
   rp.missing.push(...rl.missing.filter(n => !rp.missing.includes(n)));
   save(); state.studentId = state.groupId = null;
   state.tab = (pays.length || less.length) && !list.length ? 'fin' : 'students'; render();
