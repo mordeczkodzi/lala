@@ -1468,10 +1468,21 @@ function methodKey(t){
   return 'other';
 }
 function parseTextImport(txt){
-  const students = [], payments = [], bad = [];
+  const students = [], payments = [], lessons = [], bad = [];
   for(let line of txt.split(/\r?\n/)){
     line = line.trim();
     if(!line || /^WP[ŁL]ATY:?$/i.test(line)) continue;
+    const ml = line.match(/^LEKCJ[AE]\s*:\s*(.+)$/i);
+    if(ml){
+      const [name, dt, time, price, dur, st] = ml[1].split(';').map(x => x.trim());
+      const date = parseDatePL(dt), tm = /^\d{1,2}:\d{2}$/.test(time || '') ? time.padStart(5, '0') : '';
+      const pr = +String(price || '').replace(/z[łl]/i, '').replace(',', '.').trim();
+      if(!name || !date || !tm){ bad.push(line); continue; }
+      const stl = String(st || '').toLowerCase();
+      lessons.push({name, date, time:tm, price:!String(price || '').trim() || isNaN(pr) ? null : pr, duration:+dur || 60,
+                    status:/płatn|platn|opłat|oplat/.test(stl) ? 'late' : /odwo|anul/.test(stl) ? 'cancelled' : 'done'});
+      continue;
+    }
     const m = line.match(/^UCZE[ŃN]\s*:\s*(.+)$/i);
     if(m){
       const [name, rate, subject] = m[1].split(';').map(x => x.trim());
@@ -1485,11 +1496,11 @@ function parseTextImport(txt){
     payments.push({name, amount, date, method:methodKey(method), note:note || ''});
   }
   if(bad.length) alert('Pominięto niezrozumiałe linijki:\n' + bad.join('\n'));
-  return {keepBalance:true, students, payments};
+  return {keepBalance:true, partial:true, students, payments, lessons};
 }
 function parseImport(raw){
   raw = raw.trim().replace(/^.*#import=/, '');
-  if(/;/.test(raw) || /^(WP[ŁL]ATY|UCZE[ŃN])/im.test(raw)) return parseTextImport(raw);
+  if(/;/.test(raw) || /^(WP[ŁL]ATY|UCZE[ŃN]|LEKCJ)/im.test(raw)) return parseTextImport(raw);
   let txt = raw;
   if(!/^[\[{]/.test(raw)){
     try{ txt = decodeB64(raw); }catch(e){ throw new Error('kod jest uszkodzony – skopiuj go jeszcze raz w całości'); }
@@ -1536,23 +1547,45 @@ function importPayments(list, keepBalance){
   }
   return {added, skipped, missing};
 }
+// Lekcje przeniesione z innej aplikacji: saldo zostaje bez zmian (keepBalance) –
+// saldo początkowe już je uwzględniało, więc podnosimy je o cenę płatnej lekcji.
+function importLessons(list, keepBalance){
+  const byName = new Map(db.students.map(s => [s.name.trim().toLowerCase(), s]));
+  let added = 0, skipped = 0; const missing = [];
+  for(const x of list){
+    const s = byName.get(String(x.name || '').trim().toLowerCase());
+    if(!s){ missing.push(x.name); continue; }
+    if(db.lessons.some(l => l.studentId === s.id && l.date === x.date && l.time === x.time)){ skipped++; continue; }
+    const dur = +x.duration || 60;
+    const price = x.price != null ? round2(x.price) : priceFor('s', s.id, dur);
+    const l = materialize({studentId:s.id, date:x.date, time:x.time, duration:dur, price, slotKey:null},
+                          {status:x.status || 'done', note:x.note || 'Przeniesione z poprzedniej aplikacji', imported:true});
+    if(keepBalance && isCharged(l)) s.openingBalance = round2((+s.openingBalance || 0) + l.price);
+    added++;
+  }
+  return {added, skipped, missing};
+}
 function runImport(data){
-  if(data && Array.isArray(data.lessons) && Array.isArray(data.payments) && Array.isArray(data.students)){
+  if(data && !data.partial && Array.isArray(data.lessons) && Array.isArray(data.payments) && Array.isArray(data.students)){
     if(!confirm(`To pełna kopia zapasowa (${data.students.length} uczniów). Obecne dane zostaną ZASTĄPIONE. Kontynuować?`)) return;
     db = normalize(data); save(); render(); toast('Wczytano kopię'); return;
   }
   const list = Array.isArray(data) ? data : (Array.isArray(data?.students) ? data.students : []);
   const pays = Array.isArray(data?.payments) ? data.payments : [];
-  if(!list.length && !pays.length) throw new Error('brak uczniów i wpłat w kodzie');
-  const what = [list.length ? `${list.length} uczniów` : '', pays.length ? `${pays.length} wpłat` : ''].filter(Boolean).join(' i ');
+  const less = data?.partial && Array.isArray(data.lessons) ? data.lessons : [];
+  if(!list.length && !pays.length && !less.length) throw new Error('brak uczniów, lekcji i wpłat w kodzie');
+  const what = [list.length ? `${list.length} uczniów` : '', less.length ? `${less.length} lekcji` : '', pays.length ? `${pays.length} wpłat` : ''].filter(Boolean).join(', ');
   if(!confirm(`Dodać ${what} do aplikacji?`)) return;
   const r = importStudents(list);
   const rp = importPayments(pays, data?.keepBalance !== false);
+  const rl = importLessons(less, data?.keepBalance !== false);
+  rp.missing.push(...rl.missing.filter(n => !rp.missing.includes(n)));
   save(); state.studentId = state.groupId = null;
-  state.tab = pays.length && !list.length ? 'fin' : 'students'; render();
+  state.tab = (pays.length || less.length) && !list.length ? 'fin' : 'students'; render();
   const msg = [];
   if(list.length) msg.push(`uczniowie: dodano ${r.added}` + (r.skipped ? `, pominięto ${r.skipped}` : ''));
   if(pays.length) msg.push(`wpłaty: dodano ${rp.added}` + (rp.skipped ? `, pominięto ${rp.skipped} (już są)` : ''));
+  if(less.length) msg.push(`lekcje: dodano ${rl.added}` + (rl.skipped ? `, pominięto ${rl.skipped} (już są)` : ''));
   toast(msg.join(' · '));
   if(rp.missing.length) alert('Nie znaleziono uczniów: ' + rp.missing.join(', ') + '\nNajpierw dodaj tych uczniów, potem wklej kod jeszcze raz.');
 }
