@@ -990,6 +990,12 @@ function viewSet(){
       <button class="btn" data-act="importJson">${ic('up')}Wczytaj kopię</button>
       <div class="f2"><button class="btn sm" data-act="exportCsv" data-what="lessons">Lekcje → Excel</button><button class="btn sm" data-act="exportCsv" data-what="payments">Wpłaty → Excel</button></div>
     </div>
+    <div class="sec">Import uczniów</div>
+    <div class="card f">
+      <div class="small muted">Wklej kod z listą uczniów (np. przygotowany przez Claude). Uczniowie zostaną <b>dodani</b> do obecnych – osoby o tej samej nazwie są pomijane.</div>
+      <textarea id="importText" placeholder="Wklej tutaj kod…" autocapitalize="off" autocorrect="off" spellcheck="false"></textarea>
+      <button class="btn primary" data-act="importText">${ic('plus')}Dodaj uczniów</button>
+    </div>
     <div class="sec">Jak to działa?</div>
     <div class="card small muted" style="line-height:1.55">
       • Uczeń (albo grupa) ma <b>stały plan</b> – terminy same pojawiają się w grafiku.<br>
@@ -1381,6 +1387,12 @@ const actions = {
   },
   async install(){ if(!installEvt) return; installEvt.prompt(); await installEvt.userChoice.catch(() => {}); installEvt = null; render(); },
   loadDemo(){ if(db.students.length && !confirm('Dodać przykładowe dane do istniejących?')) return; loadDemo(); render(); toast('Wczytano przykładowe dane'); },
+  importText(){
+    const raw = ($('#importText')?.value || '').trim();
+    if(!raw){ toast('Najpierw wklej kod'); return; }
+    try{ runImport(parseImport(raw)); }
+    catch(err){ alert('Nie udało się odczytać kodu: ' + err.message); }
+  },
   wipe(){
     if(!confirm('Usunąć WSZYSTKIE dane (uczniów, grupy, lekcje, wpłaty)? Zrób najpierw kopię zapasową!')) return;
     if(!confirm('Na pewno? Tego nie da się cofnąć.')) return;
@@ -1426,8 +1438,54 @@ function onFieldChange(t){
 }
 document.addEventListener('input', e => { if(e.target.tagName !== 'SELECT') onFieldChange(e.target); });
 document.addEventListener('change', e => { if(e.target.tagName === 'SELECT') onFieldChange(e.target); });
-setInterval(() => { if(!dlg.open && document.visibilityState === 'visible' && document.activeElement?.id !== 'search') render(); }, 60000);
+setInterval(() => { if(!dlg.open && document.visibilityState === 'visible' && !['INPUT','TEXTAREA','SELECT'].includes(document.activeElement?.tagName)) render(); }, 60000);
 document.addEventListener('visibilitychange', () => { if(document.visibilityState === 'visible' && !dlg.open){ db = load(); render(); } });
+
+/* ---------- import uczniów (link #import=… albo wklejony kod) ---------- */
+function decodeB64(b64){
+  b64 = b64.replace(/-/g, '+').replace(/_/g, '/').replace(/\s/g, '');
+  while(b64.length % 4) b64 += '=';
+  return new TextDecoder().decode(Uint8Array.from(atob(b64), c => c.charCodeAt(0)));
+}
+function parseImport(raw){
+  raw = raw.trim().replace(/^.*#import=/, '');
+  let txt = raw;
+  if(!/^[\[{]/.test(raw)) txt = decodeB64(raw);
+  txt = txt.replace(/[\u201C\u201D\u201E]/g, '"');
+  return JSON.parse(txt);
+}
+function importStudents(list){
+  const have = new Set(db.students.map(s => s.name.trim().toLowerCase()));
+  let added = 0, skipped = 0;
+  for(const x of list){
+    const name = String(x.name || '').trim();
+    if(!name || have.has(name.toLowerCase())){ skipped++; continue; }
+    have.add(name.toLowerCase());
+    db.students.push({
+      id:uid(), created:new Date().toISOString(), archived:false, name,
+      subject:x.subject || '', level:x.level || '', rate:x.rate ?? db.settings.defaultRate,
+      phone:x.phone || '', email:x.email || '', parentName:x.parentName || '', parentPhone:x.parentPhone || '', notes:x.notes || '',
+      color:x.color || PALETTE[db.students.length % PALETTE.length], openingBalance:+x.openingBalance || 0,
+      schedule:(x.schedule || []).map(it => ({day:+it.day, time:it.time, duration:+it.duration || 60, every:+it.every || 1})),
+      // plan od jutra – salda z poprzedniej aplikacji obejmują już dzisiejsze lekcje
+      scheduleFrom:x.scheduleFrom || addDays(today(), 1), scheduleTo:''
+    });
+    added++;
+  }
+  return {added, skipped};
+}
+function runImport(data){
+  if(data && Array.isArray(data.lessons) && Array.isArray(data.payments) && Array.isArray(data.students)){
+    if(!confirm(`To pełna kopia zapasowa (${data.students.length} uczniów). Obecne dane zostaną ZASTĄPIONE. Kontynuować?`)) return;
+    db = normalize(data); save(); render(); toast('Wczytano kopię'); return;
+  }
+  const list = Array.isArray(data) ? data : data?.students;
+  if(!Array.isArray(list)) throw new Error('brak listy uczniów');
+  if(!confirm(`Dodać ${list.length} uczniów do aplikacji?`)) return;
+  const r = importStudents(list);
+  save(); state.tab = 'students'; state.studentId = state.groupId = null; render();
+  toast(`Dodano ${r.added} uczniów` + (r.skipped ? ` · pominięto ${r.skipped} (już są)` : ''));
+}
 
 /* ---------- przykładowe dane ---------- */
 function loadDemo(){
@@ -1466,6 +1524,11 @@ function loadDemo(){
 
 render();
 if(state.tab === 'cal') setTimeout(scrollToTimeline, 50);
+if(location.hash.startsWith('#import=')){
+  const code = location.hash.slice(8);
+  history.replaceState(null, '', location.pathname + location.search);
+  setTimeout(() => { try{ runImport(parseImport(code)); }catch(err){ alert('Nie udało się odczytać linku: ' + err.message); } }, 300);
+}
 
 if('serviceWorker' in navigator && location.protocol.startsWith('http')){
   navigator.serviceWorker.register('sw.js').catch(err => console.warn('SW:', err));
