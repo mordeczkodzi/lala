@@ -3,9 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#4f46e5">
+<meta name="theme-color" content="#284a92">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Korepetycje">
 <title>Korepetycje</title>
 <link rel="manifest" href="manifest.webmanifest">
@@ -13,234 +14,342 @@
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <style>
 :root{
-  --bg:#f5f6fa;--card:#fff;--text:#1c1f2e;--muted:#6b7084;--line:#e3e5ee;
-  --accent:#4f46e5;--accent-text:#fff;--accent-soft:#eef0ff;
-  --ok:#15803d;--ok-bg:#e7f6ec;--bad:#c62828;--bad-bg:#fdecec;--warn:#a15c07;--warn-bg:#fff3dc;
-  --shadow:0 1px 2px rgba(20,20,40,.05),0 4px 16px rgba(20,20,40,.05);
-  --radius:14px;
+  --bg:#f3f4f8;--card:#fff;--text:#14161f;--muted:#6b7183;--faint:#9aa0b2;--line:#e5e7ef;--chip:#eceef4;
+  --nav:#284a92;--nav-2:#2b3f86;--nav-text:#fff;
+  --accent:#2f62d6;--accent-soft:#e7eefc;--accent-text:#fff;
+  --ok:#16803c;--ok-bg:#e5f5ea;--bad:#c62828;--bad-bg:#fdecec;--warn:#a35a00;--warn-bg:#fff2da;
+  --shadow:0 1px 2px rgba(16,24,40,.04),0 3px 12px rgba(16,24,40,.05);
+  --bar-bg:rgba(255,255,255,.86);
 }
 @media (prefers-color-scheme:dark){
   :root{
-    --bg:#0e1016;--card:#181b25;--text:#e7e9f2;--muted:#9a9fb4;--line:#2a2e3c;
-    --accent:#8b93ff;--accent-text:#0e1016;--accent-soft:#252a52;
+    --bg:#0c0e14;--card:#171a23;--text:#e9ebf3;--muted:#9aa0b4;--faint:#6e7489;--line:#272b38;--chip:#222634;
+    --nav:#1a2a58;--nav-2:#1d2d61;--nav-text:#fff;
+    --accent:#7aa2ff;--accent-soft:#1f2a4a;--accent-text:#0c0e14;
     --ok:#4ade80;--ok-bg:#13301f;--bad:#f87171;--bad-bg:#3a1818;--warn:#fbbf24;--warn-bg:#3a2b0e;
-    --shadow:none;
+    --shadow:none;--bar-bg:rgba(28,31,42,.88);
   }
 }
 *{box-sizing:border-box}
 html,body{margin:0}
-body{background:var(--bg);color:var(--text);font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-tap-highlight-color:transparent}
+body{background:var(--bg);color:var(--text);font:16px/1.4 -apple-system,system-ui,"Segoe UI",Roboto,sans-serif;-webkit-tap-highlight-color:transparent;-webkit-text-size-adjust:100%}
 button,input,select,textarea{font:inherit;color:inherit}
-a{color:var(--accent)}
-h1,h2,h3{margin:0;line-height:1.2}
-h2{font-size:20px}
-h3{font-size:15px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.04em;margin:22px 0 10px}
+button{cursor:pointer}
+a{color:var(--accent);text-decoration:none}
+h2,h3{margin:0;line-height:1.2}
+svg.i{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;flex:none}
 
-/* layout */
-.top{position:sticky;top:0;z-index:10;background:var(--card);border-bottom:1px solid var(--line);display:flex;align-items:center;gap:16px;padding:10px 20px;padding-top:max(10px,env(safe-area-inset-top))}
-.brand{font-weight:700;font-size:17px;white-space:nowrap}
-.tabs{display:flex;gap:4px;margin-left:auto}
-.tab{border:0;background:none;padding:8px 12px;border-radius:10px;cursor:pointer;color:var(--muted);display:flex;align-items:center;gap:6px}
-.tab .ico{font-size:18px}
-.tab.on{background:var(--accent-soft);color:var(--accent);font-weight:600}
-main{max-width:1100px;margin:0 auto;padding:18px 20px 100px}
-@media (max-width:760px){
-  .top{padding:10px 16px}
-  .tabs{position:fixed;left:0;right:0;bottom:0;background:var(--card);border-top:1px solid var(--line);justify-content:space-around;padding:6px 4px;padding-bottom:max(6px,env(safe-area-inset-bottom));margin:0;gap:0}
-  .tab{flex-direction:column;gap:0;font-size:11px;padding:4px 6px;min-width:0}
-  .tab .ico{font-size:20px}
-  main{padding:14px 16px 130px}
-}
+/* ---------- górny pasek ---------- */
+.appbar{position:sticky;top:0;z-index:20;background:var(--nav);color:var(--nav-text);padding-top:env(safe-area-inset-top)}
+.appbar-in{max-width:760px;margin:0 auto;height:60px;display:grid;grid-template-columns:72px 1fr 72px;align-items:center;padding:0 8px}
+.appbar h1{margin:0;text-align:center;font-size:20px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bar-btn{border:0;background:none;color:inherit;width:44px;height:44px;border-radius:12px;display:grid;place-items:center;position:relative;font-size:15px;font-weight:600}
+.bar-btn:active{background:rgba(255,255,255,.12)}
+.bar-btn svg.i{width:27px;height:27px}
+.bar-btn .red{position:absolute;top:8px;right:8px;width:10px;height:10px;border-radius:50%;background:#ef4444;border:2px solid var(--nav)}
+.bar-btn.txt{width:auto;padding:0 10px}
 
-/* cards & grid */
-.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow)}
-.grid{display:grid;gap:12px}
-.g4{grid-template-columns:repeat(4,1fr)}
-.g3{grid-template-columns:repeat(3,1fr)}
-.g2{grid-template-columns:repeat(2,1fr)}
-@media (max-width:900px){.g4{grid-template-columns:repeat(2,1fr)}.g3{grid-template-columns:1fr 1fr}}
-@media (max-width:520px){.g3,.g2{grid-template-columns:1fr}}
-.stat .lbl{color:var(--muted);font-size:13px}
-.stat .val{font-size:24px;font-weight:700;margin-top:2px;font-variant-numeric:tabular-nums}
-.stat .sub{color:var(--muted);font-size:13px;margin-top:2px}
-.pos{color:var(--ok)}.neg{color:var(--bad)}
-.row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-.spacer{flex:1}
+/* ---------- dolna nawigacja ---------- */
+.bnav{position:fixed;z-index:20;left:50%;transform:translateX(-50%);bottom:calc(10px + env(safe-area-inset-bottom));width:min(560px,calc(100% - 20px));
+  display:flex;padding:5px;border-radius:999px;background:var(--bar-bg);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);
+  border:1px solid var(--line);box-shadow:0 8px 30px rgba(16,24,40,.14)}
+.bnav button{flex:1;border:0;background:none;border-radius:999px;padding:6px 2px 5px;display:flex;flex-direction:column;align-items:center;gap:2px;color:var(--text);font-size:12px;font-weight:500;min-width:0}
+.bnav button span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.bnav button.on{background:var(--chip);color:var(--accent);font-weight:600}
+.bnav svg.i{width:26px;height:26px}
+
+main{max-width:760px;margin:0 auto;padding:16px 16px calc(110px + env(safe-area-inset-bottom))}
+
+/* ---------- karty ---------- */
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;box-shadow:var(--shadow)}
+.sec{font-size:22px;font-weight:800;margin:24px 2px 12px;display:flex;align-items:center;gap:10px}
+.sec{white-space:nowrap}
+.sec .more{margin-left:auto;white-space:nowrap;font-size:15px;font-weight:600;color:var(--accent);border:0;background:none;padding:4px}
 .muted{color:var(--muted)}
-.small{font-size:13px}
+.small{font-size:14px}
+.tiny{font-size:12px}
+.pos{color:var(--ok)}.neg{color:var(--bad)}
+.row{display:flex;align-items:center;gap:10px}
+.grow{flex:1;min-width:0}
+.ell{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.empty{color:var(--muted);text-align:center;padding:34px 10px;font-size:16px}
 .hint{color:var(--muted);font-size:13px;margin-top:6px}
-.empty{color:var(--muted);text-align:center;padding:22px 10px}
-.pagehead{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:14px}
-.pagehead h2{margin-right:auto}
+.num{font-variant-numeric:tabular-nums}
 
-/* buttons */
-.btn{border:1px solid var(--line);background:var(--card);padding:8px 14px;border-radius:10px;cursor:pointer;white-space:nowrap;display:inline-flex;align-items:center;gap:6px}
-.btn:hover{border-color:var(--accent)}
-.btn.primary{background:var(--accent);color:var(--accent-text);border-color:var(--accent);font-weight:600}
-.btn.danger{color:var(--bad)}
-.btn.sm{padding:5px 10px;font-size:13px;border-radius:8px}
-.btn.ok{color:var(--ok)}
-.icon-btn{border:0;background:none;cursor:pointer;padding:6px 8px;border-radius:8px;color:var(--muted);font-size:16px}
-.icon-btn:hover{background:var(--accent-soft)}
-.seg{display:inline-flex;border:1px solid var(--line);border-radius:10px;overflow:hidden}
-.seg button{border:0;background:var(--card);padding:7px 12px;cursor:pointer}
-.seg button.on{background:var(--accent-soft);color:var(--accent);font-weight:600}
-.fab{position:fixed;right:22px;bottom:24px;width:58px;height:58px;border-radius:50%;border:0;background:var(--accent);color:var(--accent-text);font-size:30px;line-height:1;cursor:pointer;box-shadow:0 6px 20px rgba(79,70,229,.4);z-index:11}
-@media (max-width:760px){.fab{bottom:calc(78px + env(safe-area-inset-bottom));right:16px}}
+.hero{background:var(--nav-2);color:#fff;border-radius:22px;padding:22px 22px 20px;cursor:pointer;position:relative;overflow:hidden}
+.hero .lbl{opacity:.8;font-size:15px}
+.hero .big{font-size:28px;font-weight:800;margin:8px 0 6px;padding-right:80px}
+.hero .sub{font-size:18px;opacity:.95}
+.hero .when{display:flex;align-items:center;gap:10px;margin-top:16px;font-size:18px}
+.hero .tag{position:absolute;top:18px;right:18px;background:rgba(255,255,255,.16);padding:4px 10px;border-radius:99px;font-size:13px;font-weight:600}
+.tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:14px}
+.tile{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px 6px 14px;text-align:center;box-shadow:var(--shadow);cursor:pointer;min-width:0}
+.tile svg.i{color:var(--accent);width:30px;height:30px}
+.tile .v{font-size:21px;font-weight:800;margin-top:8px;font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tile .l{font-size:13px;color:var(--muted);line-height:1.25;margin-top:4px}
+@media (max-width:380px){.tile .v{font-size:17px}}
 
-/* badges */
-.badge{display:inline-block;font-size:12px;padding:2px 8px;border-radius:99px;background:var(--accent-soft);color:var(--accent);font-weight:600;white-space:nowrap}
+/* ---------- listy ---------- */
+.lcard{display:flex;align-items:center;gap:14px;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;margin-bottom:10px;cursor:pointer;box-shadow:var(--shadow)}
+.avatar{width:50px;height:50px;border-radius:50%;flex:none;display:grid;place-items:center;font-weight:700;font-size:18px;background:color-mix(in srgb,var(--c) 14%,var(--chip));color:var(--c)}
+.avatar.lg{width:72px;height:72px;font-size:26px}
+.lname{font-weight:600;font-size:17px}
+.lsub{color:var(--muted);font-size:14px;margin-top:1px}
+.badge{display:inline-block;font-size:13px;padding:3px 9px;border-radius:99px;background:var(--accent-soft);color:var(--accent);font-weight:600;white-space:nowrap}
 .badge.ok{background:var(--ok-bg);color:var(--ok)}
 .badge.bad{background:var(--bad-bg);color:var(--bad)}
 .badge.warn{background:var(--warn-bg);color:var(--warn)}
-.badge.gray{background:var(--line);color:var(--muted)}
+.badge.gray{background:var(--chip);color:var(--muted)}
 
-/* event rows */
-.ev{position:relative;border:1px solid var(--line);border-left:4px solid var(--c);border-radius:10px;padding:8px 10px;background:var(--card);cursor:pointer;margin-bottom:6px}
-.ev:hover{border-color:var(--c)}
-.ev.virtual{border-style:dashed;border-left-style:solid}
-.ev.st-cancelled{opacity:.55}
-.ev.st-cancelled .ev-name{text-decoration:line-through}
-.ev-time{font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
-.ev-name{font-weight:600}
-.ev-meta{display:flex;gap:6px;align-items:center;font-size:13px;margin-top:2px;flex-wrap:wrap}
-.ev-actions{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
-.list .item{display:flex;align-items:center;gap:12px;padding:11px 4px;border-bottom:1px solid var(--line);cursor:pointer}
-.list .item:last-child{border-bottom:0}
-.dot{width:10px;height:10px;border-radius:50%;flex:none}
-.avatar{width:38px;height:38px;border-radius:50%;flex:none;display:grid;place-items:center;color:#fff;font-weight:700}
-.grow{flex:1;min-width:0}
-.ellipsis{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.seg{display:flex;background:var(--chip);border-radius:14px;padding:3px;margin-bottom:12px}
+.seg button{flex:1;border:0;background:none;padding:9px;border-radius:11px;font-weight:600;color:var(--text)}
+.seg button.on{background:var(--card);box-shadow:0 1px 3px rgba(0,0,0,.1)}
+.searchrow{display:flex;gap:10px;margin-bottom:12px}
+.search{flex:1;display:flex;align-items:center;gap:8px;background:var(--chip);border-radius:14px;padding:0 12px;color:var(--muted);flex-direction:row}
+.search input{border:0;background:none;padding:12px 0;width:100%;outline:none;color:var(--text)}
+.sqbtn{width:48px;border:0;border-radius:14px;background:var(--chip);display:grid;place-items:center;color:var(--text)}
+.chips{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;margin-bottom:8px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{border:0;background:var(--chip);border-radius:99px;padding:9px 16px;white-space:nowrap;font-size:15px}
+.chip.on{background:var(--nav);color:#fff}
+
+/* ---------- lekcje w listach ---------- */
+.lesson{display:flex;gap:12px;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:12px 14px;margin-bottom:10px;cursor:pointer;box-shadow:var(--shadow)}
+.lesson::before{content:"";width:4px;border-radius:4px;background:var(--c);flex:none}
+.lesson.virtual{border-style:dashed}
+.lesson.st-cancelled{opacity:.55}
+.lesson.st-cancelled .lname{text-decoration:line-through}
+.lesson .t{font-size:14px;color:var(--muted);font-variant-numeric:tabular-nums}
+.qa{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}
+.qa button{border:1px solid var(--line);background:var(--card);border-radius:10px;padding:6px 10px;font-size:14px;display:flex;align-items:center;gap:4px}
+.qa button svg.i{width:16px;height:16px}
+.qa .g{color:var(--ok)}.qa .r{color:var(--bad)}
+
+/* ---------- grafik ---------- */
+.weekbar{display:flex;align-items:center;justify-content:space-between;padding:0 0 4px}
+.weekbar h2{font-size:20px;font-weight:700}
+.weekbar button{border:0;background:none;width:44px;height:44px;display:grid;place-items:center;color:var(--text);border-radius:12px}
+.days{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;padding:14px 0 12px;border-bottom:1px solid var(--line)}
+.dbtn{border:0;background:none;border-radius:14px;padding:8px 0 10px;display:flex;flex-direction:column;align-items:center;gap:2px;position:relative;color:var(--text);min-width:0}
+.dbtn .dn{font-size:14px;color:var(--muted)}
+.dbtn .dd{font-size:20px;font-weight:700}
+.dbtn.today .dd{color:var(--accent)}
+.dbtn.on{background:var(--nav)}
+.dbtn.on .dn,.dbtn.on .dd{color:#fff}
+.dbtn .cnt{position:absolute;top:-10px;right:0;min-width:22px;height:22px;border-radius:11px;background:var(--nav);color:#fff;font-size:12px;font-weight:700;display:grid;place-items:center;padding:0 5px;border:2px solid var(--bg)}
+.dbtn.on .cnt{background:#fff;color:var(--nav)}
+.daysum{font-size:14px;color:var(--muted);padding:10px 2px 0}
+.tl{position:relative;margin-top:14px}
+.hr{position:absolute;left:0;right:0;height:64px;cursor:pointer}
+.hr span{position:absolute;left:0;top:-9px;font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
+.hr::after{content:"";position:absolute;left:52px;right:0;top:0;border-top:1px solid var(--line)}
+.blk{position:absolute;border-radius:12px;background:color-mix(in srgb,var(--c) 14%,var(--card));border-left:4px solid var(--c);padding:6px 10px;overflow:hidden;cursor:pointer;z-index:2;box-shadow:var(--shadow)}
+.blk.virtual{background:color-mix(in srgb,var(--c) 7%,var(--card));outline:1px dashed color-mix(in srgb,var(--c) 45%,transparent);outline-offset:-1px}
+.blk.st-cancelled{opacity:.5}
+.blk.st-cancelled b{text-decoration:line-through}
+.blk b{display:block;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding-right:16px}
+.blk .s{font-size:13px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.blk .ok{position:absolute;top:6px;right:6px;color:var(--ok)}
+.blk .ok svg.i{width:18px;height:18px}
+.now{position:absolute;left:52px;right:0;border-top:2px solid #ef4444;z-index:3;pointer-events:none}
+.now::before{content:"";position:absolute;left:-5px;top:-6px;width:10px;height:10px;border-radius:50%;background:#ef4444}
+
+/* ---------- finanse ---------- */
+.monthbar{display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:12px}
+.monthbar b{min-width:160px;text-align:center;font-size:17px}
+.monthbar button{border:0;background:var(--chip);width:40px;height:40px;border-radius:12px;display:grid;place-items:center;color:var(--text)}
+.fhero{background:var(--nav-2);color:#fff;border-radius:22px;padding:22px}
+.fhero .lbl{font-size:17px;opacity:.9}
+.fhero .big{font-size:44px;font-weight:800;margin-top:6px;font-variant-numeric:tabular-nums}
+.fhero .big small{font-size:30px;opacity:.6;font-weight:700}
+.prog{height:10px;border-radius:5px;background:rgba(255,255,255,.25);margin:14px 0 18px;overflow:hidden}
+.prog i{display:block;height:100%;background:#fff;border-radius:5px}
+.fgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px;border-top:1px solid rgba(255,255,255,.2);padding-top:16px}
+.fgrid .l{opacity:.85;font-size:15px}
+.fgrid .v{font-size:23px;font-weight:800;margin:2px 0;font-variant-numeric:tabular-nums}
+.fgrid .s{opacity:.7;font-size:13px;line-height:1.3}
+@media (max-width:380px){.fgrid .v{font-size:19px}}
+.rowcard{display:flex;align-items:center;gap:14px;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;margin-top:12px;cursor:pointer;box-shadow:var(--shadow)}
+.rowcard .v{font-size:21px;font-weight:800;font-variant-numeric:tabular-nums;white-space:nowrap}
+.chart{display:flex;align-items:flex-end;gap:10px;height:190px;margin-top:18px}
+.ccol{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;height:100%;cursor:pointer;min-width:0}
+.cval{font-size:11px;color:var(--muted);white-space:nowrap;font-variant-numeric:tabular-nums;min-height:14px}
+.cbars{flex:1;width:100%;display:flex;align-items:flex-end;justify-content:center;gap:3px}
+.cbar{width:42%;max-width:26px;border-radius:7px 7px 3px 3px;min-height:3px;background:var(--accent);opacity:.55}
+.cbar.b{background:var(--ok)}
+.ccol.on .cbar{opacity:1}
+.ccol.on .clbl{color:var(--text);font-weight:700}
+.clbl{font-size:12px;color:var(--muted)}
+.legend{display:flex;gap:14px;font-size:13px;color:var(--muted);margin-top:12px;flex-wrap:wrap}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+.stat3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px}
+.stat3>div{background:var(--chip);border-radius:14px;padding:12px 10px;min-width:0}
+.stat3 .l{font-size:13px;color:var(--muted)}
+.stat3 .v{font-size:18px;font-weight:800;margin-top:2px;font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+@media (max-width:380px){.stat3 .v{font-size:15px}}
+.mbar{display:flex;align-items:center;gap:10px;margin-top:10px;font-size:15px}
+.mbar:first-child{margin-top:0}
+.mbar .track{flex:1;height:10px;border-radius:5px;background:var(--chip);overflow:hidden}
+.mbar .track i{display:block;height:100%;border-radius:5px}
+.mbar .lbl{width:74px}
+.mbar .amt{width:90px;text-align:right;font-weight:700;font-variant-numeric:tabular-nums}
+.attn{display:flex;align-items:baseline;gap:6px}
+.attn .big{font-size:34px;font-weight:800}
+.prog2{height:10px;border-radius:5px;background:var(--chip);margin-top:10px;overflow:hidden;display:flex}
+.prog2 i{display:block;height:100%}
+.lrow{display:flex;align-items:center;gap:12px;padding:12px 2px;border-bottom:1px solid var(--line);cursor:pointer}
+.lrow:last-child{border-bottom:0}
+.dot{width:10px;height:10px;border-radius:50%;flex:none;background:var(--c)}
 .amount{font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap}
 
-/* calendar */
-.week{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:8px}
-.day{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:8px;min-height:140px;display:flex;flex-direction:column}
-.day.today{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
-.day-h{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:6px}
-.day-h b{font-size:14px}
-.day-h span{font-size:12px;color:var(--muted)}
-.day .add{margin-top:auto;border:1px dashed var(--line);background:none;border-radius:8px;color:var(--muted);cursor:pointer;padding:4px;font-size:13px}
-.day .add:hover{border-color:var(--accent);color:var(--accent)}
-.day .ev{padding:6px 7px}
-.day .ev-name{font-size:13px}
-.day .badge{white-space:normal}
-@media (max-width:900px){
-  .week{grid-template-columns:1fr}
-  .day{min-height:0}
-  .day .add{margin-top:4px}
+/* ---------- profil ---------- */
+.prof{text-align:center;padding:22px 16px}
+.prof h2{font-size:24px;margin-top:10px}
+.actions3{display:flex;justify-content:center;gap:12px;margin-top:16px}
+.actions3 a{background:var(--chip);color:var(--text);border-radius:14px;padding:10px 14px;display:flex;flex-direction:column;align-items:center;gap:4px;font-size:13px;min-width:78px}
+.actions3 svg.i{color:var(--accent)}
+.bal{display:flex;align-items:center;gap:14px}
+.bal .v{font-size:30px;font-weight:800;font-variant-numeric:tabular-nums}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:8px 16px;font-size:15px;margin:0}
+.kv dt{color:var(--muted)}
+.kv dd{margin:0;min-width:0;overflow-wrap:anywhere}
+.ledger .lrow{cursor:default}
+.ledger .lrow.click{cursor:pointer}
+
+/* ---------- przyciski ---------- */
+.btn{border:1px solid var(--line);background:var(--card);padding:11px 16px;border-radius:14px;display:inline-flex;align-items:center;justify-content:center;gap:6px;font-weight:600;white-space:nowrap}
+.btn.primary{background:var(--accent);color:var(--accent-text);border-color:var(--accent)}
+.btn.danger{color:var(--bad)}
+.btn.sm{padding:7px 12px;font-size:14px;border-radius:11px}
+.btn.block{width:100%}
+.btn svg.i{width:20px;height:20px}
+.notice{background:var(--warn-bg);color:var(--warn);border-radius:16px;padding:12px 14px;font-size:15px;margin-bottom:14px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+
+/* ---------- arkusz (okno) ---------- */
+dialog{border:0;padding:0;background:var(--card);color:var(--text);width:min(560px,100vw);max-width:100vw;max-height:92vh;border-radius:22px;box-shadow:0 20px 60px rgba(0,0,0,.35)}
+dialog::backdrop{background:rgba(8,10,18,.5)}
+@media (max-width:640px){
+  dialog{margin:auto 0 0;width:100vw;border-radius:22px 22px 0 0;max-height:92vh}
+  dialog[open]{animation:up .22s ease-out}
 }
-.month{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px}
-.mh{text-align:center;font-size:12px;color:var(--muted);font-weight:600;padding:4px 0}
-.mc{background:var(--card);border:1px solid var(--line);border-radius:8px;min-height:92px;padding:4px;cursor:pointer;overflow:hidden}
-.mc.out{opacity:.45}
-.mc.today{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
-.mc .n{font-size:12px;font-weight:700;margin-bottom:2px}
-.chip{font-size:11px;border-left:3px solid var(--c);padding:1px 4px;margin-bottom:2px;border-radius:3px;background:var(--bg);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.chip.st-cancelled{text-decoration:line-through;opacity:.6}
-@media (max-width:600px){.mc{min-height:58px}.chip{font-size:0;height:5px;padding:0;border-left-width:0;background:var(--c);margin-bottom:2px}}
-
-/* tables */
-.tbl{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
-.tbl th,.tbl td{padding:9px 8px;border-bottom:1px solid var(--line);text-align:left}
-.tbl th{font-size:12px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.03em}
-.tbl td.r,.tbl th.r{text-align:right}
-.tbl tr.click{cursor:pointer}
-.tbl tr.click:hover td{background:var(--accent-soft)}
-.scroll-x{overflow-x:auto}
-
-/* bars */
-.bars{display:flex;align-items:flex-end;gap:6px;height:180px;padding-top:10px}
-.bar-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;min-width:0;height:100%}
-.bar-pair{flex:1;display:flex;align-items:flex-end;gap:2px;width:100%;justify-content:center}
-.bar{width:42%;max-width:18px;border-radius:4px 4px 0 0;min-height:1px}
-.bar.a{background:var(--accent)}
-.bar.b{background:var(--ok)}
-.bar-lbl{font-size:11px;color:var(--muted)}
-.legend{display:flex;gap:14px;font-size:13px;color:var(--muted);margin-top:8px}
-.legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:5px;vertical-align:-1px}
-
-/* forms & modal */
-dialog{border:0;border-radius:18px;padding:0;background:var(--card);color:var(--text);width:min(560px,calc(100vw - 24px));max-height:calc(100vh - 40px);box-shadow:0 20px 60px rgba(0,0,0,.35)}
-dialog::backdrop{background:rgba(10,12,20,.5)}
-.mbody{padding:20px;overflow:auto;max-height:calc(100vh - 40px)}
-.mhead{display:flex;align-items:center;margin-bottom:14px}
-.mhead h2{margin-right:auto}
+@keyframes up{from{transform:translateY(40px);opacity:.4}to{transform:none;opacity:1}}
+.mbody{padding:10px 18px calc(20px + env(safe-area-inset-bottom));overflow:auto;max-height:92vh}
+.grab{width:40px;height:5px;border-radius:3px;background:var(--line);margin:0 auto 8px}
+.mhead{display:flex;align-items:flex-start;gap:8px;margin-bottom:14px}
+.mhead h2{font-size:21px;margin-right:auto;min-width:0;overflow-wrap:anywhere}
+.mhead .x{border:0;background:var(--chip);width:34px;height:34px;border-radius:50%;display:grid;place-items:center;color:var(--muted);flex:none}
+.mhead .x svg.i{width:18px;height:18px}
 .f{display:grid;gap:12px}
 .f2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.f3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
-@media (max-width:480px){.f3{grid-template-columns:1fr 1fr}}
-label{display:grid;gap:4px;font-size:13px;color:var(--muted)}
-input,select,textarea{width:100%;padding:9px 11px;border:1px solid var(--line);border-radius:10px;background:var(--bg);min-width:0}
+.f3{display:grid;grid-template-columns:1.3fr 1fr .8fr;gap:10px}
+label{display:grid;gap:5px;font-size:14px;color:var(--muted)}
+input,select,textarea{width:100%;padding:12px;border:1px solid var(--line);border-radius:12px;background:var(--bg);min-width:0;font-size:16px}
 input:focus,select:focus,textarea:focus{outline:2px solid var(--accent);outline-offset:-1px;border-color:transparent}
-input[type=color]{padding:2px;height:40px}
-input[type=checkbox]{width:auto}
-textarea{min-height:70px;resize:vertical}
-.factions{display:flex;gap:8px;justify-content:flex-end;margin-top:18px;flex-wrap:wrap}
-.factions .left{margin-right:auto}
-.sched-row{display:grid;grid-template-columns:1.4fr 1fr .8fr 1.1fr auto;gap:6px;align-items:center;margin-bottom:6px}
-@media (max-width:480px){.sched-row{grid-template-columns:1fr 1fr;}.sched-row .icon-btn{justify-self:end}}
+input[type=color]{padding:3px;height:46px}
+input[type=checkbox]{width:22px;height:22px;accent-color:var(--accent);flex:none}
+textarea{min-height:76px;resize:vertical}
+.factions{display:flex;gap:10px;margin-top:8px}
+.factions .btn{flex:1}
+.factions .btn.danger{flex:0 0 auto}
+.sched-row{display:grid;grid-template-columns:1.5fr 1fr .9fr 1.2fr 34px;gap:6px;align-items:center;margin-bottom:8px}
+.sched-row input,.sched-row select{padding:10px 8px;font-size:15px}
+@media (max-width:480px){.sched-row{grid-template-columns:1fr 1fr 1fr}.sched-row select[name=sday]{grid-column:1/3}.sched-row .xbtn{grid-column:3;grid-row:1;justify-self:end}}
+.xbtn{border:0;background:var(--chip);width:34px;height:34px;border-radius:50%;display:grid;place-items:center;color:var(--muted)}
+.xbtn svg.i{width:16px;height:16px}
 .quick{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px}
-.quick .btn{justify-content:center;white-space:normal;text-align:center;min-width:0}
-.menu{display:grid;gap:10px}
-.menu .btn{justify-content:flex-start;padding:14px 16px;font-size:16px}
-.balance-big{font-size:32px;font-weight:800;font-variant-numeric:tabular-nums}
-.kv{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;font-size:14px}
-.kv dt{color:var(--muted)}
-.kv dd{margin:0}
-.notice{background:var(--warn-bg);color:var(--warn);border-radius:12px;padding:10px 14px;font-size:14px;margin-bottom:14px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
-#toast{position:fixed;left:50%;bottom:30px;transform:translateX(-50%) translateY(20px);background:var(--text);color:var(--bg);padding:10px 16px;border-radius:10px;opacity:0;transition:.2s;pointer-events:none;z-index:100;font-size:14px}
+.quick button{border:1px solid var(--line);background:var(--card);border-radius:14px;padding:12px 8px;font-weight:600;font-size:15px;display:flex;align-items:center;justify-content:center;gap:6px}
+.quick .g{color:var(--ok)}.quick .r{color:var(--bad)}
+.quick button svg.i{width:18px;height:18px}
+.att{display:grid;gap:2px;background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:6px 12px}
+.att label{display:flex;align-items:center;gap:10px;color:var(--text);font-size:15px;padding:6px 0}
+.checkline{display:flex;align-items:center;gap:10px;color:var(--text)}
+.memberlist{max-height:240px;overflow:auto}
+.methods{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.methods button{border:1px solid var(--line);background:var(--bg);border-radius:12px;padding:11px 4px;font-size:14px;font-weight:600}
+.methods button.on{background:var(--accent);color:var(--accent-text);border-color:var(--accent)}
+#toast{position:fixed;left:50%;bottom:calc(100px + env(safe-area-inset-bottom));transform:translateX(-50%) translateY(10px);background:var(--text);color:var(--bg);padding:11px 18px;border-radius:14px;opacity:0;transition:.2s;pointer-events:none;z-index:100;font-size:15px;max-width:90vw;text-align:center}
 #toast.on{opacity:1;transform:translateX(-50%)}
-@media (max-width:760px){#toast{bottom:calc(150px + env(safe-area-inset-bottom))}}
-.search{max-width:260px}
 </style>
 </head>
 <body>
-<header class="top">
-  <div class="brand">📚 Korepetycje</div>
-  <nav class="tabs" id="tabs">
-    <button class="tab" data-act="tab" data-tab="dash"><span class="ico">🏠</span><span>Pulpit</span></button>
-    <button class="tab" data-act="tab" data-tab="cal"><span class="ico">📅</span><span>Kalendarz</span></button>
-    <button class="tab" data-act="tab" data-tab="students"><span class="ico">👥</span><span>Uczniowie</span></button>
-    <button class="tab" data-act="tab" data-tab="pay"><span class="ico">💰</span><span>Wpłaty</span></button>
-    <button class="tab" data-act="tab" data-tab="rep"><span class="ico">📊</span><span>Raporty</span></button>
-    <button class="tab" data-act="tab" data-tab="set"><span class="ico">⚙️</span><span>Ustawienia</span></button>
-  </nav>
-</header>
+<header class="appbar"><div class="appbar-in" id="appbar"></div></header>
 <main id="view"></main>
-<button class="fab" data-act="quickAdd" aria-label="Dodaj">+</button>
+<nav class="bnav" id="bnav">
+  <button data-act="tab" data-tab="home"></button>
+  <button data-act="tab" data-tab="students"></button>
+  <button data-act="tab" data-tab="cal"></button>
+  <button data-act="tab" data-tab="fin"></button>
+  <button data-act="tab" data-tab="set"></button>
+</nav>
 <dialog id="modal"><div class="mbody" id="modalBody"></div></dialog>
 <div id="toast"></div>
 
 <script>
 'use strict';
 /* =========================================================
-   Korepetycje – prosta aplikacja do rozliczania korepetycji.
-   Wszystkie dane trzymane są lokalnie w przeglądarce (localStorage).
+   Korepetycje – aplikacja do rozliczania korepetycji.
+   Dane trzymane lokalnie w przeglądarce (localStorage).
    ========================================================= */
 
 const KEY = 'korepetycje.v1';
-const PALETTE = ['#4f46e5','#0891b2','#16a34a','#ea580c','#db2777','#7c3aed','#ca8a04','#dc2626','#0d9488','#2563eb','#9333ea','#65a30d'];
+const PALETTE = ['#2f62d6','#0e8fb0','#16a34a','#e2681b','#d6337a','#7c3aed','#c58f07','#dc2626','#0d9488','#4f46e5','#9333ea','#65a30d'];
 const DAYS = ['Poniedziałek','Wtorek','Środa','Czwartek','Piątek','Sobota','Niedziela'];
-const DAYS_SHORT = ['Pn','Wt','Śr','Cz','Pt','So','Nd'];
+const DAYS_SHORT = ['Pon','Wt','Śr','Czw','Pt','Sob','Nie'];
 const MONTHS = ['Styczeń','Luty','Marzec','Kwiecień','Maj','Czerwiec','Lipiec','Sierpień','Wrzesień','Październik','Listopad','Grudzień'];
 const MONTHS_GEN = ['stycznia','lutego','marca','kwietnia','maja','czerwca','lipca','sierpnia','września','października','listopada','grudnia'];
-const MONTHS_SHORT = ['sty','lut','mar','kwi','maj','cze','lip','sie','wrz','paź','lis','gru'];
+const MONTHS_SHORT = ['Sty','Lut','Mar','Kwi','Maj','Cze','Lip','Sie','Wrz','Paź','Lis','Gru'];
 const METHODS = {cash:'Gotówka', transfer:'Przelew', blik:'BLIK', other:'Inne'};
-const STATUS = {planned:'Zaplanowane', done:'Odbyte', late:'Odwołane – płatne', cancelled:'Odwołane'};
+const METHOD_COLORS = {cash:'#16a34a', transfer:'#2f62d6', blik:'#7c3aed', other:'#9aa0b2'};
+const STATUS = {planned:'Zaplanowana', done:'Odbyta', late:'Odwołana z opłatą', cancelled:'Odwołana'};
+
+/* ---------- ikony ---------- */
+const ICONS = {
+  home:'<path d="M3.5 10.5 12 3.5l8.5 7V19a1.5 1.5 0 0 1-1.5 1.5h-4.5V15h-5v5.5H5A1.5 1.5 0 0 1 3.5 19z"/>',
+  users:'<circle cx="9" cy="8" r="3.3"/><path d="M2.8 19.5c.8-3.4 3.3-5.3 6.2-5.3s5.4 1.9 6.2 5.3"/><circle cx="17.2" cy="9" r="2.6"/><path d="M16.3 14.3c2.5.2 4.3 1.9 5 5"/>',
+  cal:'<rect x="3" y="4.5" width="18" height="16" rx="3"/><path d="M3 9.5h18M8 2.8v3.4M16 2.8v3.4M7.5 13.5h.01M12 13.5h.01M16.5 13.5h.01M7.5 17h.01M12 17h.01M16.5 17h.01"/>',
+  wallet:'<rect x="3" y="5.5" width="18" height="14" rx="3"/><path d="M16 12.5h2.5M3 9.5h18"/>',
+  gear:'<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/>',
+  bell:'<path d="M6 16.5V11a6 6 0 1 1 12 0v5.5l1.6 2H4.4z"/><path d="M10 20.5a2.1 2.1 0 0 0 4 0"/>',
+  plus:'<path d="M12 4.5v15M4.5 12h15"/>',
+  archive:'<rect x="3" y="4" width="18" height="5" rx="1.5"/><path d="M5 9v10a1.5 1.5 0 0 0 1.5 1.5h11A1.5 1.5 0 0 0 19 19V9M10 13h4"/>',
+  search:'<circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.2-4.2"/>',
+  sort:'<path d="M8 4v16M4 8l4-4 4 4M16 20V4M12 16l4 4 4-4"/>',
+  left:'<path d="m15 5-7 7 7 7"/>',
+  right:'<path d="m9 5 7 7-7 7"/>',
+  clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.2 2"/>',
+  book:'<path d="M12 6.5C10 5 7 4.5 3.5 5v13c3.5-.5 6.5 0 8.5 1.5 2-1.5 5-2 8.5-1.5V5C17 4.5 14 5 12 6.5zM12 6.5v13"/>',
+  card:'<rect x="3" y="5" width="18" height="14" rx="3"/><path d="M3 10h18M7 15h4"/>',
+  phone:'<path d="M5 3.8h3.4l1.6 4.4-2.1 1.4a11.5 11.5 0 0 0 6.5 6.5l1.4-2.1 4.4 1.6V19a1.6 1.6 0 0 1-1.6 1.6C10.3 20.6 3.4 13.7 3.4 5.4A1.6 1.6 0 0 1 5 3.8z"/>',
+  msg:'<path d="M4 5h16v11H9.5L4 20z"/>',
+  mail:'<rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="m4 7 8 6 8-6"/>',
+  edit:'<path d="M4 20h4L19 9l-4-4L4 16zM13.5 6.5l4 4"/>',
+  check:'<path d="m5 12.5 4.5 4.5L19 7.5"/>',
+  x:'<path d="M6 6l12 12M18 6 6 18"/>',
+  alert:'<circle cx="12" cy="12" r="9"/><path d="M12 7.5v5.5M12 16.5h.01"/>',
+  cash:'<rect x="2.5" y="6" width="19" height="12" rx="2"/><circle cx="12" cy="12" r="2.6"/><path d="M6 9.5v5M18 9.5v5"/>',
+  down:'<path d="M12 4v11M7 10l5 5 5-5M5 20h14"/>',
+  up:'<path d="M12 20V9M7 14l5-5 5 5M5 4h14"/>',
+  trash:'<path d="M4 7h16M10 11v6M14 11v6M5.5 7l1 12.5A1.5 1.5 0 0 0 8 21h8a1.5 1.5 0 0 0 1.5-1.5l1-12.5M9 7V4.5h6V7"/>',
+  chart:'<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',
+  group:'<circle cx="12" cy="7.5" r="3"/><circle cx="5" cy="10" r="2.3"/><circle cx="19" cy="10" r="2.3"/><path d="M7 19.5c.6-3 2.6-4.8 5-4.8s4.4 1.8 5 4.8M1.8 18c.4-2 1.6-3.3 3.2-3.5M22.2 18c-.4-2-1.6-3.3-3.2-3.5"/>',
+  phoneapp:'<rect x="6.5" y="2.5" width="11" height="19" rx="2.5"/><path d="M11 18.5h2"/>'
+};
+const ic = (n, style = '') => `<svg class="i" viewBox="0 0 24 24" aria-hidden="true"${style ? ` style="${style}"` : ''}>${ICONS[n] || ''}</svg>`;
 
 /* ---------- dane ---------- */
 function emptyDb(){
-  return {version:1, students:[], lessons:[], payments:[], settings:{defaultRate:80, defaultDuration:60, lastBackup:null}};
+  return {version:2, students:[], groups:[], lessons:[], payments:[], settings:{defaultRate:80, defaultDuration:60, lastBackup:null}};
+}
+function normalize(d){
+  const e = emptyDb();
+  const out = {...e, ...d, settings:{...e.settings, ...(d.settings || {})}};
+  for(const k of ['students','groups','lessons','payments']) if(!Array.isArray(out[k])) out[k] = [];
+  out.version = 2;
+  return out;
 }
 function load(){
-  try{
-    const raw = localStorage.getItem(KEY);
-    if(raw){
-      const d = JSON.parse(raw), e = emptyDb();
-      return {...e, ...d, settings:{...e.settings, ...(d.settings||{})}};
-    }
-  }catch(err){ console.error(err); }
+  try{ const raw = localStorage.getItem(KEY); if(raw) return normalize(JSON.parse(raw)); }
+  catch(err){ console.error(err); }
   return emptyDb();
 }
 let db = load();
@@ -256,53 +365,80 @@ const ymd = d => `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`
 const parse = s => { const [y,m,d] = s.split('-').map(Number); return new Date(y, m-1, d); };
 const addDays = (s, n) => { const d = parse(s); d.setDate(d.getDate() + n); return ymd(d); };
 const today = () => ymd(new Date());
-const weekday = s => (parse(s).getDay() + 6) % 7;          // 0 = poniedziałek
+const weekday = s => (parse(s).getDay() + 6) % 7;
 const weekStart = s => addDays(s, -weekday(s));
 const monthStart = s => s.slice(0, 8) + '01';
 const monthEnd = s => { const d = parse(monthStart(s)); return ymd(new Date(d.getFullYear(), d.getMonth()+1, 0)); };
 const daysBetween = (a, b) => Math.round((parse(b) - parse(a)) / 864e5);
-const toMin = t => { const [h, m] = String(t||'0:0').split(':').map(Number); return h*60 + m; };
+const toMin = t => { const [h, m] = String(t || '0:0').split(':').map(Number); return h*60 + (m || 0); };
 const fromMin = m => pad(Math.floor(m/60) % 24) + ':' + pad(m % 60);
 const nowMin = () => { const d = new Date(); return d.getHours()*60 + d.getMinutes(); };
 function shiftMonth(ym, n){ const [y,m] = ym.split('-').map(Number); const d = new Date(y, m-1+n, 1); return d.getFullYear() + '-' + pad(d.getMonth()+1); }
 function monthLabel(ym){ const [y,m] = ym.split('-').map(Number); return MONTHS[m-1] + ' ' + y; }
 function fmtDate(s){ const d = parse(s); return `${d.getDate()} ${MONTHS_GEN[d.getMonth()]} ${d.getFullYear()}`; }
 function fmtDateShort(s){ const d = parse(s); return `${DAYS_SHORT[weekday(s)]} ${d.getDate()}.${pad(d.getMonth()+1)}`; }
-function fmtDayMonth(s){ const d = parse(s); return `${d.getDate()} ${MONTHS_SHORT[d.getMonth()]}`; }
+function fmtNum(s){ const d = parse(s); return `${pad(d.getDate())}.${pad(d.getMonth()+1)}.${String(d.getFullYear()).slice(2)}`; }
+function relDay(s){
+  const n = daysBetween(today(), s);
+  if(n === 0) return 'dziś'; if(n === 1) return 'jutro'; if(n === 2) return 'pojutrze';
+  if(n === -1) return 'wczoraj'; if(n > 0) return `za ${n} dni`; return `${-n} dni temu`;
+}
 
 /* ---------- pieniądze ---------- */
 const round2 = v => Math.round((+v || 0) * 100) / 100;
 const nf = new Intl.NumberFormat('pl-PL', {minimumFractionDigits:0, maximumFractionDigits:2});
+const nf2 = new Intl.NumberFormat('pl-PL', {minimumFractionDigits:2, maximumFractionDigits:2});
 const zl = v => nf.format(round2(v)) + ' zł';
+const zl2 = v => nf2.format(round2(v)) + ' zł';
 const zlSigned = v => (v > 0 ? '+' : '') + zl(v);
-const hours = min => { const h = min / 60; return (Math.round(h*10)/10).toString().replace('.', ',') + ' h'; };
+const hours = min => (Math.round(min / 6) / 10).toString().replace('.', ',') + ' h';
 
 /* ---------- pomocnicze ---------- */
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const $ = sel => document.querySelector(sel);
 const student = id => db.students.find(s => s.id === id);
+const group = id => db.groups.find(g => g.id === id);
 const sname = id => student(id)?.name || '(usunięty uczeń)';
-const scolor = id => student(id)?.color || '#888';
-const initials = n => String(n||'?').trim().split(/\s+/).slice(0,2).map(w => w[0]).join('').toUpperCase();
-function rateOf(sid){ const s = student(sid); return s && s.rate !== '' && s.rate != null ? +s.rate : +db.settings.defaultRate; }
-function priceFor(sid, dur){ return round2(rateOf(sid) * (+dur || 0) / 60); }
-function toast(msg){ const t = $('#toast'); t.textContent = msg; t.classList.add('on'); clearTimeout(toast._t); toast._t = setTimeout(() => t.classList.remove('on'), 2200); }
+const initials = n => String(n || '?').trim().split(/\s+/).slice(0, 2).map(w => w[0]).join('').toUpperCase();
+const ownerOf = e => e.groupId ? group(e.groupId) : student(e.studentId);
+const oname = e => ownerOf(e)?.name || '(usunięty)';
+const ocolor = e => ownerOf(e)?.color || '#888';
+const osubject = e => ownerOf(e)?.subject || '';
+const byName = (a, b) => a.name.localeCompare(b.name, 'pl');
+function rateOf(o){ return o && o.rate !== '' && o.rate != null ? +o.rate : +db.settings.defaultRate; }
+function priceFor(kind, id, dur){ return round2(rateOf(kind === 'g' ? group(id) : student(id)) * (+dur || 0) / 60); }
+function toast(msg){ const t = $('#toast'); t.textContent = msg; t.classList.add('on'); clearTimeout(toast._t); toast._t = setTimeout(() => t.classList.remove('on'), 2300); }
 function download(name, text, type){
   const blob = new Blob([text], {type}); const a = document.createElement('a');
   a.href = URL.createObjectURL(blob); a.download = name; document.body.appendChild(a); a.click();
   setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1000);
 }
 
-/* ---------- logika rozliczeń ----------
-   Zajęcia „płatne” = odbyte lub odwołane-płatne.
-   Saldo ucznia = saldo początkowe + wpłaty − płatne zajęcia.
-   Saldo > 0 → nadpłata (uczeń ma „na zapas”), saldo < 0 → uczeń jest winien. */
+/* ---------- rozliczenia ----------
+   Lekcja „płatna” = odbyta albo odwołana z opłatą.
+   Lekcja grupowa: cena jest od osoby, płaci każdy obecny (przy „odwołanej z opłatą” – każdy z grupy).
+   Saldo ucznia = saldo początkowe + wpłaty − płatne lekcje. Ujemne = winien, dodatnie = nadpłata. */
 const isCharged = l => l.status === 'done' || l.status === 'late';
+function members(l){
+  if(!l.groupId) return [l.studentId];
+  if(l.attendance) return Object.keys(l.attendance);
+  return (group(l.groupId)?.memberIds || []).slice();
+}
+function chargesOf(l){
+  if(!isCharged(l)) return [];
+  if(!l.groupId) return [{sid:l.studentId, amount:+l.price}];
+  const ids = l.attendance && l.status === 'done' ? Object.keys(l.attendance).filter(k => l.attendance[k]) : members(l);
+  return ids.map(sid => ({sid, amount:+l.price}));
+}
+function value(e){
+  if(isCharged(e)) return round2(chargesOf(e).reduce((a, c) => a + c.amount, 0));
+  return round2(+e.price * (e.groupId ? members(e).length : 1));
+}
 function balance(sid){
   const s = student(sid);
   let b = +(s?.openingBalance || 0);
   for(const p of db.payments) if(p.studentId === sid) b += +p.amount;
-  for(const l of db.lessons) if(l.studentId === sid && isCharged(l)) b -= +l.price;
+  for(const l of db.lessons) for(const c of chargesOf(l)) if(c.sid === sid) b -= c.amount;
   return round2(b);
 }
 function balanceBadge(b){
@@ -310,550 +446,573 @@ function balanceBadge(b){
   if(b > 0) return `<span class="badge ok">nadpłata ${zl(b)}</span>`;
   return `<span class="badge gray">rozliczony</span>`;
 }
+const involves = (e, sid) => e.studentId === sid || (!!e.groupId && members(e).includes(sid));
 
-/* ---------- plan stały → wirtualne terminy ----------
-   Stały plan ucznia (np. wtorek 17:00) generuje „wirtualne” zajęcia w kalendarzu.
-   Gdy potwierdzisz / zmienisz / odwołasz termin, zapisuje się prawdziwy wpis
-   z tym samym slotKey, a wirtualny znika. */
+/* ---------- stały plan → terminy w kalendarzu ----------
+   Terminy z planu są „wirtualne”, dopóki ich nie potwierdzisz/zmienisz – wtedy zapisuje się
+   prawdziwa lekcja z tym samym kluczem (slotKey), a wirtualny termin znika. */
 const vcache = new Map();
-const slotKey = (sid, date, time) => `${sid}|${date}|${time}`;
-function virtualOcc(from, to, onlySid){
+function slotKey(kind, id, date, time){ return `${kind === 'g' ? 'g:' : ''}${id}|${date}|${time}`; }
+function owners(){ return [...db.students.map(o => ({o, k:'s'})), ...db.groups.map(o => ({o, k:'g'}))]; }
+function virtualOcc(from, to, only){
   const used = new Set(db.lessons.filter(l => l.slotKey).map(l => l.slotKey));
   const out = [];
-  for(const s of db.students){
-    if(s.archived || !s.schedule?.length) continue;
-    if(onlySid && s.id !== onlySid) continue;
-    const start = s.scheduleFrom || '2000-01-01';
+  for(const {o, k} of owners()){
+    if(o.archived || !o.schedule?.length) continue;
+    if(only && (only.k !== k || only.id !== o.id)) continue;
+    const start = o.scheduleFrom || '2000-01-01';
     const a = from > start ? from : start;
-    const b = s.scheduleTo && s.scheduleTo < to ? s.scheduleTo : to;
+    const b = o.scheduleTo && o.scheduleTo < to ? o.scheduleTo : to;
     if(a > b) continue;
-    for(const it of s.schedule){
+    for(const it of o.schedule){
       const dur = +it.duration || +db.settings.defaultDuration;
       for(let d = addDays(a, ((+it.day) - weekday(a) + 7) % 7); d <= b; d = addDays(d, 7)){
-        if((+it.every || 1) === 2){
-          const w = daysBetween(weekStart(s.anchor || start), weekStart(d)) / 7;
-          if(w % 2 !== 0) continue;
-        }
-        const key = slotKey(s.id, d, it.time);
+        if((+it.every || 1) === 2 && (daysBetween(weekStart(o.anchor || start), weekStart(d)) / 7) % 2 !== 0) continue;
+        const key = slotKey(k, o.id, d, it.time);
         if(used.has(key)) continue;
-        const v = {kind:'virtual', studentId:s.id, date:d, time:it.time, duration:dur, price:priceFor(s.id, dur), status:'planned', slotKey:key, note:''};
-        vcache.set(key, v);
-        out.push(v);
+        const v = {kind:'virtual', studentId:k === 's' ? o.id : null, groupId:k === 'g' ? o.id : null,
+                   date:d, time:it.time, duration:dur, price:priceFor(k, o.id, dur), status:'planned', slotKey:key, note:''};
+        vcache.set(key, v); out.push(v);
       }
     }
   }
   return out;
 }
-function events(from, to, onlySid){
-  const real = db.lessons
-    .filter(l => l.date >= from && l.date <= to && (!onlySid || l.studentId === onlySid))
-    .map(l => ({...l, kind:'lesson'}));
-  return [...real, ...virtualOcc(from, to, onlySid)]
-    .sort((x, y) => (x.date + x.time).localeCompare(y.date + y.time));
+function events(from, to, filter){
+  const real = db.lessons.filter(l => l.date >= from && l.date <= to).map(l => ({...l, kind:'lesson'}));
+  let all = [...real, ...virtualOcc(from, to)];
+  if(filter) all = all.filter(filter);
+  return all.sort((x, y) => (x.date + x.time).localeCompare(y.date + y.time));
 }
-// suma: 'earned' – tylko rozliczone (odbyte/płatne), 'forecast' – rozliczone + zaplanowane
 function sumEvents(evs, mode){
   let t = 0;
-  for(const e of evs){
-    if(isCharged(e)) t += +e.price;
-    else if(mode === 'forecast' && e.status === 'planned') t += +e.price;
-  }
+  for(const e of evs){ if(isCharged(e) || (mode === 'forecast' && e.status === 'planned')) t += value(e); }
   return round2(t);
 }
-const ended = e => { const t = today(); return e.date < t || (e.date === t && toMin(e.time) + (+e.duration) <= nowMin()); };
+const endMin = e => toMin(e.time) + (+e.duration);
+const ended = e => { const t = today(); return e.date < t || (e.date === t && endMin(e) <= nowMin()); };
 function toConfirm(){ const t = today(); return events(addDays(t, -90), t).filter(e => e.status === 'planned' && ended(e)); }
 const paymentsIn = (from, to) => db.payments.filter(p => p.date >= from && p.date <= to);
 const sumAmt = arr => round2(arr.reduce((a, p) => a + (+p.amount), 0));
 function scheduleWeekly(){
   let amount = 0, count = 0;
-  for(const s of db.students){
-    if(s.archived) continue;
-    if(s.scheduleTo && s.scheduleTo < today()) continue;
-    for(const it of s.schedule || []){
+  for(const {o, k} of owners()){
+    if(o.archived || (o.scheduleTo && o.scheduleTo < today())) continue;
+    const heads = k === 'g' ? (o.memberIds || []).length : 1;
+    for(const it of o.schedule || []){
       const f = (+it.every || 1) === 2 ? 0.5 : 1;
-      amount += priceFor(s.id, +it.duration) * f; count += f;
+      amount += priceFor(k, o.id, +it.duration) * heads * f; count += f;
     }
   }
   return {amount:round2(amount), count};
 }
 function findEvent(ds){
   if(ds.id){ const l = db.lessons.find(x => x.id === ds.id); return l ? {...l, kind:'lesson'} : null; }
-  if(ds.slot) return vcache.get(ds.slot) || null;
+  if(ds.slot){
+    if(!vcache.has(ds.slot)){ const d = ds.slot.split('|')[1]; if(d) virtualOcc(d, d); }
+    return vcache.get(ds.slot) || null;
+  }
   return null;
 }
 function materialize(v, patch){
-  const l = {id:uid(), studentId:v.studentId, date:v.date, time:v.time, duration:+v.duration, price:+v.price,
-             status:'planned', note:'', slotKey:v.slotKey || null, ...patch};
+  const l = {id:uid(), studentId:v.studentId || null, groupId:v.groupId || null, date:v.date, time:v.time, duration:+v.duration,
+             price:+v.price, status:'planned', note:'', slotKey:v.slotKey || null, ...patch};
   db.lessons.push(l);
   return l;
 }
-// Zapisuje niepotwierdzone, minione terminy z planu jako prawdziwe wpisy (przed zmianą planu / archiwizacją).
-function freezePast(sid){
+function freezePast(k, id){
   const t = today();
-  for(const v of virtualOcc(addDays(t, -90), t, sid)) if(ended(v)) materialize(v, {});
+  for(const v of virtualOcc(addDays(t, -90), t, {k, id})) if(ended(v)) materialize(v, {});
 }
-function applyQuick(ev, how){
+function allPresent(gid){ return Object.fromEntries((group(gid)?.memberIds || []).map(id => [id, true])); }
+function applyQuick(ev, how, attendance){
   const l = ev.kind === 'lesson' ? db.lessons.find(x => x.id === ev.id) : materialize(ev, {});
   if(!l) return;
-  if(how === 'cancel') l.status = 'cancelled';
-  else if(how === 'late') l.status = 'late';
-  else l.status = 'done';
-  if(how === 'cash' || how === 'transfer' || how === 'blik'){
-    db.payments.push({id:uid(), studentId:l.studentId, date:l.date, amount:+l.price, method:how,
-                      note:'Za zajęcia ' + fmtDateShort(l.date), lessonId:l.id});
+  l.status = how === 'cancel' ? 'cancelled' : how === 'late' ? 'late' : 'done';
+  if(l.groupId) l.attendance = attendance || l.attendance || allPresent(l.groupId);
+  if(['cash','transfer','blik'].includes(how)){
+    for(const c of chargesOf(l)) db.payments.push({id:uid(), studentId:c.sid, date:l.date, amount:c.amount, method:how,
+      note:'Za lekcję ' + fmtDateShort(l.date), lessonId:l.id});
   }
   save();
-  const msg = {done:'Zapisano jako odbyte', cash:'Odbyte + gotówka', transfer:'Odbyte + przelew', blik:'Odbyte + BLIK', cancel:'Odwołano', late:'Odwołane (płatne)'}[how];
-  toast(msg + ' · ' + sname(l.studentId));
+  const msg = {done:'Lekcja odbyta', cash:'Odbyta + gotówka', transfer:'Odbyta + przelew', blik:'Odbyta + BLIK', cancel:'Lekcja odwołana', late:'Odwołana z opłatą'}[how];
+  toast(msg + ' · ' + oname(l));
 }
 
 /* ---------- stan widoku ---------- */
 const state = {
-  tab: (() => { try{ return sessionStorage.getItem('kor.tab') || 'dash'; }catch(e){ return 'dash'; } })(),
-  cal:'week', calDate:today(), studentId:null, payMonth:today().slice(0,7), repMonth:today().slice(0,7),
-  showArchived:false, search:''
+  tab:(() => { try{ return sessionStorage.getItem('kor.tab') || 'home'; }catch(e){ return 'home'; } })(),
+  calDate:today(), studentId:null, groupId:null, seg:'students', subject:'', sort:'name',
+  finMonth:today().slice(0, 7), showArchived:false, search:''
 };
+if(!['home','students','cal','fin','set'].includes(state.tab)) state.tab = 'home';
 
 /* ---------- elementy wspólne ---------- */
 function statusBadge(e){
-  if(e.status === 'done') return `<span class="badge ok">odbyte</span>`;
-  if(e.status === 'late') return `<span class="badge warn">odwołane płatne</span>`;
-  if(e.status === 'cancelled') return `<span class="badge gray">odwołane</span>`;
+  if(e.status === 'done') return `<span class="badge ok">odbyta</span>`;
+  if(e.status === 'late') return `<span class="badge warn">odwołana z opłatą</span>`;
+  if(e.status === 'cancelled') return `<span class="badge gray">odwołana</span>`;
   if(ended(e)) return `<span class="badge warn">do potwierdzenia</span>`;
-  return e.kind === 'virtual' ? `<span class="badge">z planu</span>` : `<span class="badge">zaplanowane</span>`;
+  return '';
 }
-function evAttrs(e){ return e.kind === 'lesson' ? `data-id="${esc(e.id)}"` : `data-slot="${esc(e.slotKey)}"`; }
-function evRow(e, o = {}){
-  const end = fromMin(toMin(e.time) + (+e.duration));
-  const actions = o.actions ? `<div class="ev-actions">
-      <button class="btn sm ok" data-act="quick" data-how="done" ${evAttrs(e)}>✓ Odbyte</button>
-      <button class="btn sm ok" data-act="quick" data-how="cash" ${evAttrs(e)}>✓ + gotówka</button>
-      <button class="btn sm" data-act="quick" data-how="transfer" ${evAttrs(e)}>✓ + przelew</button>
-      <button class="btn sm danger" data-act="quick" data-how="cancel" ${evAttrs(e)}>✕ Odwołane</button>
-    </div>` : '';
-  return `<div class="ev ${e.kind} st-${e.status}" style="--c:${esc(scolor(e.studentId))}" data-act="openEvent" ${evAttrs(e)}>
-    <div class="ev-time">${o.date ? fmtDateShort(e.date) + ' · ' : ''}${e.time}–${end}</div>
-    <div class="ev-name">${esc(sname(e.studentId))}</div>
-    <div class="ev-meta">${statusBadge(e)} <span class="muted">${zl(e.price)}</span></div>
-    ${actions}
+const evAttrs = e => e.kind === 'lesson' ? `data-id="${esc(e.id)}"` : `data-slot="${esc(e.slotKey)}"`;
+function quickBtns(e){
+  const a = evAttrs(e);
+  return `<div class="qa">
+    <button class="g" data-act="quick" data-how="done" ${a}>${ic('check')}Odbyta</button>
+    <button class="g" data-act="quick" data-how="cash" ${a}>${ic('cash')}Gotówka</button>
+    <button data-act="quick" data-how="transfer" ${a}>Przelew</button>
+    <button class="r" data-act="quick" data-how="cancel" ${a}>${ic('x')}Odwołana</button>
   </div>`;
 }
-function stat(lbl, val, sub = '', cls = ''){
-  return `<div class="card stat"><div class="lbl">${lbl}</div><div class="val ${cls}">${val}</div>${sub ? `<div class="sub">${sub}</div>` : ''}</div>`;
+function lessonCard(e, o = {}){
+  const sub = [osubject(e), e.groupId ? `grupa · ${members(e).length} os.` : ''].filter(Boolean).join(' · ');
+  return `<div class="lesson ${e.kind} st-${e.status}" style="--c:${esc(ocolor(e))}" data-act="openEvent" ${evAttrs(e)}>
+    <div class="grow">
+      <div class="row"><div class="t">${o.date ? fmtDateShort(e.date) + ' · ' : ''}${e.time} – ${fromMin(endMin(e))}</div><span class="grow"></span>${statusBadge(e)}</div>
+      <div class="lname ell">${esc(oname(e))}</div>
+      <div class="row small muted"><span class="ell">${esc(sub)}</span><span class="grow"></span><b class="num" style="color:var(--text)">${zl(value(e))}</b></div>
+      ${o.actions ? quickBtns(e) : ''}
+    </div></div>`;
+}
+function ownerOptions(sel){
+  const st = db.students.filter(s => !s.archived || 's:' + s.id === sel).sort(byName);
+  const gr = db.groups.filter(g => !g.archived || 'g:' + g.id === sel).sort(byName);
+  return `<optgroup label="Uczniowie">${st.map(s => `<option value="s:${esc(s.id)}" ${'s:' + s.id === sel ? 'selected' : ''}>${esc(s.name)}</option>`).join('')}</optgroup>
+    ${gr.length ? `<optgroup label="Grupy">${gr.map(g => `<option value="g:${esc(g.id)}" ${'g:' + g.id === sel ? 'selected' : ''}>${esc(g.name)}</option>`).join('')}</optgroup>` : ''}`;
 }
 function studentOptions(sel){
-  const list = db.students.filter(s => !s.archived || s.id === sel).sort((a, b) => a.name.localeCompare(b.name, 'pl'));
-  return list.map(s => `<option value="${esc(s.id)}" ${s.id === sel ? 'selected' : ''}>${esc(s.name)}</option>`).join('');
+  return db.students.filter(s => !s.archived || s.id === sel).sort(byName)
+    .map(s => `<option value="${esc(s.id)}" ${s.id === sel ? 'selected' : ''}>${esc(s.name)}</option>`).join('');
+}
+function notifications(){
+  const conf = toConfirm();
+  const debtors = db.students.map(s => ({s, b:balance(s.id)})).filter(x => x.b < 0);
+  const bd = db.settings.lastBackup ? daysBetween(db.settings.lastBackup.slice(0, 10), today()) : null;
+  const backup = (bd === null || bd > 14) && db.lessons.length + db.payments.length > 5;
+  return {conf, debtors, backup, bd, count:conf.length + (backup ? 1 : 0)};
 }
 
 /* =========================================================
    WIDOKI
    ========================================================= */
+const TABS = {home:['home','Główna'], students:['users','Uczniowie'], cal:['cal','Grafik'], fin:['wallet','Finanse'], set:['gear','Ustawienia']};
+function setBar(left, title, right){
+  $('#appbar').innerHTML = `<div>${left || ''}</div><h1>${title}</h1><div style="display:flex;justify-content:flex-end">${right || ''}</div>`;
+}
 function render(){
-  document.querySelectorAll('.tab').forEach(b => b.classList.toggle('on', b.dataset.tab === state.tab));
+  document.querySelectorAll('#bnav button').forEach(b => {
+    const [icon, label] = TABS[b.dataset.tab];
+    b.innerHTML = `${ic(icon)}<span>${label}</span>`;
+    b.classList.toggle('on', b.dataset.tab === state.tab);
+  });
   try{ sessionStorage.setItem('kor.tab', state.tab); }catch(e){}
   vcache.clear();
-  const v = {dash:viewDash, cal:viewCal, students:viewStudents, pay:viewPay, rep:viewRep, set:viewSet}[state.tab] || viewDash;
+  const v = {home:viewHome, students:viewStudents, cal:viewCal, fin:viewFin, set:viewSet}[state.tab];
   $('#view').innerHTML = v();
 }
 
-/* ---------- PULPIT ---------- */
-function viewDash(){
-  if(!db.students.length){
-    return `<div class="card" style="text-align:center;padding:40px 20px">
-      <div style="font-size:44px">📚</div>
-      <h2 style="margin:10px 0 8px">Witaj w aplikacji Korepetycje</h2>
-      <p class="muted" style="max-width:460px;margin:0 auto 18px">Dodaj pierwszego ucznia ze stałym terminem zajęć – kalendarz, salda i prognozy policzą się same.</p>
-      <div class="row" style="justify-content:center">
-        <button class="btn primary" data-act="addStudent">+ Dodaj ucznia</button>
-        <button class="btn" data-act="loadDemo">Wczytaj przykładowe dane</button>
-      </div></div>`;
+/* ---------- GŁÓWNA ---------- */
+function viewHome(){
+  const n = notifications();
+  setBar('', 'Korepetycje', `<button class="bar-btn" data-act="notif" aria-label="Powiadomienia">${ic('bell')}${n.count ? '<i class="red"></i>' : ''}</button>`);
+  if(!db.students.length && !db.groups.length){
+    return `<div class="card" style="text-align:center;padding:36px 20px;margin-top:10px">
+      <div style="color:var(--accent)">${ic('book', 'width:56px;height:56px')}</div>
+      <h2 style="margin:12px 0 8px">Witaj!</h2>
+      <p class="muted" style="margin:0 auto 20px;max-width:420px">Dodaj pierwszego ucznia ze stałym terminem lekcji. Grafik, salda i prognozy policzą się same.</p>
+      <div class="f"><button class="btn primary" data-act="addStudent">${ic('plus')}Dodaj ucznia</button>
+      <button class="btn" data-act="loadDemo">Wczytaj przykładowe dane</button></div></div>`;
   }
-  const t = today(), ws = weekStart(t), we = addDays(ws, 6), ms = monthStart(t), me = monthEnd(t);
-  const nms = addDays(me, 1), nme = monthEnd(nms);
-  const wEv = events(ws, we), mEv = events(ms, me);
-  const wDone = wEv.filter(isCharged), mDone = mEv.filter(isCharged);
-  const weekPay = paymentsIn(ws, we), monthPay = paymentsIn(ms, me);
-  const cashWeek = sumAmt(weekPay.filter(p => p.method === 'cash'));
-  const cashMonth = sumAmt(monthPay.filter(p => p.method === 'cash'));
-  const bals = db.students.map(s => ({s, b:balance(s.id)}));
-  const debtors = bals.filter(x => x.b < 0).sort((a, b) => a.b - b.b);
-  const debt = round2(debtors.reduce((a, x) => a - x.b, 0));
-  const over = round2(bals.filter(x => x.b > 0).reduce((a, x) => a + x.b, 0));
-  const todayEv = events(t, t).filter(e => e.status !== 'cancelled');
-  const conf = toConfirm();
-  const sw = scheduleWeekly();
-  const f7 = sumEvents(events(t, addDays(t, 6)), 'forecast');
-  const f14 = sumEvents(events(t, addDays(t, 13)), 'forecast');
-  const nextMonth = sumEvents(events(nms, nme), 'forecast');
+  const t = today(), ws = weekStart(t), we = addDays(ws, 6);
+  const upcoming = events(t, addDays(t, 30)).filter(e => e.status === 'planned' && !ended(e));
+  const next = upcoming[0];
+  const soon = upcoming.filter(e => e.date <= addDays(t, 2));
+  const wEv = events(ws, we).filter(e => e.status !== 'cancelled');
+  const ms = monthStart(t), me = monthEnd(t), mEv = events(ms, me);
+  const active = db.students.filter(s => !s.archived).length;
+  const debt = round2(n.debtors.reduce((a, x) => a - x.b, 0));
 
-  const backupDays = db.settings.lastBackup ? daysBetween(db.settings.lastBackup.slice(0,10), t) : null;
-  const backupNote = (backupDays === null || backupDays > 14) && db.lessons.length + db.payments.length > 5
-    ? `<div class="notice">💾 ${backupDays === null ? 'Nie masz jeszcze kopii zapasowej danych.' : `Ostatnia kopia zapasowa: ${backupDays} dni temu.`}
-       <button class="btn sm" data-act="exportJson">Zrób kopię teraz</button></div>` : '';
+  const hero = next ? `<div class="hero" data-act="openEvent" ${evAttrs(next)}>
+      <div class="lbl">Następna lekcja</div>
+      <span class="tag">${relDay(next.date)}</span>
+      <div class="big ell">${esc(oname(next))}</div>
+      <div class="sub">${esc(osubject(next) || (next.groupId ? 'Grupa' : ''))}</div>
+      <div class="when">${ic('clock')}${fmtNum(next.date)}, ${next.time}</div>
+    </div>` : `<div class="hero"><div class="lbl">Następna lekcja</div><div class="big">Brak zaplanowanych</div><div class="sub">Dodaj lekcję albo stały plan ucznia</div></div>`;
 
-  return `${backupNote}
-  <div class="pagehead"><h2>${DAYS[weekday(t)]}, ${fmtDate(t)}</h2></div>
-  <div class="grid g4">
-    ${stat('Zarobione w tym tygodniu', zl(sumEvents(wEv, 'earned')), `${wDone.length} zajęć · prognoza ${zl(sumEvents(wEv, 'forecast'))}`)}
-    ${stat('Zarobione w tym miesiącu', zl(sumEvents(mEv, 'earned')), `${mDone.length} zajęć · prognoza ${zl(sumEvents(mEv, 'forecast'))}`)}
-    ${stat('Wpłaty w tym miesiącu', zl(sumAmt(monthPay)), `gotówka ${zl(cashMonth)} · tydzień ${zl(sumAmt(weekPay))} (got. ${zl(cashWeek)})`)}
-    ${stat('Uczniowie winni łącznie', zl(debt), over > 0 ? `nadpłaty u uczniów: ${zl(over)}` : 'brak nadpłat', debt > 0 ? 'neg' : '')}
-  </div>
-
-  <h3>Prognoza przychodów</h3>
-  <div class="grid g4">
-    ${stat('Najbliższe 7 dni', zl(f7), 'zaplanowane + z planu stałego')}
-    ${stat('Najbliższe 2 tygodnie', zl(f14), 'zaplanowane + z planu stałego')}
-    ${stat(`${MONTHS[parse(nms).getMonth()]} (cały miesiąc)`, zl(nextMonth), 'na podstawie planu')}
-    ${stat('Stały plan', zl(sw.amount) + ' / tydz.', `2 tyg.: ${zl(sw.amount*2)} · miesiąc ≈ ${zl(sw.amount*52/12)}`)}
-  </div>
-
-  <div class="grid g2" style="margin-top:6px">
-    <div>
-      <h3>Dziś (${todayEv.length})</h3>
-      ${todayEv.length ? todayEv.map(e => evRow(e, {actions: e.status === 'planned'})).join('') : `<div class="card empty">Dziś bez zajęć 🎉</div>`}
+  return `${n.backup ? `<div class="notice">💾 ${n.bd === null ? 'Nie masz jeszcze kopii zapasowej.' : `Ostatnia kopia: ${n.bd} dni temu.`}<button class="btn sm" data-act="exportJson">Zrób kopię</button></div>` : ''}
+    ${hero}
+    <div class="tiles">
+      <div class="tile" data-act="tab" data-tab="cal">${ic('book')}<div class="v">${wEv.length}</div><div class="l">Lekcji w tym tygodniu</div></div>
+      <div class="tile" data-act="tab" data-tab="fin">${ic('card')}<div class="v">${zl(sumEvents(wEv, 'forecast'))}</div><div class="l">Prognoza tygodnia</div></div>
+      <div class="tile" data-act="tab" data-tab="students">${ic('users')}<div class="v">${active}</div><div class="l">Aktywni uczniowie</div></div>
     </div>
-    <div>
-      <h3>Do potwierdzenia (${conf.length}) ${conf.length > 1 ? `<button class="btn sm" style="float:right;text-transform:none;letter-spacing:0" data-act="confirmAll">✓ Wszystkie odbyte</button>` : ''}</h3>
-      ${conf.length ? conf.slice().reverse().map(e => evRow(e, {date:true, actions:true})).join('') : `<div class="card empty">Wszystko potwierdzone ✓</div>`}
+    <div class="tiles">
+      <div class="tile" data-act="tab" data-tab="fin">${ic('chart')}<div class="v">${zl(sumEvents(mEv, 'earned'))}</div><div class="l">Zarobione w tym miesiącu</div></div>
+      <div class="tile" data-act="tab" data-tab="fin">${ic('cash')}<div class="v">${zl(sumAmt(paymentsIn(ms, me)))}</div><div class="l">Otrzymane w tym miesiącu</div></div>
+      <div class="tile" data-act="debtors">${ic('alert')}<div class="v ${debt ? 'neg' : ''}">${zl(debt)}</div><div class="l">Zadłużenie uczniów</div></div>
     </div>
-  </div>
-
-  <h3>Saldo uczniów</h3>
-  <div class="card list">
-    ${bals.filter(x => !x.s.archived || x.b !== 0).sort((a, b) => a.b - b.b).map(({s, b}) => `
-      <div class="item" data-act="openStudent" data-id="${esc(s.id)}">
-        <div class="avatar" style="background:${esc(s.color)}">${esc(initials(s.name))}</div>
-        <div class="grow"><div class="ellipsis"><b>${esc(s.name)}</b></div><div class="small muted ellipsis">${esc(s.subject || '')}</div></div>
-        ${balanceBadge(b)}
-        ${b < 0 ? `<button class="btn sm" data-act="addPayment" data-sid="${esc(s.id)}">+ Wpłata</button>` : ''}
-      </div>`).join('') || '<div class="empty">Brak uczniów</div>'}
-  </div>`;
+    ${n.conf.length ? `<div class="sec">Do potwierdzenia <span class="badge warn">${n.conf.length}</span>${n.conf.length > 1 ? `<button class="more" data-act="confirmAll">Wszystkie odbyte</button>` : ''}</div>
+      ${n.conf.slice().reverse().slice(0, 5).map(e => lessonCard(e, {date:true, actions:true})).join('')}
+      ${n.conf.length > 5 ? `<button class="btn block" data-act="notif">Pokaż wszystkie (${n.conf.length})</button>` : ''}` : ''}
+    <div class="sec">Najbliższe lekcje</div>
+    ${soon.length ? soon.map(e => lessonCard(e, {date:true, actions:e.date === t})).join('') : `<div class="empty">Brak lekcji w ciągu najbliższych 2 dni</div>`}`;
 }
 
-/* ---------- KALENDARZ ---------- */
-function viewCal(){
-  const d = state.calDate;
-  let title, body;
-  if(state.cal === 'week'){
-    const ws = weekStart(d), we = addDays(ws, 6), t = today();
-    const evs = events(ws, we);
-    title = `${fmtDayMonth(ws)} – ${fmtDayMonth(we)} ${parse(we).getFullYear()}`;
-    const active = evs.filter(e => e.status !== 'cancelled');
-    const mins = active.reduce((a, e) => a + (+e.duration), 0);
-    body = `<div class="row small muted" style="margin-bottom:10px">
-        <span>${active.length} zajęć · ${hours(mins)}</span><span>·</span>
-        <span>zarobione ${zl(sumEvents(evs, 'earned'))}</span><span>·</span>
-        <span>prognoza tygodnia <b>${zl(sumEvents(evs, 'forecast'))}</b></span></div>
-      <div class="week">${[0,1,2,3,4,5,6].map(i => {
-        const day = addDays(ws, i), de = evs.filter(e => e.date === day);
-        return `<div class="day ${day === t ? 'today' : ''}">
-          <div class="day-h"><b>${DAYS_SHORT[i]}</b><span>${fmtDayMonth(day)}</span></div>
-          ${de.map(e => evRow(e)).join('')}
-          <button class="add" data-act="addLesson" data-date="${day}">+ zajęcia</button>
-        </div>`;
-      }).join('')}</div>`;
-  }else{
-    const ms = monthStart(d), me = monthEnd(d), gs = weekStart(ms), ge = addDays(weekStart(me), 6), t = today();
-    const evs = events(gs, ge), mEv = evs.filter(e => e.date >= ms && e.date <= me);
-    title = monthLabel(d.slice(0, 7));
-    const cells = [];
-    for(let day = gs; day <= ge; day = addDays(day, 1)){
-      const de = evs.filter(e => e.date === day);
-      cells.push(`<div class="mc ${day < ms || day > me ? 'out' : ''} ${day === t ? 'today' : ''}" data-act="calDay" data-date="${day}">
-        <div class="n">${parse(day).getDate()}</div>
-        ${de.slice(0, 4).map(e => `<div class="chip st-${e.status}" style="--c:${esc(scolor(e.studentId))}">${e.time} ${esc(sname(e.studentId).split(' ')[0])}</div>`).join('')}
-        ${de.length > 4 ? `<div class="small muted">+${de.length - 4}</div>` : ''}
-      </div>`);
-    }
-    body = `<div class="row small muted" style="margin-bottom:10px">
-        <span>${mEv.filter(e => e.status !== 'cancelled').length} zajęć</span><span>·</span>
-        <span>zarobione ${zl(sumEvents(mEv, 'earned'))}</span><span>·</span>
-        <span>prognoza miesiąca <b>${zl(sumEvents(mEv, 'forecast'))}</b></span></div>
-      <div class="month">${DAYS_SHORT.map(x => `<div class="mh">${x}</div>`).join('')}${cells.join('')}</div>
-      <p class="hint">Kliknij dzień, aby zobaczyć szczegóły tygodnia.</p>`;
-  }
-  return `<div class="pagehead">
-      <h2>${title}</h2>
-      <div class="seg"><button class="${state.cal === 'week' ? 'on' : ''}" data-act="calMode" data-mode="week">Tydzień</button><button class="${state.cal === 'month' ? 'on' : ''}" data-act="calMode" data-mode="month">Miesiąc</button></div>
-      <button class="btn" data-act="calNav" data-dir="-1">‹</button>
-      <button class="btn" data-act="calToday">Dziś</button>
-      <button class="btn" data-act="calNav" data-dir="1">›</button>
-    </div>${body}
-    <p class="hint">Przerywana ramka = termin wynikający ze stałego planu ucznia. Kliknij, aby potwierdzić, przenieść lub odwołać.</p>`;
-}
-
-/* ---------- UCZNIOWIE ---------- */
+/* ---------- UCZNIOWIE / GRUPY ---------- */
 function viewStudents(){
   if(state.studentId && student(state.studentId)) return viewStudent(student(state.studentId));
-  state.studentId = null;
-  const archivedCount = db.students.filter(s => s.archived).length;
-  return `<div class="pagehead">
-      <h2>Uczniowie</h2>
-      <input class="search" id="search" type="search" placeholder="Szukaj…" value="${esc(state.search)}">
-      <button class="btn primary" data-act="addStudent">+ Uczeń</button>
-    </div>
-    <div class="card list" id="slist">${studentListHtml()}</div>
-    ${archivedCount ? `<p><button class="btn sm" data-act="toggleArchived">${state.showArchived ? 'Ukryj' : 'Pokaż'} archiwalnych (${archivedCount})</button></p>` : ''}`;
-}
-function nextLesson(sid){
-  const t = today();
-  return events(t, addDays(t, 30), sid).find(e => e.status === 'planned' && !ended(e));
+  if(state.groupId && group(state.groupId)) return viewGroup(group(state.groupId));
+  state.studentId = state.groupId = null;
+  const isG = state.seg === 'groups';
+  setBar(`<button class="bar-btn" data-act="toggleArchived" aria-label="Archiwum" style="${state.showArchived ? 'background:rgba(255,255,255,.18)' : ''}">${ic('archive')}</button>`,
+    state.showArchived ? 'Archiwum' : (isG ? 'Grupy' : 'Uczniowie'),
+    `<button class="bar-btn" data-act="${isG ? 'addGroup' : 'addStudent'}" aria-label="Dodaj">${ic('plus')}</button>`);
+  const subjects = [...new Set(db.students.map(s => (s.subject || '').trim()).filter(Boolean))].sort((a, b) => a.localeCompare(b, 'pl'));
+  return `<div class="seg"><button class="${!isG ? 'on' : ''}" data-act="seg" data-seg="students">Uczniowie</button><button class="${isG ? 'on' : ''}" data-act="seg" data-seg="groups">Grupy</button></div>
+    ${isG ? '' : `<div class="searchrow">
+      <label class="search">${ic('search')}<input id="search" type="search" placeholder="Wpisz imię lub przedmiot" value="${esc(state.search)}" aria-label="Szukaj"></label>
+      <button class="sqbtn" data-act="sort" aria-label="Sortuj">${ic('sort')}</button></div>
+      ${subjects.length ? `<div class="chips"><button class="chip ${!state.subject ? 'on' : ''}" data-act="subject" data-s="">Wszystko</button>${subjects.map(s => `<button class="chip ${state.subject === s ? 'on' : ''}" data-act="subject" data-s="${esc(s)}">${esc(s)}</button>`).join('')}</div>` : ''}
+      <div class="tiny muted" style="margin:0 2px 10px">Sortowanie: ${{name:'alfabetycznie', balance:'według salda (najpierw zadłużeni)', recent:'ostatnio dodani'}[state.sort]}</div>`}
+    <div id="slist">${isG ? groupListHtml() : studentListHtml()}</div>`;
 }
 function studentListHtml(){
   const q = state.search.trim().toLowerCase();
-  const list = db.students
-    .filter(s => state.showArchived || !s.archived)
-    .filter(s => !q || [s.name, s.subject, s.level, s.phone, s.parentName].join(' ').toLowerCase().includes(q))
-    .sort((a, b) => (a.archived - b.archived) || a.name.localeCompare(b.name, 'pl'));
-  if(!list.length) return `<div class="empty">${db.students.length ? 'Brak wyników' : 'Nie masz jeszcze uczniów. Dodaj pierwszego!'}</div>`;
-  return list.map(s => {
-    const nl = nextLesson(s.id);
-    const plan = (s.schedule || []).map(it => `${DAYS_SHORT[it.day]} ${it.time}`).join(', ');
-    return `<div class="item" data-act="openStudent" data-id="${esc(s.id)}">
-      <div class="avatar" style="background:${esc(s.color)}">${esc(initials(s.name))}</div>
-      <div class="grow">
-        <div class="ellipsis"><b>${esc(s.name)}</b> ${s.archived ? '<span class="badge gray">archiwum</span>' : ''}</div>
-        <div class="small muted ellipsis">${esc([s.subject, s.level].filter(Boolean).join(' · '))}${plan ? ' · ' + plan : ''}</div>
-        ${nl ? `<div class="small muted">następne: ${fmtDateShort(nl.date)} ${nl.time}</div>` : ''}
-      </div>
-      ${balanceBadge(balance(s.id))}
-    </div>`;
-  }).join('');
+  let list = db.students
+    .filter(s => state.showArchived ? s.archived : !s.archived)
+    .filter(s => !state.subject || (s.subject || '').trim() === state.subject)
+    .filter(s => !q || [s.name, s.subject, s.level, s.phone, s.parentName].join(' ').toLowerCase().includes(q));
+  const bal = new Map(list.map(s => [s.id, balance(s.id)]));
+  if(state.sort === 'balance') list.sort((a, b) => bal.get(a.id) - bal.get(b.id) || byName(a, b));
+  else if(state.sort === 'recent') list.sort((a, b) => (b.created || '').localeCompare(a.created || '') || byName(a, b));
+  else list.sort(byName);
+  if(!list.length) return `<div class="empty">${state.showArchived ? 'Archiwum jest puste' : db.students.length ? 'Brak wyników' : 'Nie masz jeszcze uczniów.<br><br><button class="btn primary" data-act="addStudent">Dodaj ucznia</button>'}</div>`;
+  return list.map(s => `<div class="lcard" data-act="openStudent" data-id="${esc(s.id)}">
+      <div class="avatar" style="--c:${esc(s.color)}">${esc(initials(s.name))}</div>
+      <div class="grow"><div class="lname ell">${esc(s.name)}</div><div class="lsub ell">${esc([s.subject, s.level].filter(Boolean).join(' · ') || '—')}</div></div>
+      ${bal.get(s.id) ? balanceBadge(bal.get(s.id)) : ''}
+    </div>`).join('');
+}
+function groupListHtml(){
+  const list = db.groups.filter(g => state.showArchived ? g.archived : !g.archived).sort(byName);
+  if(!list.length) return `<div class="empty">${state.showArchived ? 'Brak grup w archiwum' : 'Grupa to kilku uczniów na jednej lekcji – każdy płaci swoją część, a Ty zaznaczasz obecność.<br><br><button class="btn primary" data-act="addGroup">Utwórz grupę</button>'}</div>`;
+  return list.map(g => `<div class="lcard" data-act="openGroup" data-id="${esc(g.id)}">
+      <div class="avatar" style="--c:${esc(g.color)}">${ic('group')}</div>
+      <div class="grow"><div class="lname ell">${esc(g.name)}</div>
+        <div class="lsub ell">${esc(g.subject || 'Grupa')} · ${(g.memberIds || []).length} os.${(g.schedule || []).length ? ' · ' + g.schedule.map(it => DAYS_SHORT[it.day] + ' ' + it.time).join(', ') : ''}</div></div>
+    </div>`).join('');
+}
+function planHtml(o){
+  const plan = (o.schedule || []).map(it => `<div class="row" style="padding:4px 0">${ic('clock', 'color:var(--accent)')}<span>${DAYS[it.day]} ${it.time} · ${it.duration} min${+it.every === 2 ? ' · co 2 tyg.' : ''}</span></div>`);
+  return plan.length ? plan.join('') : '<div class="muted">Brak stałego planu – lekcje dodajesz ręcznie.</div>';
 }
 function viewStudent(s){
+  setBar(`<button class="bar-btn" data-act="back" aria-label="Wróć">${ic('left')}</button>`, esc(s.name),
+         `<button class="bar-btn" data-act="editStudent" data-id="${esc(s.id)}" aria-label="Edytuj">${ic('edit')}</button>`);
   const b = balance(s.id), t = today();
-  const upcoming = events(t, addDays(t, 21), s.id).filter(e => !ended(e) && e.status !== 'cancelled');
-  // księga: saldo początkowe, zajęcia, wpłaty – z saldem narastającym
+  const upcoming = events(t, addDays(t, 21), e => involves(e, s.id)).filter(e => !ended(e) && e.status !== 'cancelled');
   const entries = [];
-  if(+s.openingBalance) entries.push({date:s.created || '0000', kind:'open', amount:+s.openingBalance});
-  db.lessons.filter(l => l.studentId === s.id && l.status !== 'planned').forEach(l => entries.push({date:l.date, time:l.time, kind:'lesson', l, amount:isCharged(l) ? -l.price : 0}));
+  if(+s.openingBalance) entries.push({date:'0000', kind:'open', amount:+s.openingBalance});
+  for(const l of db.lessons){
+    if(l.status === 'planned' || !involves(l, s.id)) continue;
+    const c = chargesOf(l).find(x => x.sid === s.id);
+    entries.push({date:l.date, time:l.time, kind:'lesson', l, absent:l.groupId && l.status === 'done' && !c, amount:c ? -c.amount : 0});
+  }
   db.payments.filter(p => p.studentId === s.id).forEach(p => entries.push({date:p.date, time:'99', kind:'pay', p, amount:+p.amount}));
   entries.sort((a, b) => (a.date + (a.time || '')).localeCompare(b.date + (b.time || '')));
   let run = 0; entries.forEach(e => { run = round2(run + e.amount); e.run = run; });
-  const allDone = db.lessons.filter(l => l.studentId === s.id && isCharged(l));
-  const totalPaid = sumAmt(db.payments.filter(p => p.studentId === s.id));
-  const plan = (s.schedule || []).map(it => `${DAYS[it.day]} ${it.time} (${it.duration} min${+it.every === 2 ? ', co 2 tyg.' : ''})`);
-  const tel = v => v ? `<a href="tel:${esc(v.replace(/\s/g, ''))}">${esc(v)}</a> · <a href="sms:${esc(v.replace(/\s/g, ''))}">SMS</a>` : '—';
+  const charged = entries.filter(e => e.kind === 'lesson' && e.amount);
+  const groups = db.groups.filter(g => (g.memberIds || []).includes(s.id));
+  const tel = v => v.replace(/[^\d+]/g, '');
 
-  return `<div class="pagehead">
-      <button class="btn" data-act="backStudents">‹ Uczniowie</button>
-      <h2 style="margin-left:6px">${esc(s.name)} ${s.archived ? '<span class="badge gray">archiwum</span>' : ''}</h2>
-      <button class="btn" data-act="editStudent" data-id="${esc(s.id)}">✎ Edytuj</button>
+  return `<div class="card prof">
+      <div class="avatar lg" style="--c:${esc(s.color)};margin:0 auto">${esc(initials(s.name))}</div>
+      <h2>${esc(s.name)}</h2>
+      <div class="muted">${esc([s.subject, s.level].filter(Boolean).join(' · ') || '—')} · ${zl(rateOf(s))}/h</div>
+      ${s.archived ? '<div style="margin-top:8px"><span class="badge gray">w archiwum</span></div>' : ''}
+      ${s.phone || s.email ? `<div class="actions3">
+        ${s.phone ? `<a href="tel:${esc(tel(s.phone))}">${ic('phone')}Zadzwoń</a><a href="sms:${esc(tel(s.phone))}">${ic('msg')}SMS</a>` : ''}
+        ${s.email ? `<a href="mailto:${esc(s.email)}">${ic('mail')}E-mail</a>` : ''}</div>` : ''}
     </div>
-    <div class="grid g3">
-      <div class="card">
-        <div class="muted small">Saldo</div>
-        <div class="balance-big ${b < 0 ? 'neg' : b > 0 ? 'pos' : ''}">${zlSigned(b)}</div>
-        <div class="small muted">${b < 0 ? 'uczeń jest winien' : b > 0 ? 'nadpłata – zapłacił z góry' : 'rozliczony'}</div>
-        <div class="row" style="margin-top:12px">
-          <button class="btn primary sm" data-act="addPayment" data-sid="${esc(s.id)}">+ Wpłata</button>
-          <button class="btn sm" data-act="addLesson" data-sid="${esc(s.id)}">+ Zajęcia</button>
-        </div>
-      </div>
-      <div class="card">
-        <dl class="kv">
-          <dt>Telefon</dt><dd>${tel(s.phone)}</dd>
-          ${s.parentName || s.parentPhone ? `<dt>Rodzic</dt><dd>${esc(s.parentName || '')} ${s.parentPhone ? '· ' + tel(s.parentPhone) : ''}</dd>` : ''}
-          ${s.email ? `<dt>E-mail</dt><dd><a href="mailto:${esc(s.email)}">${esc(s.email)}</a></dd>` : ''}
-          <dt>Przedmiot</dt><dd>${esc(s.subject || '—')}${s.level ? ' · ' + esc(s.level) : ''}</dd>
-          <dt>Stawka</dt><dd>${zl(rateOf(s.id))} / h</dd>
-        </dl>
-      </div>
-      <div class="card">
-        <div class="muted small">Stały plan</div>
-        ${plan.length ? plan.map(p => `<div>${p}</div>`).join('') : '<div class="muted">brak – zajęcia dodawane ręcznie</div>'}
-        <div class="small muted" style="margin-top:8px">Łącznie: ${allDone.length} zajęć · ${hours(allDone.reduce((a, l) => a + (+l.duration), 0))} · wpłacono ${zl(totalPaid)}</div>
-      </div>
+    <div class="card" style="margin-top:12px">
+      <div class="bal"><div class="grow"><div class="muted small">Saldo</div>
+        <div class="v ${b < 0 ? 'neg' : b > 0 ? 'pos' : ''}">${zlSigned(b)}</div>
+        <div class="small muted">${b < 0 ? 'uczeń jest winien' : b > 0 ? 'nadpłata – zapłacone z góry' : 'rozliczony'}</div></div>
+        <button class="btn primary" data-act="addPayment" data-sid="${esc(s.id)}">${ic('plus')}Wpłata</button></div>
+      <div class="stat3"><div><div class="l">Lekcje</div><div class="v">${charged.length}</div></div>
+        <div><div class="l">Godziny</div><div class="v">${hours(charged.reduce((a, e) => a + (+e.l.duration), 0))}</div></div>
+        <div><div class="l">Wpłacono</div><div class="v">${zl(sumAmt(db.payments.filter(p => p.studentId === s.id)))}</div></div></div>
     </div>
-    ${s.notes ? `<div class="card" style="margin-top:12px;white-space:pre-wrap">${esc(s.notes)}</div>` : ''}
-    <div class="grid g2">
-      <div>
-        <h3>Najbliższe zajęcia</h3>
-        ${upcoming.length ? upcoming.map(e => evRow(e, {date:true})).join('') : '<div class="card empty">Brak zaplanowanych</div>'}
-      </div>
-      <div>
-        <h3>Historia rozliczeń</h3>
-        <div class="card scroll-x" style="padding:6px 10px">
-          ${entries.length ? `<table class="tbl"><thead><tr><th>Data</th><th>Opis</th><th class="r">Kwota</th><th class="r">Saldo</th></tr></thead><tbody>
-          ${entries.slice().reverse().map(e => {
-            if(e.kind === 'open') return `<tr><td>—</td><td>Saldo początkowe</td><td class="r">${zlSigned(e.amount)}</td><td class="r">${zlSigned(e.run)}</td></tr>`;
-            if(e.kind === 'pay') return `<tr class="click" data-act="editPayment" data-id="${esc(e.p.id)}"><td>${fmtDateShort(e.date)}</td><td>💰 Wpłata – ${METHODS[e.p.method] || ''}${e.p.note ? ` <span class="muted small">${esc(e.p.note)}</span>` : ''}</td><td class="r pos">${zlSigned(e.amount)}</td><td class="r">${zlSigned(e.run)}</td></tr>`;
-            return `<tr class="click" data-act="openEvent" data-id="${esc(e.l.id)}"><td>${fmtDateShort(e.date)}</td><td>📘 ${STATUS[e.l.status]} ${e.l.time} (${e.l.duration} min)${e.l.note ? ` <span class="muted small">${esc(e.l.note)}</span>` : ''}</td><td class="r ${e.amount ? 'neg' : 'muted'}">${e.amount ? zlSigned(e.amount) : '0 zł'}</td><td class="r">${zlSigned(e.run)}</td></tr>`;
-          }).join('')}</tbody></table>` : '<div class="empty">Brak wpisów</div>'}
-        </div>
-      </div>
+    ${s.phone || s.parentName || s.parentPhone || s.email || s.notes || groups.length ? `<div class="card" style="margin-top:12px"><dl class="kv">
+      ${s.phone ? `<dt>Telefon</dt><dd><a href="tel:${esc(tel(s.phone))}">${esc(s.phone)}</a></dd>` : ''}
+      ${s.parentName || s.parentPhone ? `<dt>Rodzic</dt><dd>${esc(s.parentName || '')} ${s.parentPhone ? `<a href="tel:${esc(tel(s.parentPhone))}">${esc(s.parentPhone)}</a>` : ''}</dd>` : ''}
+      ${s.email ? `<dt>E-mail</dt><dd>${esc(s.email)}</dd>` : ''}
+      ${groups.length ? `<dt>Grupy</dt><dd>${groups.map(g => esc(g.name)).join(', ')}</dd>` : ''}
+      ${s.notes ? `<dt>Opis</dt><dd style="white-space:pre-wrap">${esc(s.notes)}</dd>` : ''}
+    </dl></div>` : ''}
+    <div class="sec">Stały plan</div>
+    <div class="card">${planHtml(s)}</div>
+    <div class="sec">Najbliższe lekcje <button class="more" data-act="addLesson" data-owner="s:${esc(s.id)}">+ Lekcja</button></div>
+    ${upcoming.length ? upcoming.slice(0, 6).map(e => lessonCard(e, {date:true})).join('') : '<div class="empty">Brak zaplanowanych lekcji</div>'}
+    <div class="sec">Historia rozliczeń</div>
+    <div class="card ledger" style="padding:4px 14px">
+      ${entries.length ? entries.slice().reverse().map(e => {
+        if(e.kind === 'open') return `<div class="lrow"><div class="grow">Saldo początkowe</div><div class="amount">${zlSigned(e.amount)}</div></div>`;
+        if(e.kind === 'pay') return `<div class="lrow click" data-act="editPayment" data-id="${esc(e.p.id)}">
+          <div class="grow"><div>Wpłata · ${METHODS[e.p.method] || ''}</div><div class="tiny muted">${fmtDateShort(e.date)}${e.p.note ? ' · ' + esc(e.p.note) : ''}</div></div>
+          <div style="text-align:right"><div class="amount pos">${zlSigned(e.amount)}</div><div class="tiny muted">saldo ${zlSigned(e.run)}</div></div></div>`;
+        return `<div class="lrow click" data-act="openEvent" data-id="${esc(e.l.id)}">
+          <div class="grow"><div>Lekcja${e.l.groupId ? ' (' + esc(group(e.l.groupId)?.name || 'grupa') + ')' : ''} · ${e.absent ? 'nieobecny' : STATUS[e.l.status].toLowerCase()}</div><div class="tiny muted">${fmtDateShort(e.date)} ${e.l.time} · ${e.l.duration} min${e.l.note ? ' · ' + esc(e.l.note) : ''}</div></div>
+          <div style="text-align:right"><div class="amount ${e.amount ? 'neg' : 'muted'}">${e.amount ? zlSigned(e.amount) : '0 zł'}</div><div class="tiny muted">saldo ${zlSigned(e.run)}</div></div></div>`;
+      }).join('') : '<div class="empty">Brak wpisów</div>'}
     </div>`;
 }
-
-/* ---------- WPŁATY ---------- */
-function viewPay(){
-  const ym = state.payMonth, ms = ym + '-01', me = monthEnd(ms);
-  const list = paymentsIn(ms, me).sort((a, b) => b.date.localeCompare(a.date));
-  const by = m => sumAmt(list.filter(p => p.method === m));
-  return `<div class="pagehead">
-      <h2>Wpłaty · ${monthLabel(ym)}</h2>
-      <button class="btn" data-act="payNav" data-dir="-1">‹</button>
-      <button class="btn" data-act="payNav" data-dir="1">›</button>
-      <button class="btn primary" data-act="addPayment">+ Wpłata</button>
+function viewGroup(g){
+  setBar(`<button class="bar-btn" data-act="back" aria-label="Wróć">${ic('left')}</button>`, esc(g.name),
+         `<button class="bar-btn" data-act="editGroup" data-id="${esc(g.id)}" aria-label="Edytuj">${ic('edit')}</button>`);
+  const t = today();
+  const upcoming = events(t, addDays(t, 21), e => e.groupId === g.id).filter(e => !ended(e) && e.status !== 'cancelled');
+  const past = db.lessons.filter(l => l.groupId === g.id && l.status !== 'planned').sort((a, b) => (b.date + b.time).localeCompare(a.date + a.time));
+  const mem = (g.memberIds || []).map(student).filter(Boolean).sort(byName);
+  return `<div class="card prof">
+      <div class="avatar lg" style="--c:${esc(g.color)};margin:0 auto">${ic('group', 'width:34px;height:34px')}</div>
+      <h2>${esc(g.name)}</h2>
+      <div class="muted">${esc(g.subject || 'Grupa')} · ${zl(rateOf(g))}/h od osoby</div>
+      ${g.notes ? `<div class="small muted" style="margin-top:8px;white-space:pre-wrap">${esc(g.notes)}</div>` : ''}
     </div>
-    <div class="grid g4">
-      ${stat('Razem', zl(sumAmt(list)), `${list.length} wpłat`)}
-      ${stat('Gotówka', zl(by('cash')), `${list.filter(p => p.method === 'cash').length} wpłat`)}
-      ${stat('Przelew', zl(by('transfer')), `${list.filter(p => p.method === 'transfer').length} wpłat`)}
-      ${stat('BLIK / inne', zl(by('blik') + by('other')), `${list.filter(p => p.method === 'blik' || p.method === 'other').length} wpłat`)}
-    </div>
-    <h3>Lista</h3>
-    <div class="card list">
-      ${list.length ? list.map(p => `<div class="item" data-act="editPayment" data-id="${esc(p.id)}">
-          <div class="dot" style="background:${esc(scolor(p.studentId))}"></div>
-          <div class="grow"><div class="ellipsis"><b>${esc(sname(p.studentId))}</b></div>
-            <div class="small muted ellipsis">${fmtDateShort(p.date)} · ${METHODS[p.method] || p.method}${p.note ? ' · ' + esc(p.note) : ''}</div></div>
-          <div class="amount pos">${zl(p.amount)}</div></div>`).join('') : '<div class="empty">Brak wpłat w tym miesiącu</div>'}
-    </div>`;
+    <div class="sec">Uczestnicy (${mem.length})</div>
+    <div class="card" style="padding:4px 14px">${mem.length ? mem.map(s => `<div class="lrow" data-act="openStudent" data-id="${esc(s.id)}">
+        <div class="dot" style="--c:${esc(s.color)}"></div><div class="grow ell">${esc(s.name)}</div>${balanceBadge(balance(s.id))}</div>`).join('') : '<div class="empty">Dodaj uczniów w edycji grupy</div>'}</div>
+    <div class="sec">Stały plan</div>
+    <div class="card">${planHtml(g)}</div>
+    <div class="sec">Najbliższe lekcje <button class="more" data-act="addLesson" data-owner="g:${esc(g.id)}">+ Lekcja</button></div>
+    ${upcoming.length ? upcoming.slice(0, 6).map(e => lessonCard(e, {date:true})).join('') : '<div class="empty">Brak zaplanowanych lekcji</div>'}
+    <div class="sec">Odbyte lekcje</div>
+    ${past.length ? past.slice(0, 30).map(l => lessonCard({...l, kind:'lesson'}, {date:true})).join('') : '<div class="empty">Brak</div>'}`;
 }
 
-/* ---------- RAPORTY ---------- */
+/* ---------- GRAFIK ---------- */
+function viewCal(){
+  const d = state.calDate, ws = weekStart(d), we = addDays(ws, 6), t = today();
+  setBar(`<button class="bar-btn txt" data-act="calToday">Dziś</button>`, 'Kalendarz',
+         `<button class="bar-btn" data-act="addLesson" data-date="${d}" aria-label="Dodaj lekcję">${ic('plus')}</button>`);
+  const wEv = events(ws, we);
+  const dEv = wEv.filter(e => e.date === d);
+  const label = parse(ws).getMonth() === parse(we).getMonth()
+    ? `${parse(ws).getDate()} — ${parse(we).getDate()} ${MONTHS[parse(we).getMonth()]}`
+    : `${parse(ws).getDate()} ${MONTHS_SHORT[parse(ws).getMonth()]} — ${parse(we).getDate()} ${MONTHS_SHORT[parse(we).getMonth()]}`;
+  const days = [0,1,2,3,4,5,6].map(i => {
+    const day = addDays(ws, i), c = wEv.filter(e => e.date === day && e.status !== 'cancelled').length;
+    return `<button class="dbtn ${day === d ? 'on' : ''} ${day === t ? 'today' : ''}" data-act="calDay" data-date="${day}">
+      ${c ? `<span class="cnt">${c}</span>` : ''}<span class="dn">${DAYS_SHORT[i]}</span><span class="dd">${parse(day).getDate()}</span></button>`;
+  }).join('');
+
+  // oś godzin
+  const H = 64;
+  let sh = 7, eh = 21;
+  for(const e of dEv){ sh = Math.min(sh, Math.floor(toMin(e.time) / 60)); eh = Math.max(eh, Math.ceil(endMin(e) / 60)); }
+  sh = Math.max(0, sh); eh = Math.min(24, eh);
+  const rows = []; for(let h = sh; h <= eh; h++) rows.push(`<div class="hr" style="top:${(h - sh) * H}px" ${h < eh ? `data-act="addLesson" data-date="${d}" data-time="${pad(h)}:00"` : ''}><span>${pad(h)}:00</span></div>`);
+  // nakładające się lekcje dzielą szerokość
+  const items = dEv.map(e => ({e, s:toMin(e.time), en:endMin(e)}));
+  let cluster = [], cEnd = -1; const clusters = [];
+  for(const it of items){ if(it.s >= cEnd && cluster.length){ clusters.push(cluster); cluster = []; } cluster.push(it); cEnd = Math.max(cEnd, it.en); }
+  if(cluster.length) clusters.push(cluster);
+  for(const c of clusters){
+    const lanes = [];
+    for(const it of c){ let i = lanes.findIndex(end => end <= it.s); if(i < 0){ i = lanes.length; lanes.push(0); } lanes[i] = it.en; it.lane = i; }
+    c.forEach(it => it.lanes = lanes.length);
+  }
+  const blocks = items.map(({e, s, en, lane, lanes}) => {
+    const top = (s - sh * 60) / 60 * H, height = Math.max(30, (en - s) / 60 * H - 3);
+    const w = `((100% - 58px) / ${lanes})`;
+    return `<div class="blk ${e.kind === 'virtual' ? 'virtual' : ''} st-${e.status}" style="--c:${esc(ocolor(e))};top:${top + 1}px;height:${height}px;left:calc(58px + ${w} * ${lane});width:calc(${w} - 4px)" data-act="openEvent" ${evAttrs(e)}>
+      ${isCharged(e) ? `<span class="ok">${ic('check')}</span>` : ''}
+      <b>${esc(oname(e))}</b>
+      ${height > 50 ? `<div class="s">${esc(osubject(e) || (e.groupId ? 'Grupa' : ''))}</div>` : ''}
+      <div class="s">${e.time} – ${fromMin(en)}${e.status === 'planned' && ended(e) ? ' · do potwierdzenia' : ''}</div></div>`;
+  }).join('');
+  const nowLine = d === t && nowMin() >= sh * 60 && nowMin() <= eh * 60 ? `<div class="now" style="top:${(nowMin() - sh * 60) / 60 * H}px"></div>` : '';
+  const act = dEv.filter(e => e.status !== 'cancelled');
+
+  return `<div class="weekbar">
+      <button data-act="calNav" data-dir="-1" aria-label="Poprzedni tydzień">${ic('left')}</button>
+      <h2>${label}</h2>
+      <button data-act="calNav" data-dir="1" aria-label="Następny tydzień">${ic('right')}</button>
+    </div>
+    <div class="days">${days}</div>
+    <div class="daysum">${DAYS[weekday(d)]}, ${fmtDate(d)} · ${act.length ? `${act.length} lekcji · ${hours(act.reduce((a, e) => a + (+e.duration), 0))} · ${zl(sumEvents(dEv, 'forecast'))}` : 'brak lekcji'}
+      <br>Tydzień: ${wEv.filter(e => e.status !== 'cancelled').length} lekcji · prognoza ${zl(sumEvents(wEv, 'forecast'))}</div>
+    <div class="tl" style="height:${(eh - sh) * H + 20}px">${rows.join('')}${blocks}${nowLine}</div>
+    <p class="hint">Dotknij pustej godziny, aby dodać lekcję. Przerywana ramka = termin ze stałego planu.</p>`;
+}
+
+/* ---------- FINANSE ---------- */
 function monthEarned(ym){
   const ms = ym + '-01', me = monthEnd(ms);
-  return round2(db.lessons.filter(l => l.date >= ms && l.date <= me && isCharged(l)).reduce((a, l) => a + (+l.price), 0));
+  return round2(db.lessons.filter(l => l.date >= ms && l.date <= me && isCharged(l)).reduce((a, l) => a + value(l), 0));
 }
-function viewRep(){
-  const ym = state.repMonth, ms = ym + '-01', me = monthEnd(ms);
+function viewFin(){
+  setBar('', 'Finanse', `<button class="bar-btn" data-act="addPayment" aria-label="Dodaj wpłatę">${ic('plus')}</button>`);
+  const ym = state.finMonth, ms = ym + '-01', me = monthEnd(ms), t = today();
+  const mName = MONTHS[+ym.slice(5) - 1];
   const evs = events(ms, me);
+  const nonCancelled = evs.filter(e => e.status !== 'cancelled');
   const charged = evs.filter(isCharged);
-  const pays = paymentsIn(ms, me);
-  const mins = charged.reduce((a, l) => a + (+l.duration), 0);
-  const earned = sumEvents(evs, 'earned');
-  const forecast = sumEvents(evs, 'forecast');
-  const cancelled = evs.filter(e => e.status === 'cancelled').length;
+  const earned = sumEvents(evs, 'earned'), forecast = sumEvents(evs, 'forecast');
+  const pays = paymentsIn(ms, me), received = sumAmt(pays);
+  const pct = nonCancelled.length ? Math.round(charged.length / nonCancelled.length * 100) : 0;
+  const bals = db.students.map(s => ({s, b:balance(s.id)}));
+  const debtors = bals.filter(x => x.b < 0), over = bals.filter(x => x.b > 0);
+  const debt = round2(debtors.reduce((a, x) => a - x.b, 0)), overSum = round2(over.reduce((a, x) => a + x.b, 0));
+  const sw = scheduleWeekly();
+  const f7 = sumEvents(events(t, addDays(t, 6)), 'forecast');
+  const f14 = sumEvents(events(t, addDays(t, 13)), 'forecast');
+  const nms = shiftMonth(t.slice(0, 7), 1), fNext = sumEvents(events(nms + '-01', monthEnd(nms + '-01')), 'forecast');
+
+  const endYm = ym > t.slice(0, 7) ? ym : t.slice(0, 7);
+  const months = []; for(let i = 5; i >= 0; i--) months.push(shiftMonth(endYm, -i));
+  const data = months.map(m => ({m, e:monthEarned(m), p:sumAmt(paymentsIn(m + '-01', monthEnd(m + '-01')))}));
+  const max = Math.max(1, ...data.map(x => Math.max(x.e, x.p)));
+
+  const past = evs.filter(e => ended(e));
+  const pDone = past.filter(e => e.status === 'done').length, pLate = past.filter(e => e.status === 'late').length;
+  const pCanc = past.filter(e => e.status === 'cancelled').length, pOpen = past.filter(e => e.status === 'planned').length;
+  const pAll = past.length || 1;
+
+  const methods = Object.keys(METHODS).map(k => ({k, v:sumAmt(pays.filter(p => p.method === k))}));
+  const mMax = Math.max(1, ...methods.map(x => x.v));
 
   const rows = db.students.map(s => {
-    const se = charged.filter(l => l.studentId === s.id);
-    const sp = pays.filter(p => p.studentId === s.id);
-    return {s, n:se.length, mins:se.reduce((a, l) => a + (+l.duration), 0), earned:round2(se.reduce((a, l) => a + (+l.price), 0)),
-            paid:sumAmt(sp), cash:sumAmt(sp.filter(p => p.method === 'cash')), bal:balance(s.id)};
-  }).filter(r => r.n || r.paid).sort((a, b) => b.earned - a.earned);
-
-  // ostatnie 12 miesięcy
-  const months = []; for(let i = 11; i >= 0; i--) months.push(shiftMonth(today().slice(0, 7), -i));
-  const data = months.map(m => ({m, e:monthEarned(m), p:sumAmt(paymentsIn(m + '-01', monthEnd(m + '-01')))}));
-  const max = Math.max(1, ...data.map(d => Math.max(d.e, d.p)));
+    let n = 0, mins = 0, e = 0;
+    for(const l of charged){ const c = chargesOf(l).find(x => x.sid === s.id); if(c){ n++; mins += +l.duration; e += c.amount; } }
+    return {s, n, mins, e:round2(e), paid:sumAmt(pays.filter(p => p.studentId === s.id))};
+  }).filter(r => r.n || r.paid).sort((a, b) => b.e - a.e);
   const year = ym.slice(0, 4);
-  const yEarned = round2(db.lessons.filter(l => l.date.startsWith(year) && isCharged(l)).reduce((a, l) => a + (+l.price), 0));
-  const yPaid = sumAmt(db.payments.filter(p => p.date.startsWith(year)));
-  const yCash = sumAmt(db.payments.filter(p => p.date.startsWith(year) && p.method === 'cash'));
-  // dla bieżącego miesiąca dzielimy przez tygodnie, które już minęły
-  const lastDay = today() >= ms && today() <= me ? today() : me;
-  const weeksInMonth = Math.max(1, daysBetween(ms, lastDay) + 1) / 7;
+  const yPays = db.payments.filter(p => p.date.startsWith(year));
+  const yEarned = round2(db.lessons.filter(l => l.date.startsWith(year) && isCharged(l)).reduce((a, l) => a + value(l), 0));
 
-  return `<div class="pagehead">
-      <h2>Raport · ${monthLabel(ym)}</h2>
-      <button class="btn" data-act="repNav" data-dir="-1">‹</button>
-      <button class="btn" data-act="repNav" data-dir="1">›</button>
+  return `<div class="monthbar">
+      <button data-act="finNav" data-dir="-1" aria-label="Poprzedni miesiąc">${ic('left')}</button><b>${monthLabel(ym)}</b>
+      <button data-act="finNav" data-dir="1" aria-label="Następny miesiąc">${ic('right')}</button></div>
+    <div class="fhero">
+      <div class="lbl">Przeprowadzono lekcji za ${mName}</div>
+      <div class="big">${charged.length}<small>/${nonCancelled.length}</small></div>
+      <div class="prog"><i style="width:${pct}%"></i></div>
+      <div class="fgrid">
+        <div><div class="l">Przepracowano</div><div class="v">${zl2(earned)}</div><div class="s">odbyte lub odwołane z opłatą</div></div>
+        <div><div class="l">Otrzymano</div><div class="v">${zl2(received)}</div><div class="s">w tym gotówką ${zl(methods[0].v)}</div></div>
+      </div>
     </div>
-    <div class="grid g4">
-      ${stat('Zarobione (odbyte)', zl(earned), `${charged.length} zajęć · ${hours(mins)}`)}
-      ${stat('Prognoza całego miesiąca', zl(forecast), `odwołanych: ${cancelled}`)}
-      ${stat('Otrzymane wpłaty', zl(sumAmt(pays)), `gotówka ${zl(sumAmt(pays.filter(p => p.method === 'cash')))}`)}
-      ${stat('Średnio na tydzień', zl(earned / weeksInMonth), mins ? `średnio ${zl(earned / (mins / 60))} / h` : '—')}
-    </div>
-    <h3>Według uczniów</h3>
-    <div class="card scroll-x" style="padding:6px 10px">
-      ${rows.length ? `<table class="tbl"><thead><tr><th>Uczeń</th><th class="r">Zajęcia</th><th class="r">Godziny</th><th class="r">Zarobione</th><th class="r">Wpłacił</th><th class="r">w tym gotówką</th><th class="r">Saldo teraz</th></tr></thead><tbody>
-        ${rows.map(r => `<tr class="click" data-act="openStudent" data-id="${esc(r.s.id)}"><td><span class="dot" style="display:inline-block;background:${esc(r.s.color)};margin-right:6px"></span>${esc(r.s.name)}</td><td class="r">${r.n}</td><td class="r">${hours(r.mins)}</td><td class="r">${zl(r.earned)}</td><td class="r">${zl(r.paid)}</td><td class="r">${zl(r.cash)}</td><td class="r ${r.bal < 0 ? 'neg' : r.bal > 0 ? 'pos' : ''}">${zlSigned(r.bal)}</td></tr>`).join('')}
-        <tr><td><b>Razem</b></td><td class="r"><b>${charged.length}</b></td><td class="r"><b>${hours(mins)}</b></td><td class="r"><b>${zl(earned)}</b></td><td class="r"><b>${zl(sumAmt(pays))}</b></td><td class="r"><b>${zl(sumAmt(pays.filter(p => p.method === 'cash')))}</b></td><td></td></tr>
-      </tbody></table>` : '<div class="empty">Brak danych w tym miesiącu</div>'}
-    </div>
-    <h3>Ostatnie 12 miesięcy</h3>
+    <div class="rowcard" data-act="debtors">${ic('alert')}<div class="grow"><b style="font-size:18px">Zadłużenie</b><div class="muted small">Uczniów: ${debtors.length}</div></div><div class="v ${debt ? 'neg' : ''}">${zl2(debt)}</div>${ic('right')}</div>
+    ${over.length ? `<div class="rowcard" data-act="debtors" data-over="1">${ic('cash')}<div class="grow"><b style="font-size:18px">Nadpłaty</b><div class="muted small">Uczniów: ${over.length}</div></div><div class="v pos">${zl2(overSum)}</div>${ic('right')}</div>` : ''}
+
+    <div class="sec">Prognoza przychodu</div>
     <div class="card">
-      <div class="bars">${data.map(d => `<div class="bar-col" title="${monthLabel(d.m)}: zarobione ${zl(d.e)}, wpłaty ${zl(d.p)}">
-        <div class="bar-pair"><div class="bar a" style="height:${d.e / max * 100}%"></div><div class="bar b" style="height:${d.p / max * 100}%"></div></div>
-        <div class="bar-lbl">${MONTHS_SHORT[+d.m.slice(5) - 1]}</div></div>`).join('')}</div>
-      <div class="legend"><span><i style="background:var(--accent)"></i>zarobione (odbyte zajęcia)</span><span><i style="background:var(--ok)"></i>otrzymane wpłaty</span></div>
+      <div class="muted small">${mName} – odbyte + zaplanowane</div>
+      <div style="font-size:28px;font-weight:800" class="num">${zl(forecast)}</div>
+      <div class="stat3">
+        <div><div class="l">7 dni</div><div class="v">${zl(f7)}</div></div>
+        <div><div class="l">2 tygodnie</div><div class="v">${zl(f14)}</div></div>
+        <div><div class="l">${MONTHS[+nms.slice(5) - 1]}</div><div class="v">${zl(fNext)}</div></div>
+      </div>
+      <div class="hint">Stały plan: <b>${zl(sw.amount)}</b> / tydzień · ${zl(sw.amount * 2)} / 2 tygodnie · ≈ ${zl(sw.amount * 52 / 12)} / miesiąc (${String(sw.count).replace('.', ',')} lekcji w tygodniu)</div>
     </div>
-    <h3>Rok ${year}</h3>
-    <div class="grid g3">
-      ${stat('Zarobione w roku', zl(yEarned))}
-      ${stat('Wpłaty w roku', zl(yPaid))}
-      ${stat('W tym gotówką', zl(yCash))}
-    </div>`;
+
+    <div class="sec">Dynamika dochodu</div>
+    <div class="card">
+      <div class="muted small">Dotknij miesiąca, aby go wybrać</div>
+      <div class="chart">${data.map(x => `<div class="ccol ${x.m === ym ? 'on' : ''}" data-act="finMonth" data-m="${x.m}">
+          <div class="cval">${x.e ? nf.format(Math.round(x.e)) : ''}</div>
+          <div class="cbars"><div class="cbar" style="height:${x.e / max * 100}%"></div><div class="cbar b" style="height:${x.p / max * 100}%"></div></div>
+          <div class="clbl">${MONTHS_SHORT[+x.m.slice(5) - 1]}</div></div>`).join('')}</div>
+      <div class="legend"><span><i style="background:var(--accent)"></i>przepracowano</span><span><i style="background:var(--ok)"></i>otrzymano</span></div>
+    </div>
+
+    <div class="sec">Obecność i odwołania</div>
+    <div class="card">
+      <div class="attn"><span class="big">${pDone + pLate}</span><span class="muted">/ ${past.length} lekcji · ${Math.round((pDone + pLate) / pAll * 100)}% odbytych</span></div>
+      <div class="prog2"><i style="width:${pDone / pAll * 100}%;background:var(--ok)"></i><i style="width:${pLate / pAll * 100}%;background:#f59e0b"></i><i style="width:${pCanc / pAll * 100}%;background:var(--bad)"></i><i style="width:${pOpen / pAll * 100}%;background:var(--faint)"></i></div>
+      <div class="legend"><span><i style="background:var(--ok)"></i>odbyte ${pDone}</span><span><i style="background:#f59e0b"></i>z opłatą ${pLate}</span><span><i style="background:var(--bad)"></i>odwołane ${pCanc}</span>${pOpen ? `<span><i style="background:var(--faint)"></i>niepotwierdzone ${pOpen}</span>` : ''}</div>
+    </div>
+
+    <div class="sec">Formy płatności</div>
+    <div class="card">${methods.map(x => `<div class="mbar"><span class="lbl">${METHODS[x.k]}</span><span class="track"><i style="width:${x.v / mMax * 100}%;background:${METHOD_COLORS[x.k]}"></i></span><span class="amt">${zl(x.v)}</span></div>`).join('')}</div>
+
+    <div class="sec">Według uczniów</div>
+    <div class="card" style="padding:4px 14px">${rows.length ? rows.map(r => `<div class="lrow" data-act="openStudent" data-id="${esc(r.s.id)}">
+        <div class="dot" style="--c:${esc(r.s.color)}"></div>
+        <div class="grow"><div class="ell">${esc(r.s.name)}</div><div class="tiny muted">${r.n} lekcji · ${hours(r.mins)} · wpłacił ${zl(r.paid)}</div></div>
+        <div class="amount">${zl(r.e)}</div></div>`).join('') : '<div class="empty">Brak danych w tym miesiącu</div>'}</div>
+
+    <div class="sec">Wpłaty <button class="more" data-act="addPayment">+ Dodaj</button></div>
+    <div class="card" style="padding:4px 14px">${pays.length ? pays.slice().sort((a, b) => b.date.localeCompare(a.date)).map(p => `<div class="lrow" data-act="editPayment" data-id="${esc(p.id)}">
+        <div class="dot" style="--c:${METHOD_COLORS[p.method] || '#999'}"></div>
+        <div class="grow"><div class="ell">${esc(sname(p.studentId))}</div><div class="tiny muted">${fmtDateShort(p.date)} · ${METHODS[p.method] || p.method}${p.note ? ' · ' + esc(p.note) : ''}</div></div>
+        <div class="amount pos">${zl(p.amount)}</div></div>`).join('') : '<div class="empty">Brak wpłat w tym miesiącu</div>'}</div>
+
+    <div class="sec">Rok ${year}</div>
+    <div class="card"><div class="stat3" style="margin:0">
+      <div><div class="l">Przepracowano</div><div class="v">${zl(yEarned)}</div></div>
+      <div><div class="l">Otrzymano</div><div class="v">${zl(sumAmt(yPays))}</div></div>
+      <div><div class="l">Gotówką</div><div class="v">${zl(sumAmt(yPays.filter(p => p.method === 'cash')))}</div></div></div></div>`;
 }
 
 /* ---------- USTAWIENIA ---------- */
-function viewSet(){
-  const st = db.settings;
-  return `<div class="pagehead"><h2>Ustawienia</h2></div>
-    <div class="grid g2">
-      <form class="card f" data-form="settings">
-        <b>Domyślne wartości</b>
-        <div class="f2">
-          <label>Stawka za godzinę (zł)<input name="defaultRate" type="number" step="0.01" min="0" value="${esc(st.defaultRate)}"></label>
-          <label>Długość zajęć (min)<input name="defaultDuration" type="number" step="5" min="15" value="${esc(st.defaultDuration)}"></label>
-        </div>
-        <div><button class="btn primary">Zapisz</button></div>
-      </form>
-      <div class="card f">
-        <b>Kopia zapasowa</b>
-        <div class="small muted">Dane są zapisane tylko w tej przeglądarce na tym urządzeniu. Rób regularnie kopię do pliku (np. na Dysk Google), żeby ich nie stracić i móc przenieść na inny telefon/komputer.</div>
-        <div class="small">Ostatnia kopia: <b>${st.lastBackup ? fmtDate(st.lastBackup.slice(0, 10)) : 'nigdy'}</b></div>
-        <div class="row">
-          <button class="btn primary" data-act="exportJson">⬇ Pobierz kopię (JSON)</button>
-          <button class="btn" data-act="importJson">⬆ Wczytaj kopię</button>
-        </div>
-        <div class="row">
-          <button class="btn sm" data-act="exportCsv" data-what="lessons">Zajęcia → CSV (Excel)</button>
-          <button class="btn sm" data-act="exportCsv" data-what="payments">Wpłaty → CSV (Excel)</button>
-        </div>
-        <input type="file" id="importFile" accept=".json,application/json" hidden>
-      </div>
-    </div>
-    ${installCard()}
-    <div class="card f" style="margin-top:12px">
-      <b>Jak to działa?</b>
-      <div class="small muted">
-        • Uczeń ma <b>stały plan</b> (np. wtorek 17:00, 60 min) – terminy pojawiają się w kalendarzu automatycznie.<br>
-        • Po zajęciach potwierdzasz je („✓ Odbyte”, „✓ + gotówka”…) – dopiero wtedy liczą się do zarobku i salda.<br>
-        • <b>Saldo</b> = wpłaty − odbyte zajęcia. Ujemne = uczeń jest winien, dodatnie = nadpłata (zapłacił z góry).<br>
-        • „Odwołane – płatne” liczy się jak odbyte (np. odwołanie w ostatniej chwili).<br>
-        • Prognoza = odbyte + zaplanowane + terminy ze stałego planu.
-      </div>
-      <div class="row" style="margin-top:6px">
-        ${db.students.length ? '' : '<button class="btn" data-act="loadDemo">Wczytaj przykładowe dane</button>'}
-        <button class="btn danger" data-act="wipe">Usuń wszystkie dane</button>
-      </div>
-    </div>`;
-}
-
-/* ---------- instalacja na telefonie (PWA) ---------- */
 let installEvt = null;
 const isStandalone = () => window.matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
 const isIOS = () => /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); installEvt = e; if(state.tab === 'set' || state.tab === 'dash') render(); });
+window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); installEvt = e; if(state.tab === 'set') render(); });
 window.addEventListener('appinstalled', () => { installEvt = null; toast('Zainstalowano aplikację'); render(); });
-function installCard(){
-  if(isStandalone()) return '';
-  return `<div class="card f" style="margin-top:12px">
-    <b>📱 Aplikacja na telefonie</b>
-    ${installEvt ? `<div class="row"><button class="btn primary" data-act="install">Zainstaluj aplikację</button></div>` : ''}
-    <div class="small muted">
-      <b>Android (Chrome):</b> menu ⋮ → „Zainstaluj aplikację” / „Dodaj do ekranu głównego”.<br>
-      <b>iPhone (Safari):</b> przycisk Udostępnij □↑ → „Do ekranu początkowego”.<br>
-      Ikona pojawi się na ekranie, a aplikacja otworzy się na pełnym ekranie i będzie działać bez internetu.
-      ${isIOS() ? '<br><b>Uwaga (iPhone):</b> aplikacja z ikony ma osobne dane niż Safari – zainstaluj ją najpierw, a potem wpisuj dane już w aplikacji (albo przenieś je kopią zapasową).' : ''}
-    </div></div>`;
+function viewSet(){
+  setBar('', 'Ustawienia', '');
+  const st = db.settings;
+  return `${isStandalone() ? '' : `<div class="card f">
+      <div class="row"><span style="color:var(--accent)">${ic('phoneapp')}</span><b>Aplikacja na telefonie</b></div>
+      ${installEvt ? `<button class="btn primary" data-act="install">Zainstaluj aplikację</button>` : ''}
+      <div class="small muted"><b>iPhone (Safari):</b> Udostępnij □↑ → „Do ekranu początkowego”.<br><b>Android (Chrome):</b> menu ⋮ → „Zainstaluj aplikację”.<br>
+      ${isIOS() ? 'Na iPhonie aplikacja z ikony ma osobne dane niż Safari – zainstaluj ją przed wpisywaniem danych (albo przenieś je kopią).' : 'Aplikacja otworzy się na pełnym ekranie i działa bez internetu.'}</div></div>`}
+    <div class="sec">Domyślne wartości</div>
+    <form class="card f" data-form="settings">
+      <div class="f2">
+        <label>Stawka zł / h<input name="defaultRate" type="number" inputmode="decimal" step="0.01" min="0" value="${esc(st.defaultRate)}"></label>
+        <label>Długość lekcji (min)<input name="defaultDuration" type="number" inputmode="numeric" step="5" min="15" value="${esc(st.defaultDuration)}"></label>
+      </div>
+      <button class="btn primary">Zapisz</button>
+    </form>
+    <div class="sec">Kopia zapasowa</div>
+    <div class="card f">
+      <div class="small muted">Dane są zapisane tylko na tym urządzeniu. Rób regularnie kopię do pliku (np. na Dysk Google lub iCloud) – tym plikiem przeniesiesz też dane na nowy telefon.</div>
+      <div class="small">Ostatnia kopia: <b>${st.lastBackup ? fmtDate(st.lastBackup.slice(0, 10)) : 'nigdy'}</b></div>
+      <button class="btn primary" data-act="exportJson">${ic('down')}Pobierz kopię</button>
+      <button class="btn" data-act="importJson">${ic('up')}Wczytaj kopię</button>
+      <div class="f2"><button class="btn sm" data-act="exportCsv" data-what="lessons">Lekcje → Excel</button><button class="btn sm" data-act="exportCsv" data-what="payments">Wpłaty → Excel</button></div>
+    </div>
+    <div class="sec">Jak to działa?</div>
+    <div class="card small muted" style="line-height:1.55">
+      • Uczeń (albo grupa) ma <b>stały plan</b> – terminy same pojawiają się w grafiku.<br>
+      • Po lekcji potwierdzasz ją: „Odbyta”, „Gotówka”, „Przelew”, „Odwołana” – dopiero wtedy liczy się do zarobku i salda.<br>
+      • <b>Saldo</b> = wpłaty − odbyte lekcje. Ujemne = uczeń jest winien, dodatnie = nadpłata.<br>
+      • „Odwołana z opłatą” liczy się jak odbyta.<br>
+      • W grupie cena jest od osoby – płacą obecni (zaznaczasz obecność).<br>
+      • Prognoza = odbyte + zaplanowane + terminy ze stałego planu.
+    </div>
+    <div class="f" style="margin-top:16px">
+      ${db.students.length ? '' : '<button class="btn" data-act="loadDemo">Wczytaj przykładowe dane</button>'}
+      <button class="btn danger" data-act="wipe">${ic('trash')}Usuń wszystkie dane</button>
+    </div>`;
 }
 
 /* =========================================================
-   FORMULARZE (okna)
+   ARKUSZE / FORMULARZE
    ========================================================= */
 const dlg = $('#modal');
 function openModal(title, html){
-  $('#modalBody').innerHTML = `<div class="mhead"><h2>${title}</h2><button class="icon-btn" data-act="closeModal" aria-label="Zamknij">✕</button></div>${html}`;
+  $('#modalBody').innerHTML = `<div class="grab"></div><div class="mhead"><h2>${title}</h2><button class="x" data-act="closeModal" aria-label="Zamknij">${ic('x')}</button></div>${html}`;
   if(!dlg.open) dlg.showModal();
-  const first = dlg.querySelector('input:not([type=hidden]):not([readonly]),select');
-  if(first && window.matchMedia('(pointer:fine)').matches) first.focus();
+  $('#modalBody').scrollTop = 0;
 }
 function closeModal(){ if(dlg.open) dlg.close(); }
 dlg.addEventListener('click', e => { if(e.target === dlg) closeModal(); });
@@ -863,162 +1022,218 @@ function schedRow(it){
   return `<div class="sched-row">
     <select name="sday" aria-label="Dzień">${DAYS.map((d, i) => `<option value="${i}" ${+it.day === i ? 'selected' : ''}>${d}</option>`).join('')}</select>
     <input type="time" name="stime" value="${esc(it.time)}" required aria-label="Godzina">
-    <input type="number" name="sdur" value="${esc(it.duration)}" min="15" step="5" required aria-label="Minuty" title="minuty">
+    <input type="number" name="sdur" inputmode="numeric" value="${esc(it.duration)}" min="15" step="5" required aria-label="Minuty" title="minuty">
     <select name="severy" aria-label="Częstotliwość"><option value="1">co tydzień</option><option value="2" ${+it.every === 2 ? 'selected' : ''}>co 2 tyg.</option></select>
-    <button type="button" class="icon-btn" data-act="delSchedRow" aria-label="Usuń termin">✕</button>
+    <button type="button" class="xbtn" data-act="delSchedRow" aria-label="Usuń termin">${ic('x')}</button>
   </div>`;
+}
+function scheduleFields(o){
+  return `<div>
+      <div class="row" style="margin-bottom:8px"><b class="small">Stały plan lekcji</b><span class="grow"></span><button type="button" class="btn sm" data-act="addSchedRow">${ic('plus')}termin</button></div>
+      <div id="schedRows">${(o.schedule || []).map(schedRow).join('')}</div>
+      <div class="f2" style="margin-top:4px">
+        <label>Plan obowiązuje od<input name="scheduleFrom" type="date" value="${esc(o.scheduleFrom || today())}"></label>
+        <label>do (opcjonalnie)<input name="scheduleTo" type="date" value="${esc(o.scheduleTo || '')}"></label>
+      </div>
+      <div class="hint">Puste = lekcje nieregularne, dodajesz je ręcznie. „Co 2 tyg.” liczy się od tygodnia daty „od”.</div>
+    </div>`;
+}
+function readSchedule(f){
+  const fd = new FormData(f);
+  const days = fd.getAll('sday'), times = fd.getAll('stime'), durs = fd.getAll('sdur'), every = fd.getAll('severy');
+  return days.map((d, i) => ({day:+d, time:times[i], duration:+durs[i], every:+every[i]})).filter(x => x.time);
+}
+// Zmiana planu: minione niepotwierdzone terminy zostają, nowy plan działa od dziś.
+function applyScheduleChange(o, k, data){
+  const changed = JSON.stringify(o.schedule || []) !== JSON.stringify(data.schedule) || (o.scheduleFrom || '') !== data.scheduleFrom || (o.scheduleTo || '') !== data.scheduleTo;
+  if(!changed) return;
+  freezePast(k, o.id);
+  if(data.scheduleFrom !== (o.scheduleFrom || '')) data.anchor = data.scheduleFrom;
+  else if(data.scheduleFrom < today()){ data.anchor = o.anchor || o.scheduleFrom; data.scheduleFrom = today(); }
 }
 function studentForm(s){
   const isNew = !s;
   s = s || {name:'', phone:'', parentName:'', parentPhone:'', email:'', subject:'', level:'', rate:db.settings.defaultRate,
             color:PALETTE[db.students.length % PALETTE.length], notes:'', schedule:[], scheduleFrom:today(), scheduleTo:'', openingBalance:0};
+  const subjects = [...new Set(db.students.map(x => x.subject).filter(Boolean))];
   openModal(isNew ? 'Nowy uczeń' : 'Edytuj ucznia', `
     <form class="f" data-form="student" data-id="${esc(s.id || '')}">
-      <label>Imię i nazwisko *<input name="name" required value="${esc(s.name)}"></label>
+      <label>Imię i nazwisko *<input name="name" required value="${esc(s.name)}" autocomplete="off"></label>
+      <div class="f2">
+        <label>Przedmiot<input name="subject" list="subjList" value="${esc(s.subject)}" placeholder="Matematyka"></label>
+        <label>Klasa / poziom<input name="level" value="${esc(s.level)}" placeholder="8 SP"></label>
+      </div>
+      <datalist id="subjList">${subjects.map(x => `<option value="${esc(x)}">`).join('')}</datalist>
       <div class="f2">
         <label>Telefon<input name="phone" type="tel" value="${esc(s.phone)}"></label>
-        <label>E-mail<input name="email" type="email" value="${esc(s.email)}"></label>
+        <label>Stawka zł / h<input name="rate" type="number" inputmode="decimal" step="0.01" min="0" value="${esc(s.rate)}"></label>
       </div>
       <div class="f2">
         <label>Rodzic / opiekun<input name="parentName" value="${esc(s.parentName)}"></label>
         <label>Telefon rodzica<input name="parentPhone" type="tel" value="${esc(s.parentPhone)}"></label>
       </div>
-      <div class="f3">
-        <label>Przedmiot<input name="subject" value="${esc(s.subject)}" placeholder="np. matematyka"></label>
-        <label>Klasa / poziom<input name="level" value="${esc(s.level)}" placeholder="np. 8 SP"></label>
-        <label>Stawka zł/h<input name="rate" type="number" step="0.01" min="0" value="${esc(s.rate)}"></label>
-      </div>
-      <div>
-        <div class="row" style="margin-bottom:6px"><b class="small">Stały plan zajęć</b><span class="spacer"></span><button type="button" class="btn sm" data-act="addSchedRow">+ termin</button></div>
-        <div id="schedRows">${(s.schedule || []).map(schedRow).join('')}</div>
-        <div class="f2" style="margin-top:6px">
-          <label>Plan obowiązuje od<input name="scheduleFrom" type="date" value="${esc(s.scheduleFrom || today())}"></label>
-          <label>do (opcjonalnie)<input name="scheduleTo" type="date" value="${esc(s.scheduleTo || '')}"></label>
-        </div>
-        <div class="hint">Zostaw pusty, jeśli zajęcia są nieregularne – wtedy dodajesz je ręcznie. „Co 2 tyg.” liczone jest od tygodnia daty „od”.</div>
-      </div>
+      <label>E-mail<input name="email" type="email" value="${esc(s.email)}"></label>
+      ${scheduleFields(s)}
       <div class="f2">
-        <label>Saldo początkowe (zł)<input name="openingBalance" type="number" step="0.01" value="${esc(s.openingBalance || 0)}"></label>
+        <label>Saldo początkowe (zł)<input name="openingBalance" type="number" inputmode="decimal" step="0.01" value="${esc(s.openingBalance || 0)}"></label>
         <label>Kolor<input name="color" type="color" value="${esc(s.color)}"></label>
       </div>
-      <div class="hint" style="margin-top:-6px">Saldo początkowe: np. −160 jeśli uczeń już był winien, +200 jeśli zapłacił z góry (przy przenoszeniu z innej aplikacji).</div>
-      <label>Opis / notatki<textarea name="notes" placeholder="np. przygotowanie do egzaminu, z czym ma problem, ustalenia…">${esc(s.notes)}</textarea></label>
-      <div class="factions">
-        ${isNew ? '' : `<button type="button" class="btn danger left" data-act="deleteStudent" data-id="${esc(s.id)}">Usuń</button>
-          <button type="button" class="btn left" data-act="archiveStudent" data-id="${esc(s.id)}">${s.archived ? 'Przywróć z archiwum' : 'Archiwizuj'}</button>`}
-        <button type="button" class="btn" data-act="closeModal">Anuluj</button>
-        <button class="btn primary">Zapisz</button>
-      </div>
+      <div class="hint" style="margin-top:-6px">Saldo początkowe przy przenoszeniu z innej aplikacji: −160 jeśli uczeń był winien, +200 jeśli zapłacił z góry.</div>
+      <label>Opis ucznia<textarea name="notes" placeholder="np. przygotowanie do egzaminu, z czym ma problem, ustalenia…">${esc(s.notes)}</textarea></label>
+      <div class="factions"><button type="button" class="btn" data-act="closeModal">Anuluj</button><button class="btn primary">Zapisz</button></div>
+      ${isNew ? '' : `<div class="f2"><button type="button" class="btn" data-act="archiveStudent" data-id="${esc(s.id)}">${ic('archive')}${s.archived ? 'Przywróć' : 'Archiwizuj'}</button>
+        <button type="button" class="btn danger" data-act="deleteStudent" data-id="${esc(s.id)}">${ic('trash')}Usuń</button></div>`}
     </form>`);
+}
+function groupForm(g){
+  const isNew = !g;
+  g = g || {name:'', subject:'', rate:db.settings.defaultRate, color:PALETTE[(db.groups.length + 5) % PALETTE.length], notes:'', memberIds:[], schedule:[], scheduleFrom:today(), scheduleTo:''};
+  const studs = db.students.filter(s => !s.archived || g.memberIds.includes(s.id)).sort(byName);
+  openModal(isNew ? 'Nowa grupa' : 'Edytuj grupę', `
+    <form class="f" data-form="group" data-id="${esc(g.id || '')}">
+      <label>Nazwa grupy *<input name="name" required value="${esc(g.name)}" placeholder="np. 5 klasa Rybnik"></label>
+      <div class="f2">
+        <label>Przedmiot<input name="subject" value="${esc(g.subject)}"></label>
+        <label>Stawka zł / h od osoby<input name="rate" type="number" inputmode="decimal" step="0.01" min="0" value="${esc(g.rate)}"></label>
+      </div>
+      <div><b class="small">Uczestnicy</b>
+        <div class="att memberlist" style="margin-top:6px">${studs.length ? studs.map(s => `<label><input type="checkbox" name="member" value="${esc(s.id)}" ${g.memberIds.includes(s.id) ? 'checked' : ''}>${esc(s.name)}</label>`).join('') : '<div class="muted small" style="padding:8px 0">Najpierw dodaj uczniów.</div>'}</div></div>
+      ${scheduleFields(g)}
+      <label>Kolor<input name="color" type="color" value="${esc(g.color)}"></label>
+      <label>Notatki<textarea name="notes">${esc(g.notes)}</textarea></label>
+      <div class="factions"><button type="button" class="btn" data-act="closeModal">Anuluj</button><button class="btn primary">Zapisz</button></div>
+      ${isNew ? '' : `<div class="f2"><button type="button" class="btn" data-act="archiveGroup" data-id="${esc(g.id)}">${ic('archive')}${g.archived ? 'Przywróć' : 'Archiwizuj'}</button>
+        <button type="button" class="btn danger" data-act="deleteGroup" data-id="${esc(g.id)}">${ic('trash')}Usuń</button></div>`}
+    </form>`);
+}
+function attHtml(gid, attendance){
+  const g = group(gid); if(!g) return '';
+  const ids = attendance ? Object.keys(attendance) : (g.memberIds || []);
+  if(!ids.length) return '<div class="hint">Ta grupa nie ma uczestników.</div>';
+  return `<div><b class="small">Obecność</b><div class="att" style="margin-top:6px">${ids.map(id => `<label><input type="checkbox" name="att" value="${esc(id)}" ${!attendance || attendance[id] ? 'checked' : ''}>${esc(sname(id))}</label>`).join('')}</div>
+    <div class="hint">Płacą obecni (cena od osoby). Przy „odwołanej z opłatą” płacą wszyscy.</div></div>`;
 }
 function lessonForm(ev, preset = {}){
   const isNew = !ev;
-  const sid = ev?.studentId || preset.sid || db.students.filter(s => !s.archived).sort((a, b) => a.name.localeCompare(b.name, 'pl'))[0]?.id;
-  if(!sid){ toast('Najpierw dodaj ucznia'); studentForm(); return; }
+  let owner = ev ? (ev.groupId ? 'g:' + ev.groupId : 's:' + ev.studentId) : preset.owner;
+  if(!owner){ const first = db.students.filter(s => !s.archived).sort(byName)[0]; if(first) owner = 's:' + first.id; }
+  if(!owner){ toast('Najpierw dodaj ucznia'); studentForm(); return; }
+  const [k, id] = owner.split(':');
   const dur = ev?.duration || db.settings.defaultDuration;
-  const e = ev || {studentId:sid, date:preset.date || today(), time:'16:00', duration:dur, price:priceFor(sid, dur), status:'planned', note:''};
+  const e = ev || {studentId:k === 's' ? id : null, groupId:k === 'g' ? id : null, date:preset.date || today(), time:preset.time || '16:00',
+                   duration:dur, price:priceFor(k, id, dur), status:'planned', note:''};
   const linked = e.kind === 'lesson' ? db.payments.filter(p => p.lessonId === e.id) : [];
   const attrs = e.kind === 'lesson' ? `data-id="${esc(e.id)}"` : e.kind === 'virtual' ? `data-slot="${esc(e.slotKey)}"` : '';
-  const quick = ev && e.status !== 'done' ? `<div class="quick">
-      <button class="btn ok" data-act="quick" data-how="done" ${attrs}>✓ Odbyte</button>
-      <button class="btn ok" data-act="quick" data-how="cash" ${attrs}>✓ Odbyte + gotówka</button>
-      <button class="btn" data-act="quick" data-how="transfer" ${attrs}>✓ Odbyte + przelew</button>
-      <button class="btn" data-act="quick" data-how="blik" ${attrs}>✓ Odbyte + BLIK</button>
-      <button class="btn danger" data-act="quick" data-how="cancel" ${attrs}>✕ Odwołane</button>
-      <button class="btn" data-act="quick" data-how="late" ${attrs}>Odwołane – płatne</button>
+  const quick = ev ? `<div class="quick">
+      <button class="g" data-act="quick" data-how="done" data-inform="1" ${attrs}>${ic('check')}Odbyta</button>
+      <button class="g" data-act="quick" data-how="cash" data-inform="1" ${attrs}>${ic('cash')}Odbyta + gotówka</button>
+      <button data-act="quick" data-how="transfer" data-inform="1" ${attrs}>Odbyta + przelew</button>
+      <button data-act="quick" data-how="blik" data-inform="1" ${attrs}>Odbyta + BLIK</button>
+      <button class="r" data-act="quick" data-how="cancel" ${attrs}>${ic('x')}Odwołana</button>
+      <button data-act="quick" data-how="late" data-inform="1" ${attrs}>Odwołana z opłatą</button>
     </div>` : '';
-  openModal(isNew ? 'Nowe zajęcia' : esc(sname(e.studentId)) + ' · ' + fmtDateShort(e.date), `
+  const title = isNew ? 'Nowa lekcja' : `${esc(oname(e))}<div class="small muted" style="font-weight:500;margin-top:4px">${fmtDateShort(e.date)} · ${e.time}–${fromMin(endMin(e))} · ${STATUS[e.status].toLowerCase()}</div>`;
+  openModal(title, `
+    ${linked.length ? `<div class="notice" style="background:var(--ok-bg);color:var(--ok)">Opłacone: ${linked.map(p => `${esc(sname(p.studentId).split(' ')[0])} ${zl(p.amount)} (${METHODS[p.method]})`).join(', ')}</div>`
+      : e.kind === 'lesson' && isCharged(e) ? `<div class="notice">Doliczono do salda: ${zl(value(e))}. ${e.studentId ? `<button class="btn sm" data-act="addPayment" data-sid="${esc(e.studentId)}">Dodaj wpłatę</button>` : ''}</div>` : ''}
     ${quick}
-    ${linked.length ? `<div class="notice" style="background:var(--ok-bg);color:var(--ok)">💰 Opłacone: ${linked.map(p => zl(p.amount) + ' (' + METHODS[p.method] + ')').join(', ')}</div>`
-      : e.kind === 'lesson' && isCharged(e) ? `<div class="notice">Do salda ucznia doliczono ${zl(e.price)}. <button class="btn sm" data-act="addPayment" data-sid="${esc(e.studentId)}">💰 Dodaj wpłatę</button></div>` : ''}
     <form class="f" data-form="lesson" ${attrs}>
-      <label>Uczeń<select name="studentId" required>${studentOptions(e.studentId)}</select></label>
+      <label>Uczeń / grupa<select name="owner" required>${ownerOptions(owner)}</select></label>
+      <div id="attBox">${e.groupId ? attHtml(e.groupId, e.attendance) : ''}</div>
       <div class="f3">
         <label>Data<input name="date" type="date" required value="${esc(e.date)}"></label>
         <label>Godzina<input name="time" type="time" required value="${esc(e.time)}"></label>
-        <label>Minuty<input name="duration" type="number" min="5" step="5" required value="${esc(e.duration)}"></label>
+        <label>Minuty<input name="duration" type="number" inputmode="numeric" min="5" step="5" required value="${esc(e.duration)}"></label>
       </div>
       <div class="f2">
-        <label>Cena (zł)<input name="price" type="number" min="0" step="0.01" required value="${esc(e.price)}" ${ev ? 'data-manual="1"' : ''}></label>
-        <label>Status<select name="status">${Object.entries(STATUS).map(([k, v]) => `<option value="${k}" ${e.status === k ? 'selected' : ''}>${v}</option>`).join('')}</select></label>
+        <label id="priceLbl"><span>${e.groupId ? 'Cena od osoby (zł)' : 'Cena (zł)'}</span><input name="price" type="number" inputmode="decimal" min="0" step="0.01" required value="${esc(e.price)}" ${ev ? 'data-manual="1"' : ''}></label>
+        <label>Status<select name="status">${Object.entries(STATUS).map(([s, v]) => `<option value="${s}" ${e.status === s ? 'selected' : ''}>${v}</option>`).join('')}</select></label>
       </div>
       <label>Temat / notatka<textarea name="note" placeholder="np. funkcje kwadratowe, zadanie domowe…">${esc(e.note || '')}</textarea></label>
-      ${isNew ? `<label style="display:flex;align-items:center;gap:8px;color:var(--text)"><input type="checkbox" name="paidCash"> Zapłacone od razu gotówką</label>` : ''}
+      ${isNew ? `<label class="checkline"><input type="checkbox" name="paidCash">Odbyta i zapłacona gotówką</label>` : ''}
       <div class="factions">
-        ${e.kind === 'lesson' ? `<button type="button" class="btn danger left" data-act="deleteLesson" data-id="${esc(e.id)}">Usuń</button>` : ''}
-        <button type="button" class="btn" data-act="closeModal">Anuluj</button>
-        <button class="btn primary">Zapisz</button>
+        ${e.kind === 'lesson' ? `<button type="button" class="btn danger" data-act="deleteLesson" data-id="${esc(e.id)}" aria-label="Usuń">${ic('trash')}</button>` : ''}
+        <button type="button" class="btn" data-act="closeModal">Anuluj</button><button class="btn primary">Zapisz</button>
       </div>
     </form>`);
 }
 function paymentForm(p, preset = {}){
   const isNew = !p;
-  let sid = p?.studentId || preset.sid || db.students.filter(s => !s.archived).sort((a, b) => a.name.localeCompare(b.name, 'pl'))[0]?.id;
+  const sid = p?.studentId || preset.sid || db.students.filter(s => !s.archived).sort(byName)[0]?.id;
   if(!sid){ toast('Najpierw dodaj ucznia'); studentForm(); return; }
   const b = balance(sid);
-  p = p || {studentId:sid, date:today(), amount:b < 0 ? -b : priceFor(sid, db.settings.defaultDuration), method:'cash', note:''};
+  p = p || {studentId:sid, date:today(), amount:b < 0 ? -b : priceFor('s', sid, db.settings.defaultDuration), method:'cash', note:''};
   openModal(isNew ? 'Nowa wpłata' : 'Edytuj wpłatę', `
     <form class="f" data-form="payment" data-id="${esc(p.id || '')}">
-      <label>Uczeń<select name="studentId" required>${studentOptions(p.studentId)}</select></label>
+      <label>Od kogo<select name="studentId" required>${studentOptions(p.studentId)}</select></label>
       <div class="small muted" id="payBal">${isNew ? 'Aktualne saldo: ' + balanceBadge(b) : ''}</div>
       <div class="f2">
-        <label>Kwota (zł)<input name="amount" type="number" step="0.01" required value="${esc(p.amount)}"></label>
+        <label>Kwota (zł)<input name="amount" type="number" inputmode="decimal" step="0.01" required value="${esc(p.amount)}"></label>
         <label>Data<input name="date" type="date" required value="${esc(p.date)}"></label>
       </div>
-      <label>Forma płatności<div class="seg" style="display:flex">${Object.entries(METHODS).map(([k, v]) => `<button type="button" style="flex:1" class="${p.method === k ? 'on' : ''}" data-act="pickMethod" data-m="${k}">${v}</button>`).join('')}</div>
-        <input type="hidden" name="method" value="${esc(p.method)}"></label>
-      <label>Notatka<input name="note" value="${esc(p.note || '')}" placeholder="np. za listopad, z góry za 4 zajęcia"></label>
+      <div><div class="small muted" style="margin-bottom:6px">Forma płatności</div>
+        <div class="methods">${Object.entries(METHODS).map(([m, v]) => `<button type="button" class="${p.method === m ? 'on' : ''}" data-act="pickMethod" data-m="${m}">${v}</button>`).join('')}</div>
+        <input type="hidden" name="method" value="${esc(p.method)}"></div>
+      <label>Notatka<input name="note" value="${esc(p.note || '')}" placeholder="np. z góry za listopad"></label>
       <div class="factions">
-        ${isNew ? '' : `<button type="button" class="btn danger left" data-act="deletePayment" data-id="${esc(p.id)}">Usuń</button>`}
-        <button type="button" class="btn" data-act="closeModal">Anuluj</button>
-        <button class="btn primary">Zapisz</button>
+        ${isNew ? '' : `<button type="button" class="btn danger" data-act="deletePayment" data-id="${esc(p.id)}" aria-label="Usuń">${ic('trash')}</button>`}
+        <button type="button" class="btn" data-act="closeModal">Anuluj</button><button class="btn primary">Zapisz</button>
       </div>
     </form>`);
+}
+function debtorsSheet(over){
+  const list = db.students.map(s => ({s, b:balance(s.id)})).filter(x => over ? x.b > 0 : x.b < 0).sort((a, b) => over ? b.b - a.b : a.b - b.b);
+  openModal(over ? 'Nadpłaty' : 'Zadłużenie', list.length ? `<div>${list.map(({s, b}) => `<div class="lrow" data-act="openStudent" data-id="${esc(s.id)}">
+      <div class="avatar" style="--c:${esc(s.color)};width:40px;height:40px;font-size:15px">${esc(initials(s.name))}</div>
+      <div class="grow"><div class="ell">${esc(s.name)}</div>${s.phone ? `<div class="tiny muted">${esc(s.phone)}</div>` : ''}</div>
+      <div class="amount ${over ? 'pos' : 'neg'}">${zl(Math.abs(b))}</div>
+      ${over ? '' : `<button class="btn sm" data-act="addPayment" data-sid="${esc(s.id)}">Wpłata</button>`}</div>`).join('')}</div>`
+    : `<div class="empty">${over ? 'Nikt nie ma nadpłaty' : 'Nikt nie zalega z płatnościami 🎉'}</div>`);
+}
+function notifSheet(){
+  const n = notifications();
+  openModal('Powiadomienia', `
+    ${n.backup ? `<div class="notice">💾 ${n.bd === null ? 'Nie masz jeszcze kopii zapasowej danych.' : `Ostatnia kopia: ${n.bd} dni temu.`}<button class="btn sm" data-act="exportJson">Zrób kopię</button></div>` : ''}
+    ${n.conf.length ? `<div class="row" style="margin-bottom:10px"><b>Do potwierdzenia (${n.conf.length})</b><span class="grow"></span>${n.conf.length > 1 ? '<button class="btn sm" data-act="confirmAll">Wszystkie odbyte</button>' : ''}</div>
+      ${n.conf.slice().reverse().map(e => lessonCard(e, {date:true, actions:true})).join('')}` : ''}
+    ${n.debtors.length ? `<div class="rowcard" data-act="debtors">${ic('alert')}<div class="grow"><b>Zadłużenie</b><div class="muted small">Uczniów: ${n.debtors.length}</div></div><div class="v neg" style="font-size:18px">${zl(-n.debtors.reduce((a, x) => a + x.b, 0))}</div></div>` : ''}
+    ${!n.conf.length && !n.backup && !n.debtors.length ? '<div class="empty">Wszystko w porządku ✓</div>' : ''}`);
 }
 
 const forms = {
   student(f){
     const v = Object.fromEntries(new FormData(f));
-    const fd = new FormData(f);
-    const days = fd.getAll('sday'), times = fd.getAll('stime'), durs = fd.getAll('sdur'), every = fd.getAll('severy');
-    const schedule = days.map((d, i) => ({day:+d, time:times[i], duration:+durs[i], every:+every[i]})).filter(x => x.time);
     const data = {name:v.name.trim(), phone:v.phone.trim(), email:v.email.trim(), parentName:v.parentName.trim(), parentPhone:v.parentPhone.trim(),
                   subject:v.subject.trim(), level:v.level.trim(), rate:v.rate === '' ? '' : +v.rate, color:v.color, notes:v.notes,
-                  schedule, scheduleFrom:v.scheduleFrom || today(), scheduleTo:v.scheduleTo || '', openingBalance:+v.openingBalance || 0};
-    const id = f.dataset.id;
-    if(id){
-      const s = student(id);
-      const changed = JSON.stringify(s.schedule || []) !== JSON.stringify(schedule) || (s.scheduleFrom || '') !== data.scheduleFrom || (s.scheduleTo || '') !== data.scheduleTo;
-      if(changed){
-        // minione, niepotwierdzone terminy starego planu zapisujemy – zostają w „Do potwierdzenia”
-        freezePast(id);
-        if(data.scheduleFrom !== (s.scheduleFrom || '')) data.anchor = data.scheduleFrom;
-        else if(data.scheduleFrom < today()){
-          // nowy plan obowiązuje od dziś; tydzień odniesienia dla „co 2 tyg.” zostaje ten sam
-          data.anchor = s.anchor || s.scheduleFrom;
-          data.scheduleFrom = today();
-        }
-      }
-      Object.assign(s, data);
-      toast('Zapisano');
-    }else{
-      const s = {id:uid(), created:today(), archived:false, ...data};
-      db.students.push(s);
-      toast('Dodano ucznia');
-    }
+                  schedule:readSchedule(f), scheduleFrom:v.scheduleFrom || today(), scheduleTo:v.scheduleTo || '', openingBalance:+v.openingBalance || 0};
+    if(f.dataset.id){ const s = student(f.dataset.id); applyScheduleChange(s, 's', data); Object.assign(s, data); toast('Zapisano'); }
+    else{ db.students.push({id:uid(), created:new Date().toISOString(), archived:false, ...data}); toast('Dodano ucznia'); }
+    save(); closeModal(); render();
+  },
+  group(f){
+    const fd = new FormData(f), v = Object.fromEntries(fd);
+    const data = {name:v.name.trim(), subject:v.subject.trim(), rate:v.rate === '' ? '' : +v.rate, color:v.color, notes:v.notes,
+                  memberIds:fd.getAll('member'), schedule:readSchedule(f), scheduleFrom:v.scheduleFrom || today(), scheduleTo:v.scheduleTo || ''};
+    if(f.dataset.id){ const g = group(f.dataset.id); applyScheduleChange(g, 'g', data); Object.assign(g, data); toast('Zapisano grupę'); }
+    else{ db.groups.push({id:uid(), created:new Date().toISOString(), archived:false, ...data}); toast('Utworzono grupę'); }
+    state.seg = 'groups';
     save(); closeModal(); render();
   },
   lesson(f){
     const v = Object.fromEntries(new FormData(f));
-    const data = {studentId:v.studentId, date:v.date, time:v.time, duration:+v.duration, price:+v.price, status:v.status, note:v.note};
+    const [k, id] = v.owner.split(':');
+    const data = {studentId:k === 's' ? id : null, groupId:k === 'g' ? id : null, date:v.date, time:v.time, duration:+v.duration,
+                  price:+v.price, status:v.paidCash ? 'done' : v.status, note:v.note};
+    if(k === 'g'){
+      const box = f.querySelectorAll('input[name=att]');
+      data.attendance = box.length ? Object.fromEntries([...box].map(c => [c.value, c.checked])) : allPresent(id);
+    }else data.attendance = null;
     let l;
     if(f.dataset.id){ l = db.lessons.find(x => x.id === f.dataset.id); Object.assign(l, data); }
-    else if(f.dataset.slot){ const ve = vcache.get(f.dataset.slot); l = materialize(ve, data); }
-    else{ l = materialize({...data, slotKey:null}, data); }
-    if(v.paidCash){
-      db.payments.push({id:uid(), studentId:l.studentId, date:l.date, amount:l.price, method:'cash', note:'Za zajęcia ' + fmtDateShort(l.date), lessonId:l.id});
-    }
-    save(); closeModal(); render(); toast('Zapisano zajęcia');
+    else if(f.dataset.slot){ l = materialize(findEvent({slot:f.dataset.slot}), data); }
+    else l = materialize({...data, slotKey:null}, data);
+    if(v.paidCash) for(const c of chargesOf(l)) db.payments.push({id:uid(), studentId:c.sid, date:l.date, amount:c.amount, method:'cash', note:'Za lekcję ' + fmtDateShort(l.date), lessonId:l.id});
+    save(); closeModal(); render(); toast('Zapisano lekcję');
   },
   payment(f){
     const v = Object.fromEntries(new FormData(f));
@@ -1036,65 +1251,83 @@ const forms = {
 };
 
 /* =========================================================
-   AKCJE (kliknięcia)
+   AKCJE
    ========================================================= */
 const actions = {
-  tab(d){ state.tab = d.tab; state.studentId = null; render(); window.scrollTo(0, 0); },
-  quickAdd(){
-    openModal('Dodaj', `<div class="menu">
-      <button class="btn" data-act="addLesson">📘 Zajęcia</button>
-      <button class="btn" data-act="addPayment">💰 Wpłatę</button>
-      <button class="btn" data-act="addStudent">👤 Ucznia</button></div>`);
-  },
+  tab(d){ closeModal(); state.tab = d.tab; state.studentId = state.groupId = null; render(); window.scrollTo(0, 0); if(d.tab === 'cal') setTimeout(scrollToTimeline, 30); },
   closeModal,
+  notif(){ notifSheet(); },
+  debtors(d){ debtorsSheet(!!d.over); },
+  seg(d){ state.seg = d.seg; render(); },
+  subject(d){ state.subject = d.s; render(); },
+  sort(){ state.sort = {name:'balance', balance:'recent', recent:'name'}[state.sort]; render(); },
   addStudent(){ studentForm(); },
   editStudent(d){ studentForm(student(d.id)); },
-  openStudent(d){ closeModal(); state.tab = 'students'; state.studentId = d.id; render(); window.scrollTo(0, 0); },
-  backStudents(){ state.studentId = null; render(); },
+  addGroup(){ groupForm(); },
+  editGroup(d){ groupForm(group(d.id)); },
+  openStudent(d){ closeModal(); state.tab = 'students'; state.studentId = d.id; state.groupId = null; render(); window.scrollTo(0, 0); },
+  openGroup(d){ closeModal(); state.tab = 'students'; state.groupId = d.id; state.studentId = null; render(); window.scrollTo(0, 0); },
+  back(){ state.studentId = state.groupId = null; render(); },
   toggleArchived(){ state.showArchived = !state.showArchived; render(); },
   archiveStudent(d){
     const s = student(d.id);
-    if(!s.archived){
-      if(!confirm(`Zarchiwizować ucznia ${s.name}? Stały plan przestanie generować zajęcia, historia i saldo zostaną.`)) return;
-      freezePast(s.id);
-    }
-    s.archived = !s.archived; save(); closeModal(); render(); toast(s.archived ? 'Zarchiwizowano' : 'Przywrócono');
+    if(!s.archived){ if(!confirm(`Przenieść ${s.name} do archiwum? Stały plan przestanie dodawać lekcje, a historia i saldo zostaną.`)) return; freezePast('s', s.id); }
+    s.archived = !s.archived; save(); closeModal(); render(); toast(s.archived ? 'Przeniesiono do archiwum' : 'Przywrócono');
+  },
+  archiveGroup(d){
+    const g = group(d.id);
+    if(!g.archived){ if(!confirm(`Przenieść grupę ${g.name} do archiwum?`)) return; freezePast('g', g.id); }
+    g.archived = !g.archived; save(); closeModal(); render(); toast(g.archived ? 'Przeniesiono do archiwum' : 'Przywrócono');
   },
   deleteStudent(d){
     const s = student(d.id);
-    if(!confirm(`Usunąć ucznia ${s.name} RAZEM z całą historią zajęć i wpłat? Tego nie da się cofnąć.\n\n(Jeśli chcesz tylko ukryć ucznia – użyj „Archiwizuj”.)`)) return;
+    if(!confirm(`Usunąć ucznia ${s.name} razem z całą historią lekcji i wpłat? Tego nie da się cofnąć.\n\nJeśli chcesz go tylko ukryć – użyj „Archiwizuj”.`)) return;
     db.students = db.students.filter(x => x.id !== s.id);
     db.lessons = db.lessons.filter(x => x.studentId !== s.id);
     db.payments = db.payments.filter(x => x.studentId !== s.id);
+    for(const g of db.groups) g.memberIds = (g.memberIds || []).filter(x => x !== s.id);
+    for(const l of db.lessons) if(l.attendance && s.id in l.attendance) delete l.attendance[s.id];
     state.studentId = null; save(); closeModal(); render(); toast('Usunięto ucznia');
+  },
+  deleteGroup(d){
+    const g = group(d.id);
+    if(!confirm(`Usunąć grupę ${g.name} razem z jej lekcjami? Wpłaty uczniów zostaną. Tego nie da się cofnąć.`)) return;
+    db.groups = db.groups.filter(x => x.id !== g.id);
+    db.lessons = db.lessons.filter(x => x.groupId !== g.id);
+    state.groupId = null; save(); closeModal(); render(); toast('Usunięto grupę');
   },
   addSchedRow(){ $('#schedRows').insertAdjacentHTML('beforeend', schedRow()); },
   delSchedRow(d, el){ el.closest('.sched-row').remove(); },
-  addLesson(d){ lessonForm(null, {date:d.date, sid:d.sid || state.studentId}); },
+  addLesson(d){
+    const owner = d.owner || (state.tab === 'students' && state.studentId ? 's:' + state.studentId : state.tab === 'students' && state.groupId ? 'g:' + state.groupId : undefined);
+    lessonForm(null, {date:d.date, time:d.time, owner});
+  },
   openEvent(d){ const e = findEvent(d); if(e) lessonForm(e); },
-  quick(d){ const e = findEvent(d); if(!e) return; applyQuick(e, d.how); closeModal(); render(); },
+  quick(d){
+    const e = findEvent(d); if(!e) return;
+    let att;
+    const box = d.inform && dlg.open ? dlg.querySelectorAll('input[name=att]') : [];
+    if(box.length && e.groupId) att = Object.fromEntries([...box].map(c => [c.value, c.checked]));
+    applyQuick(e, d.how, att); closeModal(); render();
+  },
   confirmAll(){
     const list = toConfirm();
-    if(!confirm(`Oznaczyć ${list.length} zajęć jako odbyte (bez wpłaty)?`)) return;
-    list.forEach(e => applyQuick(e, 'done')); render(); toast(`Potwierdzono ${list.length} zajęć`);
+    if(!confirm(`Oznaczyć ${list.length} lekcji jako odbyte (bez wpłaty)?`)) return;
+    list.forEach(e => applyQuick(e, 'done')); closeModal(); render(); toast(`Potwierdzono ${list.length} lekcji`);
   },
   deleteLesson(d){
     const l = db.lessons.find(x => x.id === d.id);
-    if(!confirm('Usunąć te zajęcia?')) return;
+    if(!confirm('Usunąć tę lekcję?')) return;
     const linked = db.payments.filter(p => p.lessonId === l.id);
-    if(linked.length && confirm(`Do tych zajęć jest przypisana wpłata (${linked.map(p => zl(p.amount)).join(', ')}). Usunąć też wpłatę?\n\nOK = usuń wpłatę, Anuluj = zostaw wpłatę (zostanie jako nadpłata).`)){
+    if(linked.length && confirm(`Do tej lekcji jest przypisana wpłata (${linked.map(p => zl(p.amount)).join(', ')}). Usunąć też wpłatę?\n\nOK = usuń wpłatę\nAnuluj = zostaw (będzie nadpłatą)`)){
       db.payments = db.payments.filter(p => p.lessonId !== l.id);
     }
-    if(l.slotKey){
-      // termin z planu – zostawiamy ślad jako „odwołane”, żeby nie wrócił w kalendarzu
-      l.status = 'cancelled'; l.note = (l.note ? l.note + ' · ' : '') + 'usunięte';
-      if(!confirm('To był termin ze stałego planu. OK = oznacz jako odwołany (nie pojawi się ponownie). Anuluj = usuń całkiem (termin z planu wróci do kalendarza).')){
-        db.lessons = db.lessons.filter(x => x.id !== l.id);
-      }
+    if(l.slotKey && confirm('To był termin ze stałego planu.\n\nOK = oznacz jako odwołany (nie wróci w grafiku)\nAnuluj = usuń całkiem (termin z planu pojawi się znowu)')){
+      l.status = 'cancelled';
     }else db.lessons = db.lessons.filter(x => x.id !== l.id);
     save(); closeModal(); render(); toast('Usunięto');
   },
-  addPayment(d){ paymentForm(null, {sid:d.sid || state.studentId}); },
+  addPayment(d){ paymentForm(null, {sid:d.sid || (state.tab === 'students' ? state.studentId : null)}); },
   editPayment(d){ paymentForm(db.payments.find(p => p.id === d.id)); },
   deletePayment(d){
     if(!confirm('Usunąć tę wpłatę?')) return;
@@ -1104,36 +1337,27 @@ const actions = {
     el.parentElement.querySelectorAll('button').forEach(b => b.classList.toggle('on', b === el));
     el.closest('form').elements.method.value = d.m;
   },
-  calMode(d){ state.cal = d.mode; render(); },
-  calNav(d){
-    const n = +d.dir;
-    if(state.cal === 'week') state.calDate = addDays(state.calDate, 7 * n);
-    else state.calDate = shiftMonth(state.calDate.slice(0, 7), n) + '-01';
-    render();
-  },
-  calToday(){ state.calDate = today(); render(); },
-  calDay(d){ state.cal = 'week'; state.calDate = d.date; render(); },
-  payNav(d){ state.payMonth = shiftMonth(state.payMonth, +d.dir); render(); },
-  repNav(d){ state.repMonth = shiftMonth(state.repMonth, +d.dir); render(); },
+  calNav(d){ state.calDate = addDays(state.calDate, 7 * (+d.dir)); render(); },
+  calToday(){ state.calDate = today(); render(); scrollToTimeline(); },
+  calDay(d){ state.calDate = d.date; render(); },
+  finNav(d){ state.finMonth = shiftMonth(state.finMonth, +d.dir); render(); },
+  finMonth(d){ state.finMonth = d.m; render(); },
   exportJson(){
     db.settings.lastBackup = new Date().toISOString(); save();
     download(`korepetycje-kopia-${today()}.json`, JSON.stringify(db, null, 2), 'application/json');
-    render(); toast('Pobrano kopię zapasową');
+    closeModal(); render(); toast('Pobrano kopię zapasową');
   },
   importJson(){
-    let inp = $('#importFile');
-    if(!inp){ inp = document.createElement('input'); inp.type = 'file'; inp.id = 'importFile'; inp.accept = '.json,application/json'; inp.hidden = true; document.body.appendChild(inp); }
-    inp.value = '';
+    const inp = document.createElement('input'); inp.type = 'file'; inp.accept = '.json,application/json';
     inp.onchange = () => {
       const file = inp.files[0]; if(!file) return;
       const r = new FileReader();
       r.onload = () => {
         try{
           const d = JSON.parse(r.result);
-          if(!Array.isArray(d.students) || !Array.isArray(d.lessons) || !Array.isArray(d.payments)) throw new Error('To nie jest plik kopii z tej aplikacji');
-          if(!confirm(`Wczytać kopię? (${d.students.length} uczniów, ${d.lessons.length} zajęć, ${d.payments.length} wpłat)\nObecne dane zostaną ZASTĄPIONE.`)) return;
-          const e = emptyDb(); db = {...e, ...d, settings:{...e.settings, ...(d.settings || {})}};
-          save(); render(); toast('Wczytano kopię');
+          if(!Array.isArray(d.students) || !Array.isArray(d.lessons) || !Array.isArray(d.payments)) throw new Error('to nie jest plik kopii z tej aplikacji');
+          if(!confirm(`Wczytać kopię? (${d.students.length} uczniów, ${d.lessons.length} lekcji, ${d.payments.length} wpłat)\nObecne dane zostaną ZASTĄPIONE.`)) return;
+          db = normalize(d); save(); render(); toast('Wczytano kopię');
         }catch(err){ alert('Nie udało się wczytać pliku: ' + err.message); }
       };
       r.readAsText(file);
@@ -1145,32 +1369,28 @@ const actions = {
     const num = v => String(round2(v)).replace('.', ',');
     let rows;
     if(d.what === 'lessons'){
-      rows = [['Data','Godzina','Uczeń','Minuty','Cena','Status','Notatka']]
+      rows = [['Data','Godzina','Uczeń / grupa','Minuty','Cena','Wartość','Status','Notatka']]
         .concat(db.lessons.slice().sort((a, b) => (a.date + a.time).localeCompare(b.date + b.time))
-          .map(l => [l.date, l.time, sname(l.studentId), l.duration, num(l.price), STATUS[l.status], l.note || '']));
+          .map(l => [l.date, l.time, oname(l), l.duration, num(l.price), num(value(l)), STATUS[l.status], l.note || '']));
     }else{
       rows = [['Data','Uczeń','Kwota','Forma','Notatka']]
         .concat(db.payments.slice().sort((a, b) => a.date.localeCompare(b.date))
           .map(p => [p.date, sname(p.studentId), num(p.amount), METHODS[p.method] || p.method, p.note || '']));
     }
-    download(`korepetycje-${d.what === 'lessons' ? 'zajecia' : 'wplaty'}-${today()}.csv`, '﻿' + rows.map(r => r.map(q).join(';')).join('\r\n'), 'text/csv;charset=utf-8');
+    download(`korepetycje-${d.what === 'lessons' ? 'lekcje' : 'wplaty'}-${today()}.csv`, '﻿' + rows.map(r => r.map(q).join(';')).join('\r\n'), 'text/csv;charset=utf-8');
   },
-  loadDemo(){
-    if(db.students.length && !confirm('Dodać przykładowe dane do istniejących?')) return;
-    loadDemo(); render(); toast('Wczytano przykładowe dane');
-  },
-  async install(){
-    if(!installEvt) return;
-    installEvt.prompt();
-    await installEvt.userChoice.catch(() => {});
-    installEvt = null; render();
-  },
+  async install(){ if(!installEvt) return; installEvt.prompt(); await installEvt.userChoice.catch(() => {}); installEvt = null; render(); },
+  loadDemo(){ if(db.students.length && !confirm('Dodać przykładowe dane do istniejących?')) return; loadDemo(); render(); toast('Wczytano przykładowe dane'); },
   wipe(){
-    if(!confirm('Usunąć WSZYSTKIE dane (uczniów, zajęcia, wpłaty)? Zrób najpierw kopię zapasową!')) return;
+    if(!confirm('Usunąć WSZYSTKIE dane (uczniów, grupy, lekcje, wpłaty)? Zrób najpierw kopię zapasową!')) return;
     if(!confirm('Na pewno? Tego nie da się cofnąć.')) return;
-    db = emptyDb(); save(); state.studentId = null; render(); toast('Wyczyszczono dane');
+    db = emptyDb(); save(); state.studentId = state.groupId = null; render(); toast('Usunięto dane');
   }
 };
+function scrollToTimeline(){
+  const b = document.querySelector('.now') || document.querySelector('.blk');
+  if(b) b.scrollIntoView({block:'center'});
+}
 
 document.addEventListener('click', e => {
   const el = e.target.closest('[data-act]');
@@ -1184,27 +1404,28 @@ document.addEventListener('submit', e => {
   const f = e.target;
   if(f.dataset.form && forms[f.dataset.form]){ e.preventDefault(); forms[f.dataset.form](f); }
 });
-document.addEventListener('input', e => {
-  const t = e.target;
+function onFieldChange(t){
   if(t.id === 'search'){ state.search = t.value; $('#slist').innerHTML = studentListHtml(); return; }
   const f = t.form;
   if(f?.dataset.form === 'lesson'){
     if(t.name === 'price'){ t.dataset.manual = '1'; return; }
-    if((t.name === 'studentId' || t.name === 'duration') && !f.elements.price.dataset.manual){
-      f.elements.price.value = priceFor(f.elements.studentId.value, +f.elements.duration.value);
+    const [k, id] = f.elements.owner.value.split(':');
+    if(t.name === 'owner'){
+      $('#attBox').innerHTML = k === 'g' ? attHtml(id) : '';
+      $('#priceLbl span').textContent = k === 'g' ? 'Cena od osoby (zł)' : 'Cena (zł)';
+    }
+    if((t.name === 'owner' || t.name === 'duration') && !f.elements.price.dataset.manual){
+      f.elements.price.value = priceFor(k, id, +f.elements.duration.value);
     }
   }
   if(f?.dataset.form === 'payment' && t.name === 'studentId' && !f.dataset.id){
     const b = balance(t.value);
     $('#payBal').innerHTML = 'Aktualne saldo: ' + balanceBadge(b);
-    f.elements.amount.value = b < 0 ? -b : priceFor(t.value, db.settings.defaultDuration);
+    f.elements.amount.value = b < 0 ? -b : priceFor('s', t.value, db.settings.defaultDuration);
   }
-});
-document.addEventListener('change', e => {
-  // selecty na niektórych przeglądarkach mobilnych wysyłają tylko 'change'
-  if(e.target.tagName === 'SELECT') e.target.dispatchEvent(new Event('input', {bubbles:true}));
-});
-// odśwież co minutę (statusy „do potwierdzenia”), ale nie gdy otwarte okno
+}
+document.addEventListener('input', e => { if(e.target.tagName !== 'SELECT') onFieldChange(e.target); });
+document.addEventListener('change', e => { if(e.target.tagName === 'SELECT') onFieldChange(e.target); });
 setInterval(() => { if(!dlg.open && document.visibilityState === 'visible' && document.activeElement?.id !== 'search') render(); }, 60000);
 document.addEventListener('visibilitychange', () => { if(document.visibilityState === 'visible' && !dlg.open){ db = load(); render(); } });
 
@@ -1212,7 +1433,7 @@ document.addEventListener('visibilitychange', () => { if(document.visibilityStat
 function loadDemo(){
   const t = today(), from = addDays(weekStart(t), -28);
   const mk = (name, subject, level, rate, schedule, extra = {}) => {
-    const s = {id:uid(), created:from, archived:false, name, subject, level, rate, schedule, scheduleFrom:from, scheduleTo:'',
+    const s = {id:uid(), created:new Date().toISOString(), archived:false, name, subject, level, rate, schedule, scheduleFrom:from, scheduleTo:'',
                color:PALETTE[db.students.length % PALETTE.length], phone:'', email:'', parentName:'', parentPhone:'', notes:'', openingBalance:0, ...extra};
     db.students.push(s); return s;
   };
@@ -1221,22 +1442,31 @@ function loadDemo(){
   const b = mk('Kuba Nowak', 'Fizyka', '2 LO', 100, [{day:2, time:'18:00', duration:90, every:1}], {phone:'601 222 333'});
   const c = mk('Ola Wiśniewska', 'Matematyka', 'matura rozszerzona', 120, [{day:4, time:'15:30', duration:60, every:1}], {phone:'602 444 555', notes:'Płaci z góry za miesiąc.'});
   const d = mk('Michał Zieliński', 'Angielski', '6 SP', 70, [{day:5, time:'10:00', duration:60, every:2}], {phone:'603 666 777'});
-  // potwierdź minione terminy (poza ostatnimi dwoma dniami – zostaną „do potwierdzenia”)
+  const e1 = mk('Zosia Lis', 'Matematyka', '5 SP', 50, []), e2 = mk('Tymek Wróbel', 'Matematyka', '5 SP', 50, []), e3 = mk('Lena Mazur', 'Matematyka', '5 SP', 50, []);
+  const g = {id:uid(), created:new Date().toISOString(), archived:false, name:'5 klasa – grupa', subject:'Matematyka', rate:50, color:'#7c3aed', notes:'',
+             memberIds:[e1.id, e2.id, e3.id], schedule:[{day:0, time:'15:00', duration:60, every:1}], scheduleFrom:from, scheduleTo:''};
+  db.groups.push(g);
   for(const v of virtualOcc(from, addDays(t, -3))){
-    if(v.studentId === b.id && Math.random() < .15){ materialize(v, {status:'cancelled'}); continue; }
+    if(v.studentId === b.id && Math.random() < .2){ materialize(v, {status:'cancelled'}); continue; }
+    if(v.groupId){
+      const att = allPresent(g.id); if(Math.random() < .4) att[e3.id] = false;
+      const l = materialize(v, {status:'done', attendance:att});
+      for(const ch of chargesOf(l)) if(ch.sid !== e2.id) db.payments.push({id:uid(), studentId:ch.sid, date:l.date, amount:ch.amount, method:'cash', note:'', lessonId:l.id});
+      continue;
+    }
     const l = materialize(v, {status:'done'});
-    if(v.studentId === a.id) db.payments.push({id:uid(), studentId:a.id, date:l.date, amount:l.price, method:'cash', note:'Za zajęcia ' + fmtDateShort(l.date), lessonId:l.id});
+    if(v.studentId === a.id) db.payments.push({id:uid(), studentId:a.id, date:l.date, amount:l.price, method:'cash', note:'Za lekcję ' + fmtDateShort(l.date), lessonId:l.id});
     if(v.studentId === d.id) db.payments.push({id:uid(), studentId:d.id, date:l.date, amount:l.price, method:'blik', note:'', lessonId:l.id});
   }
-  db.payments.push({id:uid(), studentId:b.id, date:addDays(from, 10), amount:300, method:'transfer', note:'za 2 zajęcia'});
-  db.payments.push({id:uid(), studentId:c.id, date:from, amount:600, method:'transfer', note:'z góry za 5 zajęć'});
+  db.payments.push({id:uid(), studentId:b.id, date:addDays(from, 10), amount:300, method:'transfer', note:'za 2 lekcje'});
+  db.payments.push({id:uid(), studentId:c.id, date:from, amount:600, method:'transfer', note:'z góry za 5 lekcji'});
   db.payments.push({id:uid(), studentId:c.id, date:monthStart(t), amount:480, method:'cash', note:'z góry'});
   save();
 }
 
 render();
+if(state.tab === 'cal') setTimeout(scrollToTimeline, 50);
 
-// tryb offline + instalacja; prośba, by przeglądarka nie czyściła danych sama
 if('serviceWorker' in navigator && location.protocol.startsWith('http')){
   navigator.serviceWorker.register('sw.js').catch(err => console.warn('SW:', err));
 }

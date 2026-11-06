@@ -4,16 +4,28 @@ Prosta aplikacja do własnego użytku. To jeden plik `index.html`: działa w prz
 
 ## Co umie
 
-- **Uczniowie** – imię, telefon (kliknij, żeby zadzwonić albo napisać SMS), rodzic, e-mail, przedmiot, klasa, stawka za godzinę, opis/notatki.
-- **Stały plan zajęć** – np. „wtorek 16:00, 60 min”, także co 2 tygodnie. Terminy same pojawiają się w kalendarzu.
-- **Kalendarz** – widok tygodnia i miesiąca, dodawanie, przenoszenie i odwoływanie zajęć.
-- **Potwierdzanie zajęć** jednym kliknięciem: „✓ Odbyte”, „✓ + gotówka”, „✓ + przelew”, „✓ + BLIK”, „✕ Odwołane”, „Odwołane – płatne”.
-- **Wpłaty** – gotówka, przelew, BLIK, inne. Widać, kto zapłacił gotówką.
-- **Saldo ucznia** – ile jest winien albo ile ma nadpłaty (zapłacone z góry). Pełna historia z saldem narastającym.
-- **Pulpit** – zarobek w tym tygodniu i miesiącu, wpłaty (w tym gotówka), suma zaległości.
-- **Prognozy** – najbliższe 7 dni, 2 tygodnie, następny miesiąc oraz stały plan na tydzień, 2 tygodnie i miesiąc.
-- **Raporty** – miesiąc po miesiącu, rozbicie na uczniów, wykres z 12 miesięcy, podsumowanie roku.
-- **Kopia zapasowa** do pliku JSON i eksport zajęć oraz wpłat do CSV (Excel).
+Układ jak w aplikacji mobilnej: granatowy pasek u góry i dolne menu **Główna · Uczniowie · Grafik · Finanse · Ustawienia**.
+
+- **Główna:**
+  - karta „Następna lekcja”;
+  - kafelki: liczba lekcji w tygodniu, prognoza tygodnia, aktywni uczniowie, zarobek i wpłaty w miesiącu, zadłużenie;
+  - lekcje do potwierdzenia i najbliższe lekcje;
+  - dzwonek z powiadomieniami.
+- **Uczniowie:**
+  - wyszukiwarka, sortowanie, filtr przedmiotów, archiwum;
+  - profil ucznia: przyciski „Zadzwoń” i „SMS”, saldo, opis, stały plan, najbliższe lekcje i historia rozliczeń.
+- **Grupy:** kilku uczniów na jednej lekcji. Cena jest od osoby, zaznaczasz obecność, a płacą tylko obecni.
+- **Grafik:** tydzień z paskiem dni (liczba lekcji przy każdym dniu) i oś godzin. Dotknij pustej godziny, żeby dodać lekcję.
+- **Potwierdzanie lekcji jednym dotknięciem:** „Odbyta”, „Odbyta + gotówka / przelew / BLIK”, „Odwołana”, „Odwołana z opłatą”.
+- **Finanse:**
+  - przeprowadzone lekcje w miesiącu (np. 19/65) z paskiem postępu;
+  - kwota przepracowana i otrzymana;
+  - zadłużenie i nadpłaty;
+  - prognoza na 7 dni, 2 tygodnie, następny miesiąc i ze stałego planu;
+  - wykres dynamiki dochodu;
+  - obecność i odwołania, formy płatności (ile gotówką);
+  - zestawienie uczniów, wpłaty i podsumowanie roku.
+- **Ustawienia:** instalacja na telefonie, kopia zapasowa (JSON), eksport do Excela (CSV).
 
 ## Jak liczone jest saldo
 
