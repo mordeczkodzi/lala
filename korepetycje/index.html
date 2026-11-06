@@ -990,11 +990,11 @@ function viewSet(){
       <button class="btn" data-act="importJson">${ic('up')}Wczytaj kopię</button>
       <div class="f2"><button class="btn sm" data-act="exportCsv" data-what="lessons">Lekcje → Excel</button><button class="btn sm" data-act="exportCsv" data-what="payments">Wpłaty → Excel</button></div>
     </div>
-    <div class="sec">Import uczniów</div>
+    <div class="sec">Import uczniów i wpłat</div>
     <div class="card f">
-      <div class="small muted">Wklej kod z listą uczniów (np. przygotowany przez Claude). Uczniowie zostaną <b>dodani</b> do obecnych – osoby o tej samej nazwie są pomijane.</div>
+      <div class="small muted">Wklej kod z listą uczniów lub wpłat (np. przygotowany przez Claude). Zostaną <b>dodane</b> do obecnych danych – to, co już jest, zostanie pominięte.</div>
       <textarea id="importText" placeholder="Wklej tutaj kod…" autocapitalize="off" autocorrect="off" spellcheck="false"></textarea>
-      <button class="btn primary" data-act="importText">${ic('plus')}Dodaj uczniów</button>
+      <button class="btn primary" data-act="importText">${ic('plus')}Importuj</button>
     </div>
     <div class="sec">Jak to działa?</div>
     <div class="card small muted" style="line-height:1.55">
@@ -1474,17 +1474,43 @@ function importStudents(list){
   }
   return {added, skipped};
 }
+// Wpłaty przeniesione z innej aplikacji: saldo ucznia zostaje bez zmian (keepBalance),
+// bo saldo początkowe już je uwzględniało – przesuwamy je o kwotę wpłaty.
+function importPayments(list, keepBalance){
+  const byName = new Map(db.students.map(s => [s.name.trim().toLowerCase(), s]));
+  let added = 0, skipped = 0; const missing = [];
+  for(const x of list){
+    const s = byName.get(String(x.name || '').trim().toLowerCase());
+    if(!s){ missing.push(x.name); continue; }
+    const amount = round2(+x.amount), date = String(x.date || '');
+    if(!amount || !/^\d{4}-\d{2}-\d{2}$/.test(date)){ skipped++; continue; }
+    if(db.payments.some(p => p.studentId === s.id && p.date === date && +p.amount === amount)){ skipped++; continue; }
+    db.payments.push({id:uid(), studentId:s.id, date, amount, method:METHODS[x.method] ? x.method : 'other',
+                      note:x.note || 'Przeniesione z poprzedniej aplikacji', imported:true});
+    if(keepBalance) s.openingBalance = round2((+s.openingBalance || 0) - amount);
+    added++;
+  }
+  return {added, skipped, missing};
+}
 function runImport(data){
   if(data && Array.isArray(data.lessons) && Array.isArray(data.payments) && Array.isArray(data.students)){
     if(!confirm(`To pełna kopia zapasowa (${data.students.length} uczniów). Obecne dane zostaną ZASTĄPIONE. Kontynuować?`)) return;
     db = normalize(data); save(); render(); toast('Wczytano kopię'); return;
   }
-  const list = Array.isArray(data) ? data : data?.students;
-  if(!Array.isArray(list)) throw new Error('brak listy uczniów');
-  if(!confirm(`Dodać ${list.length} uczniów do aplikacji?`)) return;
+  const list = Array.isArray(data) ? data : (Array.isArray(data?.students) ? data.students : []);
+  const pays = Array.isArray(data?.payments) ? data.payments : [];
+  if(!list.length && !pays.length) throw new Error('brak uczniów i wpłat w kodzie');
+  const what = [list.length ? `${list.length} uczniów` : '', pays.length ? `${pays.length} wpłat` : ''].filter(Boolean).join(' i ');
+  if(!confirm(`Dodać ${what} do aplikacji?`)) return;
   const r = importStudents(list);
-  save(); state.tab = 'students'; state.studentId = state.groupId = null; render();
-  toast(`Dodano ${r.added} uczniów` + (r.skipped ? ` · pominięto ${r.skipped} (już są)` : ''));
+  const rp = importPayments(pays, data?.keepBalance !== false);
+  save(); state.studentId = state.groupId = null;
+  state.tab = pays.length && !list.length ? 'fin' : 'students'; render();
+  const msg = [];
+  if(list.length) msg.push(`uczniowie: dodano ${r.added}` + (r.skipped ? `, pominięto ${r.skipped}` : ''));
+  if(pays.length) msg.push(`wpłaty: dodano ${rp.added}` + (rp.skipped ? `, pominięto ${rp.skipped} (już są)` : ''));
+  toast(msg.join(' · '));
+  if(rp.missing.length) alert('Nie znaleziono uczniów: ' + rp.missing.join(', ') + '\nNajpierw dodaj tych uczniów, potem wklej kod jeszcze raz.');
 }
 
 /* ---------- przykładowe dane ---------- */
