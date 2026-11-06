@@ -25,10 +25,28 @@ saldo = saldo początkowe + wpłaty − (zajęcia odbyte + odwołane-płatne)
 - Saldo dodatnie oznacza nadpłatę.
 - Zajęcia ze stałego planu liczą się do salda dopiero po potwierdzeniu. Niepotwierdzone czekają na pulpicie w sekcji „Do potwierdzenia”.
 
-## Jak uruchomić
+## Jak mieć ją na telefonie
 
-1. Otwórz `index.html` w przeglądarce (Chrome, Safari, Firefox).
-2. Na telefonie najlepiej wystawić plik pod stałym adresem, np. przez GitHub Pages, i dodać go do ekranu głównego („Dodaj do ekranu początkowego”). Wtedy działa jak zwykła aplikacja.
+Aplikacja jest instalowalna (PWA): ma własną ikonę, otwiera się na pełnym ekranie i działa bez internetu.
+
+### 1. Wystaw ją pod adresem (jednorazowo, za darmo – GitHub Pages)
+
+1. Na GitHubie wejdź w repozytorium **mordeczkodzi/lala** → **Settings** → **Pages**.
+2. **Source:** „Deploy from a branch”.
+3. **Branch:** `claude/tutoring-accounting-app-ruo74o` (albo `main`, jeśli zmiany zostaną tam scalone), folder **/ (root)** → **Save**.
+4. Po 1–2 minutach aplikacja będzie pod adresem:
+   **https://mordeczkodzi.github.io/lala/korepetycje/**
+
+### 2. Zainstaluj na telefonie
+
+- **Android (Chrome):** otwórz adres → menu ⋮ → **„Zainstaluj aplikację”** (albo przycisk w *Ustawieniach* aplikacji).
+- **iPhone (Safari):** otwórz adres → przycisk **Udostępnij** □↑ → **„Do ekranu początkowego”**.
+
+Na iPhonie aplikacja z ikony ma **osobne dane** niż ta sama strona w Safari. Najpierw ją zainstaluj, a dopiero potem wpisuj dane (albo przenieś je kopią zapasową).
+
+Aktualizacje wgrane do repozytorium pojawią się w aplikacji same, po ponownym otwarciu z internetem.
+
+Na komputerze wystarczy otworzyć `index.html` w przeglądarce.
 
 ## Ważne: gdzie są dane
 

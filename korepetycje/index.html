@@ -8,6 +8,9 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Korepetycje">
 <title>Korepetycje</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <style>
 :root{
   --bg:#f5f6fa;--card:#fff;--text:#1c1f2e;--muted:#6b7084;--line:#e3e5ee;
@@ -806,6 +809,7 @@ function viewSet(){
         <input type="file" id="importFile" accept=".json,application/json" hidden>
       </div>
     </div>
+    ${installCard()}
     <div class="card f" style="margin-top:12px">
       <b>Jak to działa?</b>
       <div class="small muted">
@@ -820,6 +824,25 @@ function viewSet(){
         <button class="btn danger" data-act="wipe">Usuń wszystkie dane</button>
       </div>
     </div>`;
+}
+
+/* ---------- instalacja na telefonie (PWA) ---------- */
+let installEvt = null;
+const isStandalone = () => window.matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+const isIOS = () => /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); installEvt = e; if(state.tab === 'set' || state.tab === 'dash') render(); });
+window.addEventListener('appinstalled', () => { installEvt = null; toast('Zainstalowano aplikację'); render(); });
+function installCard(){
+  if(isStandalone()) return '';
+  return `<div class="card f" style="margin-top:12px">
+    <b>📱 Aplikacja na telefonie</b>
+    ${installEvt ? `<div class="row"><button class="btn primary" data-act="install">Zainstaluj aplikację</button></div>` : ''}
+    <div class="small muted">
+      <b>Android (Chrome):</b> menu ⋮ → „Zainstaluj aplikację” / „Dodaj do ekranu głównego”.<br>
+      <b>iPhone (Safari):</b> przycisk Udostępnij □↑ → „Do ekranu początkowego”.<br>
+      Ikona pojawi się na ekranie, a aplikacja otworzy się na pełnym ekranie i będzie działać bez internetu.
+      ${isIOS() ? '<br><b>Uwaga (iPhone):</b> aplikacja z ikony ma osobne dane niż Safari – zainstaluj ją najpierw, a potem wpisuj dane już w aplikacji (albo przenieś je kopią zapasową).' : ''}
+    </div></div>`;
 }
 
 /* =========================================================
@@ -1136,6 +1159,12 @@ const actions = {
     if(db.students.length && !confirm('Dodać przykładowe dane do istniejących?')) return;
     loadDemo(); render(); toast('Wczytano przykładowe dane');
   },
+  async install(){
+    if(!installEvt) return;
+    installEvt.prompt();
+    await installEvt.userChoice.catch(() => {});
+    installEvt = null; render();
+  },
   wipe(){
     if(!confirm('Usunąć WSZYSTKIE dane (uczniów, zajęcia, wpłaty)? Zrób najpierw kopię zapasową!')) return;
     if(!confirm('Na pewno? Tego nie da się cofnąć.')) return;
@@ -1206,6 +1235,12 @@ function loadDemo(){
 }
 
 render();
+
+// tryb offline + instalacja; prośba, by przeglądarka nie czyściła danych sama
+if('serviceWorker' in navigator && location.protocol.startsWith('http')){
+  navigator.serviceWorker.register('sw.js').catch(err => console.warn('SW:', err));
+}
+if(navigator.storage?.persist) navigator.storage.persist().catch(() => {});
 </script>
 </body>
 </html>
