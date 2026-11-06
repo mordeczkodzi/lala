@@ -993,7 +993,7 @@ function viewSet(){
     <div class="sec">Import uczniów i wpłat</div>
     <div class="card f">
       <div class="small muted">Wklej kod z listą uczniów lub wpłat (np. przygotowany przez Claude). Zostaną <b>dodane</b> do obecnych danych – to, co już jest, zostanie pominięte.</div>
-      <textarea id="importText" placeholder="Wklej tutaj kod…" autocapitalize="off" autocorrect="off" spellcheck="false"></textarea>
+      <textarea id="importText" placeholder="Wklej tutaj kod albo linijki, np.&#10;Jan Kowalski; 70; 6.11.2026; gotówka" autocapitalize="off" autocorrect="off" spellcheck="false"></textarea>
       <button class="btn primary" data-act="importText">${ic('plus')}Importuj</button>
     </div>
     <div class="sec">Jak to działa?</div>
@@ -1447,12 +1447,56 @@ function decodeB64(b64){
   while(b64.length % 4) b64 += '=';
   return new TextDecoder().decode(Uint8Array.from(atob(b64), c => c.charCodeAt(0)));
 }
+// Format tekstowy (odporny na ucięcie przy kopiowaniu), np.:
+//   UCZEŃ: Jan Kowalski; 70; Matematyka
+//   WPŁATY
+//   Jan Kowalski; 70; 6.11.2026; gotówka; notatka
+function parseDatePL(t){
+  t = String(t || '').trim();
+  let m = t.match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/);
+  if(m) return `${m[1]}-${pad(+m[2])}-${pad(+m[3])}`;
+  m = t.match(/^(\d{1,2})[.\/-](\d{1,2})(?:[.\/-](\d{2,4}))?$/);
+  if(m){ let y = m[3] ? +m[3] : new Date().getFullYear(); if(y < 100) y += 2000; return `${y}-${pad(+m[2])}-${pad(+m[1])}`; }
+  return '';
+}
+function methodKey(t){
+  t = String(t || '').trim().toLowerCase();
+  if(!t) return 'other';
+  if(t.startsWith('got')) return 'cash';
+  if(t.startsWith('prze')) return 'transfer';
+  if(t.startsWith('blik')) return 'blik';
+  return 'other';
+}
+function parseTextImport(txt){
+  const students = [], payments = [], bad = [];
+  for(let line of txt.split(/\r?\n/)){
+    line = line.trim();
+    if(!line || /^WP[ŁL]ATY:?$/i.test(line)) continue;
+    const m = line.match(/^UCZE[ŃN]\s*:\s*(.+)$/i);
+    if(m){
+      const [name, rate, subject] = m[1].split(';').map(x => x.trim());
+      students.push({name, rate:rate ? +rate.replace(',', '.').replace(/z[łl]/i, '') : undefined, subject:subject || ''});
+      continue;
+    }
+    const [name, amt, dt, method, note] = line.split(';').map(x => x.trim());
+    const amount = +String(amt || '').replace(/z[łl]/i, '').replace(',', '.').trim();
+    const date = parseDatePL(dt);
+    if(!name || !amount || !date){ bad.push(line); continue; }
+    payments.push({name, amount, date, method:methodKey(method), note:note || ''});
+  }
+  if(bad.length) alert('Pominięto niezrozumiałe linijki:\n' + bad.join('\n'));
+  return {keepBalance:true, students, payments};
+}
 function parseImport(raw){
   raw = raw.trim().replace(/^.*#import=/, '');
+  if(/;/.test(raw) || /^(WP[ŁL]ATY|UCZE[ŃN])/im.test(raw)) return parseTextImport(raw);
   let txt = raw;
-  if(!/^[\[{]/.test(raw)) txt = decodeB64(raw);
+  if(!/^[\[{]/.test(raw)){
+    try{ txt = decodeB64(raw); }catch(e){ throw new Error('kod jest uszkodzony – skopiuj go jeszcze raz w całości'); }
+  }
   txt = txt.replace(/[\u201C\u201D\u201E]/g, '"');
-  return JSON.parse(txt);
+  try{ return JSON.parse(txt); }
+  catch(e){ throw new Error('kod jest niepełny (ucięty przy kopiowaniu) – skopiuj go jeszcze raz w całości, od pierwszego do ostatniego znaku'); }
 }
 function importStudents(list){
   const have = new Set(db.students.map(s => s.name.trim().toLowerCase()));
