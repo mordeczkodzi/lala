@@ -572,7 +572,7 @@ function lessonCard(e, o = {}){
   return `<div class="lesson ${e.kind} st-${e.status}" style="--c:${esc(ocolor(e))}" data-act="openEvent" ${evAttrs(e)}>
     <div class="grow">
       <div class="row"><div class="t">${o.date ? fmtDateShort(e.date) + ' · ' : ''}${e.time} – ${fromMin(endMin(e))}</div><span class="grow"></span>${trialBadge(e)} ${statusBadge(e)}</div>
-      <div class="lname ell">${esc(oname(e))}</div>
+      <div class="row"><div class="lname ell grow">${esc(oname(e))}</div>${e.studentId && !o.noBalance ? (b => b ? balanceBadge(b) : '')(balance(e.studentId)) : ''}</div>
       <div class="row small muted"><span class="ell">${esc(sub)}</span><span class="grow"></span><b class="num" style="color:var(--text)">${zl(value(e))}</b></div>
       ${o.actions ? quickBtns(e) : ''}
     </div></div>`;
@@ -653,7 +653,7 @@ function viewHome(){
     <div class="tiles">
       <div class="tile" data-act="tab" data-tab="fin">${ic('chart')}<div class="v">${zl(sumEvents(mEv, 'earned') + carryAmt(t.slice(0, 7)))}</div><div class="l">Zarobione w tym miesiącu</div></div>
       <div class="tile" data-act="tab" data-tab="fin">${ic('cash')}<div class="v">${zl(sumAmt(paymentsIn(ms, me)))}</div><div class="l">Otrzymane w tym miesiącu</div></div>
-      <div class="tile" data-act="debtors">${ic('alert')}<div class="v ${debt ? 'neg' : ''}">${zl(debt)}</div><div class="l">Zadłużenie uczniów</div></div>
+      <div class="tile" data-act="debtors">${ic('alert')}<div class="v ${debt ? 'neg' : ''}">${zl(debt)}</div><div class="l">Zadłużenie uczniów</div>${n.conf.length ? `<div class="tiny" style="color:var(--warn);margin-top:2px">+ ${n.conf.length} do potw.</div>` : ''}</div>
     </div>
     ${n.conf.length ? `<div class="sec">Do potwierdzenia <span class="badge warn">${n.conf.length}</span>${n.conf.length > 1 ? `<button class="more" data-act="confirmAll">Wszystkie odbyte</button>` : ''}</div>
       ${n.conf.slice().reverse().slice(0, 5).map(e => lessonCard(e, {date:true, actions:true})).join('')}
@@ -759,7 +759,7 @@ function viewStudent(s){
     <div class="sec">Stały plan</div>
     <div class="card">${planHtml(s)}</div>
     <div class="sec">Najbliższe lekcje <button class="more" data-act="addLesson" data-owner="s:${esc(s.id)}">+ Lekcja</button></div>
-    ${upcoming.length ? upcoming.slice(0, 6).map(e => lessonCard(e, {date:true})).join('') : '<div class="empty">Brak zaplanowanych lekcji</div>'}
+    ${upcoming.length ? upcoming.slice(0, 6).map(e => lessonCard(e, {date:true, noBalance:true})).join('') : '<div class="empty">Brak zaplanowanych lekcji</div>'}
     <div class="sec">Historia rozliczeń</div>
     <div class="card ledger" style="padding:4px 14px">
       ${entries.length ? entries.slice().reverse().map(e => {
@@ -792,7 +792,7 @@ function viewGroup(g){
     <div class="sec">Stały plan</div>
     <div class="card">${planHtml(g)}</div>
     <div class="sec">Najbliższe lekcje <button class="more" data-act="addLesson" data-owner="g:${esc(g.id)}">+ Lekcja</button></div>
-    ${upcoming.length ? upcoming.slice(0, 6).map(e => lessonCard(e, {date:true})).join('') : '<div class="empty">Brak zaplanowanych lekcji</div>'}
+    ${upcoming.length ? upcoming.slice(0, 6).map(e => lessonCard(e, {date:true, noBalance:true})).join('') : '<div class="empty">Brak zaplanowanych lekcji</div>'}
     <div class="sec">Odbyte lekcje</div>
     ${past.length ? past.slice(0, 30).map(l => lessonCard({...l, kind:'lesson'}, {date:true})).join('') : '<div class="empty">Brak</div>'}`;
 }
@@ -881,6 +881,8 @@ function viewFin(){
   const inApp = sumEvents(evs, 'forecast'), extraM = extraFor(ms, me);
   const earned = round2(sumEvents(evs, 'earned') + carry), forecast = round2(inApp + carry + extraM);
   const pays = paymentsIn(ms, me), received = sumAmt(pays);
+  const confList = toConfirm(), confN = confList.length, confSum = sumEvents(confList, 'forecast');
+  const wsT = weekStart(t), weekPays = paymentsIn(wsT, addDays(wsT, 6)), isCurMonth = ym === t.slice(0, 7);
   const doneN = charged.length + carryN, allN = nonCancelled.length + carryN;
   const pct = allN ? Math.round(doneN / allN * 100) : 0;
   const bals = db.students.map(s => ({s, b:balance(s.id)}));
@@ -924,10 +926,11 @@ function viewFin(){
       <div class="prog"><i style="width:${pct}%"></i></div>
       <div class="fgrid">
         <div><div class="l">Przepracowano</div><div class="v">${zl2(earned)}</div><div class="s">${carry ? `w tym ${zl(carry)} z poprzedniej aplikacji` : 'odbyte lub odwołane z opłatą'}</div></div>
-        <div><div class="l">Otrzymano</div><div class="v">${zl2(received)}</div><div class="s">w tym gotówką ${zl(methods[0].v)}</div></div>
+        <div><div class="l">Otrzymano ogółem</div><div class="v">${zl2(received)}</div>
+          <div class="s">${isCurMonth ? `w tym tygodniu: <b>${zl(sumAmt(weekPays))}</b><br>` : ''}gotówką: ${zl(methods[0].v)}</div></div>
       </div>
     </div>
-    <div class="rowcard" data-act="debtors">${ic('alert')}<div class="grow"><b style="font-size:18px">Zadłużenie</b><div class="muted small">Uczniów: ${debtors.length}</div></div><div class="v ${debt ? 'neg' : ''}">${zl2(debt)}</div>${ic('right')}</div>
+    <div class="rowcard" data-act="debtors">${ic('alert')}<div class="grow"><b style="font-size:18px">Zadłużenie</b><div class="muted small">Uczniów: ${debtors.length}</div>${confN ? `<div class="small" style="color:var(--warn);white-space:nowrap">+ ${confN} do potw.</div>` : ''}</div><div class="v ${debt ? 'neg' : ''}">${zl2(debt)}</div>${ic('right')}</div>
     ${over.length ? `<div class="rowcard" data-act="debtors" data-over="1">${ic('cash')}<div class="grow"><b style="font-size:18px">Nadpłaty</b><div class="muted small">Uczniów: ${over.length}</div></div><div class="v pos">${zl2(overSum)}</div>${ic('right')}</div>` : ''}
 
     <div class="sec">Prognoza przychodu</div>
@@ -1235,12 +1238,15 @@ function paymentForm(p, preset = {}){
 }
 function debtorsSheet(over){
   const list = db.students.map(s => ({s, b:balance(s.id)})).filter(x => over ? x.b > 0 : x.b < 0).sort((a, b) => over ? b.b - a.b : a.b - b.b);
-  openModal(over ? 'Nadpłaty' : 'Zadłużenie', list.length ? `<div>${list.map(({s, b}) => `<div class="lrow" data-act="openStudent" data-id="${esc(s.id)}">
+  const conf = over ? [] : toConfirm();
+  const confHtml = conf.length ? `<div class="notice" style="margin-top:16px">Do potwierdzenia: <b>${conf.length}</b> ${conf.length === 1 ? 'lekcja' : 'lekcji'} za <b>${zl(sumEvents(conf, 'forecast'))}</b> – jeszcze niewliczone do zadłużenia. Potwierdź, kto zapłacił:</div>
+      ${conf.slice().reverse().map(e => lessonCard(e, {date:true, actions:true})).join('')}` : '';
+  openModal(over ? 'Nadpłaty' : 'Zadłużenie', (list.length ? `<div>${list.map(({s, b}) => `<div class="lrow" data-act="openStudent" data-id="${esc(s.id)}">
       <div class="avatar" style="--c:${esc(s.color)};width:40px;height:40px;font-size:15px">${esc(initials(s.name))}</div>
       <div class="grow"><div class="ell">${esc(s.name)}</div>${s.phone ? `<div class="tiny muted">${esc(s.phone)}</div>` : ''}</div>
       <div class="amount ${over ? 'pos' : 'neg'}">${zl(Math.abs(b))}</div>
       ${over ? '' : `<button class="btn sm" data-act="addPayment" data-sid="${esc(s.id)}">Wpłata</button>`}</div>`).join('')}</div>`
-    : `<div class="empty">${over ? 'Nikt nie ma nadpłaty' : 'Nikt nie zalega z płatnościami 🎉'}</div>`);
+    : `<div class="empty">${over ? 'Nikt nie ma nadpłaty' : 'Nikt nie zalega z płatnościami 🎉'}</div>`) + confHtml);
 }
 function notifSheet(){
   const n = notifications();
