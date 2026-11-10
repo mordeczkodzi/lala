@@ -1185,6 +1185,7 @@ function lessonForm(ev, preset = {}){
   openModal(title, `
     ${linked.length ? `<div class="notice" style="background:var(--ok-bg);color:var(--ok)">Opłacone: ${linked.map(p => `${esc(sname(p.studentId).split(' ')[0])} ${zl(p.amount)} (${METHODS[p.method]})`).join(', ')}</div>`
       : e.kind === 'lesson' && isCharged(e) ? `<div class="notice">Doliczono do salda: ${zl(value(e))}. ${e.studentId ? `<button class="btn sm" data-act="addPayment" data-sid="${esc(e.studentId)}">Dodaj wpłatę</button>` : ''}</div>` : ''}
+    ${ev && ownerOf(e) ? `<button class="btn block" style="margin-bottom:12px" data-act="${e.groupId ? 'openGroup' : 'openStudent'}" data-id="${esc(e.groupId || e.studentId)}">${ic(e.groupId ? 'group' : 'users')}${e.groupId ? 'Profil grupy' : 'Profil ucznia'} · ${esc(oname(e))}${ic('right')}</button>` : ''}
     ${quick}
     <form class="f" data-form="lesson" ${attrs}>
       <label>Uczeń / grupa<select name="owner" required>${ownerOptions(owner)}</select></label>
