@@ -301,6 +301,8 @@ const MONTHS_SHORT = ['Sty','Lut','Mar','Kwi','Maj','Cze','Lip','Sie','Wrz','Pa�
 const METHODS = {cash:'Gotówka', transfer:'Przelew', blik:'BLIK', other:'Inne'};
 const METHOD_COLORS = {cash:'#16a34a', transfer:'#2f62d6', blik:'#7c3aed', other:'#9aa0b2'};
 const STATUS = {planned:'Zaplanowana', done:'Odbyta', late:'Odwołana z opłatą', cancelled:'Odwołana'};
+const TRIAL = {'':'Zwykła lekcja', paid:'Lekcja próbna – płatna', free:'Lekcja próbna – darmowa'};
+const trialBadge = e => e.trial ? `<span class="badge warn">${e.trial === 'free' ? 'próbna · darmowa' : 'próbna'}</span>` : '';
 
 /* ---------- ikony ---------- */
 const ICONS = {
@@ -531,7 +533,7 @@ function applyQuick(ev, how, attendance){
   l.status = how === 'cancel' ? 'cancelled' : how === 'late' ? 'late' : 'done';
   if(l.groupId) l.attendance = attendance || l.attendance || allPresent(l.groupId);
   if(['cash','transfer','blik'].includes(how)){
-    for(const c of chargesOf(l)) db.payments.push({id:uid(), studentId:c.sid, date:l.date, amount:c.amount, method:how,
+    for(const c of chargesOf(l)) if(c.amount > 0) db.payments.push({id:uid(), studentId:c.sid, date:l.date, amount:c.amount, method:how,
       note:'Za lekcję ' + fmtDateShort(l.date), lessonId:l.id});
   }
   save();
@@ -569,7 +571,7 @@ function lessonCard(e, o = {}){
   const sub = [osubject(e), e.groupId ? `grupa · ${members(e).length} os.` : ''].filter(Boolean).join(' · ');
   return `<div class="lesson ${e.kind} st-${e.status}" style="--c:${esc(ocolor(e))}" data-act="openEvent" ${evAttrs(e)}>
     <div class="grow">
-      <div class="row"><div class="t">${o.date ? fmtDateShort(e.date) + ' · ' : ''}${e.time} – ${fromMin(endMin(e))}</div><span class="grow"></span>${statusBadge(e)}</div>
+      <div class="row"><div class="t">${o.date ? fmtDateShort(e.date) + ' · ' : ''}${e.time} – ${fromMin(endMin(e))}</div><span class="grow"></span>${trialBadge(e)} ${statusBadge(e)}</div>
       <div class="lname ell">${esc(oname(e))}</div>
       <div class="row small muted"><span class="ell">${esc(sub)}</span><span class="grow"></span><b class="num" style="color:var(--text)">${zl(value(e))}</b></div>
       ${o.actions ? quickBtns(e) : ''}
@@ -656,7 +658,7 @@ function viewHome(){
     ${n.conf.length ? `<div class="sec">Do potwierdzenia <span class="badge warn">${n.conf.length}</span>${n.conf.length > 1 ? `<button class="more" data-act="confirmAll">Wszystkie odbyte</button>` : ''}</div>
       ${n.conf.slice().reverse().slice(0, 5).map(e => lessonCard(e, {date:true, actions:true})).join('')}
       ${n.conf.length > 5 ? `<button class="btn block" data-act="notif">Pokaż wszystkie (${n.conf.length})</button>` : ''}` : ''}
-    <div class="sec">Najbliższe lekcje</div>
+    <div class="sec">Najbliższe lekcje <button class="more" data-act="trialLesson">+ Lekcja próbna</button></div>
     ${soon.length ? soon.map(e => lessonCard(e, {date:true, actions:e.date === t})).join('') : `<div class="empty">Brak lekcji w ciągu najbliższych 2 dni</div>`}`;
 }
 
@@ -676,6 +678,7 @@ function viewStudents(){
       <button class="sqbtn" data-act="sort" aria-label="Sortuj">${ic('sort')}</button></div>
       ${subjects.length ? `<div class="chips"><button class="chip ${!state.subject ? 'on' : ''}" data-act="subject" data-s="">Wszystko</button>${subjects.map(s => `<button class="chip ${state.subject === s ? 'on' : ''}" data-act="subject" data-s="${esc(s)}">${esc(s)}</button>`).join('')}</div>` : ''}
       <div class="tiny muted" style="margin:0 2px 10px">Sortowanie: ${{name:'alfabetycznie', balance:'według salda (najpierw zadłużeni)', recent:'ostatnio dodani'}[state.sort]}</div>`}
+    ${isG || state.showArchived ? '' : `<button class="btn block" style="margin-bottom:12px" data-act="trialLesson">${ic('plus')}Lekcja próbna – nowa osoba</button>`}
     <div id="slist">${isG ? groupListHtml() : studentListHtml()}</div>`;
 }
 function studentListHtml(){
@@ -691,7 +694,7 @@ function studentListHtml(){
   if(!list.length) return `<div class="empty">${state.showArchived ? 'Archiwum jest puste' : db.students.length ? 'Brak wyników' : 'Nie masz jeszcze uczniów.<br><br><button class="btn primary" data-act="addStudent">Dodaj ucznia</button>'}</div>`;
   return list.map(s => `<div class="lcard" data-act="openStudent" data-id="${esc(s.id)}">
       <div class="avatar" style="--c:${esc(s.color)}">${esc(initials(s.name))}</div>
-      <div class="grow"><div class="lname ell">${esc(s.name)}</div><div class="lsub ell">${esc([s.subject, s.level].filter(Boolean).join(' · ') || '—')}</div></div>
+      <div class="grow"><div class="lname ell">${esc(s.name)} ${s.trial ? '<span class="badge warn">na próbę</span>' : ''}</div><div class="lsub ell">${esc([s.subject, s.level].filter(Boolean).join(' · ') || '—')}</div></div>
       ${bal.get(s.id) ? balanceBadge(bal.get(s.id)) : ''}
     </div>`).join('');
 }
@@ -732,6 +735,7 @@ function viewStudent(s){
       <h2>${esc(s.name)}</h2>
       <div class="muted">${esc([s.subject, s.level].filter(Boolean).join(' · ') || '—')} · ${zl(rateOf(s))}/h</div>
       ${s.archived ? '<div style="margin-top:8px"><span class="badge gray">w archiwum</span></div>' : ''}
+      ${s.trial ? '<div style="margin-top:8px"><span class="badge warn">uczeń na próbę</span></div>' : ''}
       ${s.phone || s.email ? `<div class="actions3">
         ${s.phone ? `<a href="tel:${esc(tel(s.phone))}">${ic('phone')}Zadzwoń</a><a href="sms:${esc(tel(s.phone))}">${ic('msg')}SMS</a>` : ''}
         ${s.email ? `<a href="mailto:${esc(s.email)}">${ic('mail')}E-mail</a>` : ''}</div>` : ''}
@@ -764,7 +768,7 @@ function viewStudent(s){
           <div class="grow"><div>Wpłata · ${METHODS[e.p.method] || ''}</div><div class="tiny muted">${fmtDateShort(e.date)}${e.p.note ? ' · ' + esc(e.p.note) : ''}</div></div>
           <div style="text-align:right"><div class="amount pos">${zlSigned(e.amount)}</div><div class="tiny muted">saldo ${zlSigned(e.run)}</div></div></div>`;
         return `<div class="lrow click" data-act="openEvent" data-id="${esc(e.l.id)}">
-          <div class="grow"><div>Lekcja${e.l.groupId ? ' (' + esc(group(e.l.groupId)?.name || 'grupa') + ')' : ''} · ${e.absent ? 'nieobecny' : STATUS[e.l.status].toLowerCase()}</div><div class="tiny muted">${fmtDateShort(e.date)} ${e.l.time} · ${e.l.duration} min${e.l.note ? ' · ' + esc(e.l.note) : ''}</div></div>
+          <div class="grow"><div>${e.l.trial ? (e.l.trial === 'free' ? 'Lekcja próbna (darmowa)' : 'Lekcja próbna') : 'Lekcja'}${e.l.groupId ? ' (' + esc(group(e.l.groupId)?.name || 'grupa') + ')' : ''} · ${e.absent ? 'nieobecny' : STATUS[e.l.status].toLowerCase()}</div><div class="tiny muted">${fmtDateShort(e.date)} ${e.l.time} · ${e.l.duration} min${e.l.note ? ' · ' + esc(e.l.note) : ''}</div></div>
           <div style="text-align:right"><div class="amount ${e.amount ? 'neg' : 'muted'}">${e.amount ? zlSigned(e.amount) : '0 zł'}</div><div class="tiny muted">saldo ${zlSigned(e.run)}</div></div></div>`;
       }).join('') : '<div class="empty">Brak wpisów</div>'}
     </div>`;
@@ -832,7 +836,7 @@ function viewCal(){
       ${isCharged(e) ? `<span class="ok">${ic('check')}</span>` : ''}
       <b>${esc(oname(e))}</b>
       ${height > 50 ? `<div class="s">${esc(osubject(e) || (e.groupId ? 'Grupa' : ''))}</div>` : ''}
-      <div class="s">${e.time} – ${fromMin(en)}${e.status === 'planned' && ended(e) ? ' · do potwierdzenia' : ''}</div></div>`;
+      <div class="s">${e.time} – ${fromMin(en)}${e.trial ? (e.trial === 'free' ? ' · próbna darmowa' : ' · próbna') : ''}${e.status === 'planned' && ended(e) ? ' · do potwierdzenia' : ''}</div></div>`;
   }).join('');
   const nowLine = d === t && nowMin() >= sh * 60 && nowMin() <= eh * 60 ? `<div class="now" style="top:${(nowMin() - sh * 60) / 60 * H}px"></div>` : '';
   const act = dEv.filter(e => e.status !== 'cancelled');
@@ -895,6 +899,7 @@ function viewFin(){
 
   const past = evs.filter(e => ended(e));
   const pDone = past.filter(e => e.status === 'done').length, pLate = past.filter(e => e.status === 'late').length;
+  const trials = evs.filter(e => e.trial && e.status !== 'cancelled'), trialsFree = trials.filter(e => e.trial === 'free').length;
   const pCanc = past.filter(e => e.status === 'cancelled').length, pOpen = past.filter(e => e.status === 'planned').length;
   const pAll = past.length || 1;
 
@@ -958,6 +963,7 @@ function viewFin(){
       <div class="attn"><span class="big">${pDone + pLate}</span><span class="muted">/ ${past.length} lekcji · ${Math.round((pDone + pLate) / pAll * 100)}% odbytych</span></div>
       <div class="prog2"><i style="width:${pDone / pAll * 100}%;background:var(--ok)"></i><i style="width:${pLate / pAll * 100}%;background:#f59e0b"></i><i style="width:${pCanc / pAll * 100}%;background:var(--bad)"></i><i style="width:${pOpen / pAll * 100}%;background:var(--faint)"></i></div>
       <div class="legend"><span><i style="background:var(--ok)"></i>odbyte ${pDone}</span><span><i style="background:#f59e0b"></i>z opłatą ${pLate}</span><span><i style="background:var(--bad)"></i>odwołane ${pCanc}</span>${pOpen ? `<span><i style="background:var(--faint)"></i>niepotwierdzone ${pOpen}</span>` : ''}</div>
+      ${trials.length ? `<div class="small muted" style="margin-top:10px">Lekcje próbne w tym miesiącu: <b>${trials.length}</b>${trialsFree ? ` (darmowe: ${trialsFree})` : ''}</div>` : ''}
     </div>
 
     <div class="sec">Formy płatności</div>
@@ -1121,6 +1127,7 @@ function studentForm(s){
         <label>Kolor<input name="color" type="color" value="${esc(s.color)}"></label>
       </div>
       <div class="hint" style="margin-top:-6px">Saldo początkowe przy przenoszeniu z innej aplikacji: −160 jeśli uczeń był winien, +200 jeśli zapłacił z góry.</div>
+      <label class="checkline"><input type="checkbox" name="trialStudent" ${s.trial ? 'checked' : ''}>Uczeń na próbę (po lekcji próbnej)</label>
       <label>Opis ucznia<textarea name="notes" placeholder="np. przygotowanie do egzaminu, z czym ma problem, ustalenia…">${esc(s.notes)}</textarea></label>
       <div class="factions"><button type="button" class="btn" data-act="closeModal">Anuluj</button><button class="btn primary">Zapisz</button></div>
       ${isNew ? '' : `<div class="f2"><button type="button" class="btn" data-act="archiveStudent" data-id="${esc(s.id)}">${ic('archive')}${s.archived ? 'Przywróć' : 'Archiwizuj'}</button>
@@ -1181,6 +1188,8 @@ function lessonForm(ev, preset = {}){
     ${quick}
     <form class="f" data-form="lesson" ${attrs}>
       <label>Uczeń / grupa<select name="owner" required>${ownerOptions(owner)}</select></label>
+      ${isNew ? `<button type="button" class="btn sm" style="justify-self:start" data-act="trialLesson" data-date="${esc(e.date)}" data-time="${esc(e.time)}">${ic('plus')}Nowa osoba na lekcję próbną</button>` : ''}
+      <label>Rodzaj lekcji<select name="trial">${Object.entries(TRIAL).map(([t, v]) => `<option value="${t}" ${(e.trial || '') === t ? 'selected' : ''}>${v}</option>`).join('')}</select></label>
       <div id="attBox">${e.groupId ? attHtml(e.groupId, e.attendance) : ''}</div>
       <div class="f3">
         <label>Data<input name="date" type="date" required value="${esc(e.date)}"></label>
@@ -1242,12 +1251,62 @@ function notifSheet(){
     ${!n.conf.length && !n.backup && !n.debtors.length ? '<div class="empty">Wszystko w porządku ✓</div>' : ''}`);
 }
 
+function trialForm(preset = {}){
+  const dur = +db.settings.defaultDuration || 60;
+  const names = db.students.filter(s => !s.archived).map(s => s.name).sort((a, b) => a.localeCompare(b, 'pl'));
+  const subjects = [...new Set(db.students.map(x => x.subject).filter(Boolean))];
+  openModal('Lekcja próbna', `
+    <form class="f" data-form="trial">
+      <label>Imię i nazwisko *<input name="name" required list="trialNames" autocomplete="off" placeholder="nowa osoba albo wybierz z listy"></label>
+      <datalist id="trialNames">${names.map(n => `<option value="${esc(n)}">`).join('')}</datalist>
+      <div class="f2">
+        <label>Telefon<input name="phone" type="tel"></label>
+        <label>Przedmiot<input name="subject" list="trialSubj" value="${esc(subjects[0] || '')}"></label>
+      </div>
+      <datalist id="trialSubj">${subjects.map(x => `<option value="${esc(x)}">`).join('')}</datalist>
+      <div><div class="small muted" style="margin-bottom:6px">Lekcja próbna</div>
+        <div class="methods" style="grid-template-columns:1fr 1fr">
+          <button type="button" class="on" data-act="pickTrial" data-t="paid">Płatna</button>
+          <button type="button" data-act="pickTrial" data-t="free">Darmowa</button>
+        </div><input type="hidden" name="trial" value="paid"></div>
+      <div class="f3">
+        <label>Data<input name="date" type="date" required value="${esc(preset.date || today())}"></label>
+        <label>Godzina<input name="time" type="time" required value="${esc(preset.time || '16:00')}"></label>
+        <label>Minuty<input name="duration" type="number" inputmode="numeric" min="5" step="5" required value="${dur}"></label>
+      </div>
+      <label id="trialPrice">Cena (zł)<input name="price" type="number" inputmode="decimal" min="0" step="0.01" value="${priceFor('s', null, dur)}"></label>
+      <label class="checkline"><input type="checkbox" name="done">Już się odbyła</label>
+      <label class="checkline" id="trialCash"><input type="checkbox" name="paidCash">Zapłacona gotówką</label>
+      <label>Notatka<textarea name="note" placeholder="np. poziom, z czym ma problem, czy chce kontynuować…"></textarea></label>
+      <div class="hint">Nowa osoba zostanie dodana do uczniów z oznaczeniem „na próbę”. Gdy zostanie na stałe – w edycji ucznia odznacz „na próbę” i dodaj stały plan.</div>
+      <div class="factions"><button type="button" class="btn" data-act="closeModal">Anuluj</button><button class="btn primary">Zapisz</button></div>
+    </form>`);
+}
+
 const forms = {
+  trial(f){
+    const v = Object.fromEntries(new FormData(f));
+    const name = v.name.trim();
+    let s = db.students.find(x => x.name.trim().toLowerCase() === name.toLowerCase());
+    const dur = +v.duration || 60, free = v.trial === 'free';
+    const price = free ? 0 : round2(+v.price || 0);
+    if(!s){
+      s = {id:uid(), created:new Date().toISOString(), archived:false, trial:true, name, phone:(v.phone || '').trim(), email:'', parentName:'', parentPhone:'',
+           subject:(v.subject || '').trim(), level:'', rate:free ? db.settings.defaultRate : round2(price * 60 / dur), color:PALETTE[db.students.length % PALETTE.length],
+           notes:'', schedule:[], scheduleFrom:today(), scheduleTo:'', openingBalance:0};
+      db.students.push(s);
+    }else if(v.phone && !s.phone) s.phone = v.phone.trim();
+    const l = materialize({studentId:s.id, date:v.date, time:v.time, duration:dur, price, slotKey:null},
+                          {status:v.done || v.paidCash ? 'done' : 'planned', trial:free ? 'free' : 'paid', note:v.note || ''});
+    if(v.paidCash && !free && price > 0) db.payments.push({id:uid(), studentId:s.id, date:l.date, amount:price, method:'cash', note:'Lekcja próbna', lessonId:l.id});
+    save(); closeModal(); render(); toast(`Lekcja próbna ${free ? '(darmowa) ' : ''}· ${s.name}`);
+  },
   student(f){
     const v = Object.fromEntries(new FormData(f));
     const data = {name:v.name.trim(), phone:v.phone.trim(), email:v.email.trim(), parentName:v.parentName.trim(), parentPhone:v.parentPhone.trim(),
                   subject:v.subject.trim(), level:v.level.trim(), rate:v.rate === '' ? '' : +v.rate, color:v.color, notes:v.notes,
-                  schedule:readSchedule(f), scheduleFrom:v.scheduleFrom || today(), scheduleTo:v.scheduleTo || '', openingBalance:+v.openingBalance || 0};
+                  schedule:readSchedule(f), scheduleFrom:v.scheduleFrom || today(), scheduleTo:v.scheduleTo || '', openingBalance:+v.openingBalance || 0,
+                  trial:!!v.trialStudent};
     if(f.dataset.id){ const s = student(f.dataset.id); applyScheduleChange(s, 's', data); Object.assign(s, data); toast('Zapisano'); }
     else{ db.students.push({id:uid(), created:new Date().toISOString(), archived:false, ...data}); toast('Dodano ucznia'); }
     save(); closeModal(); render();
@@ -1265,7 +1324,7 @@ const forms = {
     const v = Object.fromEntries(new FormData(f));
     const [k, id] = v.owner.split(':');
     const data = {studentId:k === 's' ? id : null, groupId:k === 'g' ? id : null, date:v.date, time:v.time, duration:+v.duration,
-                  price:+v.price, status:v.paidCash ? 'done' : v.status, note:v.note};
+                  price:v.trial === 'free' ? 0 : +v.price, status:v.paidCash ? 'done' : v.status, note:v.note, trial:v.trial || ''};
     if(k === 'g'){
       const box = f.querySelectorAll('input[name=att]');
       data.attendance = box.length ? Object.fromEntries([...box].map(c => [c.value, c.checked])) : allPresent(id);
@@ -1274,7 +1333,7 @@ const forms = {
     if(f.dataset.id){ l = db.lessons.find(x => x.id === f.dataset.id); Object.assign(l, data); }
     else if(f.dataset.slot){ l = materialize(findEvent({slot:f.dataset.slot}), data); }
     else l = materialize({...data, slotKey:null}, data);
-    if(v.paidCash) for(const c of chargesOf(l)) db.payments.push({id:uid(), studentId:c.sid, date:l.date, amount:c.amount, method:'cash', note:'Za lekcję ' + fmtDateShort(l.date), lessonId:l.id});
+    if(v.paidCash) for(const c of chargesOf(l)) if(c.amount > 0) db.payments.push({id:uid(), studentId:c.sid, date:l.date, amount:c.amount, method:'cash', note:'Za lekcję ' + fmtDateShort(l.date), lessonId:l.id});
     save(); closeModal(); render(); toast('Zapisano lekcję');
   },
   payment(f){
@@ -1438,6 +1497,12 @@ const actions = {
     try{ runImport(parseImport(raw)); }
     catch(err){ alert('Nie udało się odczytać kodu: ' + err.message); }
   },
+  trialLesson(d){ trialForm({date:d.date, time:d.time}); },
+  pickTrial(d, el){
+    el.parentElement.querySelectorAll('button').forEach(b => b.classList.toggle('on', b === el));
+    const f = el.closest('form'); f.elements.trial.value = d.t;
+    $('#trialPrice').style.display = $('#trialCash').style.display = d.t === 'free' ? 'none' : '';
+  },
   delCarry(d){ db.carry = db.carry.filter(c => c.month !== d.m); save(); render(); },
   wipe(){
     if(!confirm('Usunąć WSZYSTKIE dane (uczniów, grupy, lekcje, wpłaty)? Zrób najpierw kopię zapasową!')) return;
@@ -1467,6 +1532,12 @@ function onFieldChange(t){
   const f = t.form;
   if(f?.dataset.form === 'lesson'){
     if(t.name === 'price'){ t.dataset.manual = '1'; return; }
+    if(t.name === 'trial'){
+      const pe = f.elements.price;
+      if(t.value === 'free'){ pe.value = 0; pe.dataset.manual = '1'; }
+      else if(+pe.value === 0){ const [k2, id2] = f.elements.owner.value.split(':'); pe.value = priceFor(k2, id2, +f.elements.duration.value); delete pe.dataset.manual; }
+      return;
+    }
     const [k, id] = f.elements.owner.value.split(':');
     if(t.name === 'owner'){
       $('#attBox').innerHTML = k === 'g' ? attHtml(id) : '';
@@ -1538,7 +1609,8 @@ function parseTextImport(txt){
       if(!name || !date || !tm){ bad.push(line); continue; }
       const stl = String(st || '').toLowerCase();
       lessons.push({name, date, time:tm, price:!String(price || '').trim() || isNaN(pr) ? null : pr, duration:+dur || 60,
-                    status:/płatn|platn|opłat|oplat/.test(stl) ? 'late' : /odwo|anul/.test(stl) ? 'cancelled' : 'done'});
+                    trial:/próbn|probn/.test(stl) ? (/darm/.test(stl) ? 'free' : 'paid') : '',
+                    status:/odwo|anul/.test(stl) ? (/płatn|platn|opłat|oplat/.test(stl) ? 'late' : 'cancelled') : (/próbn|probn/.test(stl) ? 'done' : /płatn|platn|opłat|oplat/.test(stl) ? 'late' : 'done')});
       continue;
     }
     const m = line.match(/^UCZE[ŃN]\s*:\s*(.+)$/i);
@@ -1615,9 +1687,9 @@ function importLessons(list, keepBalance){
     if(!s){ missing.push(x.name); continue; }
     if(db.lessons.some(l => l.studentId === s.id && l.date === x.date && l.time === x.time)){ skipped++; continue; }
     const dur = +x.duration || 60;
-    const price = x.price != null ? round2(x.price) : priceFor('s', s.id, dur);
+    const price = x.trial === 'free' ? 0 : x.price != null ? round2(x.price) : priceFor('s', s.id, dur);
     const l = materialize({studentId:s.id, date:x.date, time:x.time, duration:dur, price, slotKey:null},
-                          {status:x.status || 'done', note:x.note || 'Przeniesione z poprzedniej aplikacji', imported:true});
+                          {status:x.status || 'done', trial:x.trial || '', note:x.note || 'Przeniesione z poprzedniej aplikacji', imported:true});
     if(keepBalance && isCharged(l)) s.openingBalance = round2((+s.openingBalance || 0) + l.price);
     added++;
   }

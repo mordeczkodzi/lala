@@ -14,6 +14,7 @@ Układ jak w aplikacji mobilnej: granatowy pasek u góry i dolne menu **Główna
 - **Uczniowie:**
   - wyszukiwarka, sortowanie, filtr przedmiotów, archiwum;
   - profil ucznia: przyciski „Zadzwoń” i „SMS”, saldo, opis, stały plan, najbliższe lekcje i historia rozliczeń.
+- **Lekcje próbne (płatne i darmowe):** przycisk „Lekcja próbna – nowa osoba” tworzy ucznia z oznaczeniem „na próbę” i jego lekcję. W każdej lekcji można też wybrać rodzaj: zwykła, próbna płatna albo próbna darmowa (cena 0 zł).
 - **Grupy:** kilku uczniów na jednej lekcji. Cena jest od osoby, zaznaczasz obecność, a płacą tylko obecni.
 - **Grafik:** tydzień z paskiem dni (liczba lekcji przy każdym dniu) i oś godzin. Dotknij pustej godziny, żeby dodać lekcję.
 - **Potwierdzanie lekcji jednym dotknięciem:** „Odbyta”, „Odbyta + gotówka / przelew / BLIK”, „Odwołana”, „Odwołana z opłatą”.
