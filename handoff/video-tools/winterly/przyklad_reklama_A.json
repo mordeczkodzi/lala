@@ -1,0 +1,277 @@
+{
+ "emoji_dir": "emoji/64",
+ "logo": "logo_winterly.png",
+ "sub_y": 0.69,
+ "punch": false,
+ "dissolve": 3,
+ "end": {
+  "pill": "BLACK FRIDAY • do −35%",
+  "pill_emoji": "1f525",
+  "lines": [
+   "Zamów na",
+   "*winterly.pl*"
+  ],
+  "button": "KUP TERAZ",
+  "small": "Kurtyna 3 × 2 m: 239,99 zł|Płatność przy odbiorze • 30 dni na zwrot"
+ },
+ "_opis": "Reklama A 'Sąsiadka z pretensjami' (25,6 s, lektor Kinga). Czasy napisów = czasy słów w nagraniu lektora. Ujęcia glow.mp4 to klipy konkurencji do podmiany w Higgsfield.",
+ "out": "A_obraz.mp4",
+ "badge_from": 5.16,
+ "hook": {
+  "lines": [
+   "Sąsiadka przyszła",
+   "z *pretensjami*"
+  ],
+  "emoji": "1f644",
+  "until": 4.1,
+  "y": 0.135
+ },
+ "stickers": [
+  {
+   "from": 10.12,
+   "to": 15.3,
+   "text": "BLACK FRIDAY: do −35%",
+   "emoji": "1f525",
+   "x": 0.42,
+   "y": 0.215,
+   "rot": -4
+  },
+  {
+   "from": 18.2,
+   "to": 21.13,
+   "text": "BLACK FRIDAY: do −35%",
+   "emoji": "1f525",
+   "x": 0.5,
+   "y": 0.86,
+   "rot": -4
+  }
+ ],
+ "end_dur": 4.47,
+ "beats": [
+  {
+   "dur": 5.16,
+   "segs": [
+    [
+     "c1.mp4",
+     0.8,
+     2.6
+    ],
+    [
+     "c1.mp4",
+     5.0,
+     2.56,
+     0.12
+    ]
+   ],
+   "subs": [
+    [
+     0.1,
+     "*Wczoraj*"
+    ],
+    [
+     0.64,
+     "zapukała do mnie"
+    ],
+    [
+     1.66,
+     "*sąsiadka* z dołu"
+    ],
+    [
+     2.66,
+     "Mówi, że ma"
+    ],
+    [
+     3.38,
+     "przeze mnie…"
+    ],
+    [
+     4.12,
+     "*PROBLEM*",
+     "1f633"
+    ]
+   ]
+  },
+  {
+   "dur": 4.96,
+   "segs": [
+    [
+     "c2a.mp4",
+     2.0,
+     4.96
+    ]
+   ],
+   "subs": [
+    [
+     0.0,
+     "Jej *wnuki*"
+    ],
+    [
+     0.5,
+     "nie chcą wracać"
+    ],
+    [
+     1.58,
+     "do domu…"
+    ],
+    [
+     2.19,
+     "bo całymi"
+    ],
+    [
+     2.77,
+     "*wieczorami*"
+    ],
+    [
+     3.39,
+     "stoją pod moim"
+    ],
+    [
+     4.3,
+     "*balkonem*",
+     "1f440"
+    ]
+   ]
+  },
+  {
+   "dur": 3.3,
+   "segs": [
+    [
+     "c2b.mp4",
+     0.5,
+     3.3
+    ]
+   ],
+   "subs": [
+    [
+     0.08,
+     "No bo mam na nim",
+     null,
+     0.84
+    ],
+    [
+     1.18,
+     "*kurtynę LED*",
+     "2728",
+     0.84
+    ],
+    [
+     2.46,
+     "Raz jest *choinka*",
+     "1f384",
+     0.84
+    ]
+   ]
+  },
+  {
+   "dur": 1.88,
+   "segs": [
+    [
+     "podmiana.mp4",
+     0.0,
+     0.83,
+     0,
+     {
+      "flash": true
+     }
+    ],
+    [
+     "podmiana.mp4",
+     0.83,
+     1.05,
+     0,
+     {
+      "flash": true
+     }
+    ]
+   ],
+   "subs": [
+    [
+     0.0,
+     "raz *bałwanek*",
+     "26c4",
+     0.84
+    ],
+    [
+     0.83,
+     "a raz *śnieżynki*",
+     "2744",
+     0.84
+    ]
+   ]
+  },
+  {
+   "dur": 2.9,
+   "segs": [
+    [
+     "glow.mp4",
+     21.5,
+     2.9,
+     0,
+     {
+      "speed": 0.9
+     }
+    ]
+   ],
+   "subs": [
+    [
+     0.0,
+     "Wszystko zmieniam",
+     null,
+     0.5
+    ],
+    [
+     0.98,
+     "jednym *kliknięciem*",
+     null,
+     0.5
+    ],
+    [
+     2.0,
+     "w telefonie",
+     "1f4f1",
+     0.5
+    ]
+   ]
+  },
+  {
+   "dur": 2.93,
+   "segs": [
+    [
+     "glow.mp4",
+     12.75,
+     1.55
+    ],
+    [
+     "glow.mp4",
+     26.5,
+     1.38
+    ]
+   ],
+   "subs": [
+    [
+     0.02,
+     "Teraz pod blokiem"
+    ],
+    [
+     1.05,
+     "codziennie ktoś robi"
+    ],
+    [
+     2.07,
+     "*zdjęcia*",
+     "1f4f8"
+    ]
+   ]
+  },
+  {
+   "dur": 4.47,
+   "segs": [
+    [
+     "c2b.mp4",
+     5.8,
+     4.47
+    ]
+   ]
+  }
+ ]
+}

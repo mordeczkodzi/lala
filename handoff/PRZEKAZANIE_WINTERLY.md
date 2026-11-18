@@ -134,7 +134,8 @@
   - opis kurtyny do wklejania w każdy prompt:
     > a 3 m wide, 2 m tall LED curtain hung on the OUTSIDE of the balcony railing, top edge fixed with small hooks along the handrail, about 20 thin transparent vertical wires, about 20 LEDs each, dots 10–15 cm apart with big dark gaps, showing simple blocky low-resolution pixel art like a 20 x 20 pixel icon, other LEDs off, not a screen
   - odrzucać ujęcia, gdzie kurtyna wygląda jak gładki ekran albo wisi w powietrzu.
-- **Montaż** (ffmpeg + Python Pillow; starsze skrypty w repo `handoff/video-tools/`):
+- **Pełny podręcznik montażu i narzędzia:** `handoff/video-tools/winterly/` (`PODRECZNIK_MONTAZ_WINTERLY.md`, `render_winterly.py`, `miks_audio.sh`, `podmiana_wzoru.py`, konfiguracje reklam A i B). Właściciel dostał je też jako paczkę `winterly_montaz.zip`.
+- **Montaż w skrócie** (ffmpeg + Python Pillow):
   - format pion 1080 × 1920;
   - napisy po 2–3 słowa, czcionka Inter Black, kluczowe słowo na złoto, kolorowe emoji Google;
   - hak na górze przez pierwsze ok. 3–4 s;

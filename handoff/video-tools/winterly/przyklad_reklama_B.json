@@ -1,0 +1,255 @@
+{
+ "emoji_dir": "emoji/64",
+ "logo": "logo_winterly.png",
+ "sub_y": 0.69,
+ "punch": false,
+ "dissolve": 3,
+ "end": {
+  "pill": "BLACK FRIDAY • do −35%",
+  "pill_emoji": "1f525",
+  "lines": [
+   "Zamów na",
+   "*winterly.pl*"
+  ],
+  "button": "KUP TERAZ",
+  "small": "Kurtyna 3 × 2 m: 239,99 zł|Płatność przy odbiorze • 30 dni na zwrot"
+ },
+ "_opis": "Reklama B 'Konkurs na najładniejszy balkon' (25,8 s, lektor Kamil). b1..b6 = klipy z Omni.",
+ "out": "B_obraz.mp4",
+ "badge_from": 3.7,
+ "hook": {
+  "lines": [
+   "Jak pokonałem sąsiada",
+   "w *konkursie na balkon*"
+  ],
+  "emoji": "1f3c6",
+  "until": 3.6,
+  "y": 0.12
+ },
+ "stickers": [
+  {
+   "from": 16.8,
+   "to": 17.75,
+   "text": "1. MIEJSCE",
+   "emoji": "1f3c6",
+   "bg": [
+    255,
+    205,
+    72,
+    255
+   ],
+   "fg": [
+    30,
+    22,
+    18,
+    255
+   ],
+   "x": 0.5,
+   "y": 0.47,
+   "rot": 4
+  },
+  {
+   "from": 17.75,
+   "to": 21.3,
+   "text": "BLACK FRIDAY: do −35%",
+   "emoji": "1f525",
+   "x": 0.5,
+   "y": 0.885,
+   "rot": -4
+  }
+ ],
+ "end_dur": 4.5,
+ "beats": [
+  {
+   "dur": 3.7,
+   "segs": [
+    [
+     "b1.mp4",
+     1.0,
+     3.7
+    ]
+   ],
+   "subs": [
+    [
+     0.08,
+     "W naszym bloku"
+    ],
+    [
+     0.92,
+     "co roku jest *konkurs*"
+    ],
+    [
+     1.82,
+     "na *najładniejszy balkon*"
+    ]
+   ]
+  },
+  {
+   "dur": 3.1,
+   "segs": [
+    [
+     "b2.mp4",
+     3.6,
+     3.1
+    ]
+   ],
+   "subs": [
+    [
+     0.1,
+     "Sąsiad z *trzeciego piętra*"
+    ],
+    [
+     1.15,
+     "wygrywał *3 lata z rzędu*",
+     "1f3c6"
+    ]
+   ]
+  },
+  {
+   "dur": 4.0,
+   "segs": [
+    [
+     "b3.mp4",
+     1.0,
+     2.0
+    ],
+    [
+     "b3.mp4",
+     6.4,
+     2.0
+    ]
+   ],
+   "subs": [
+    [
+     0.15,
+     "*200 metrów* lampek,"
+    ],
+    [
+     1.32,
+     "renifer z drutu"
+    ],
+    [
+     2.5,
+     "i cały *weekend* wieszania",
+     "1f605"
+    ]
+   ]
+  },
+  {
+   "dur": 2.7,
+   "segs": [
+    [
+     "b4.mp4",
+     0.0,
+     2.7
+    ]
+   ],
+   "subs": [
+    [
+     0.37,
+     "W tym roku",
+     null,
+     0.8
+    ],
+    [
+     0.94,
+     "powiesiłem",
+     null,
+     0.8
+    ],
+    [
+     1.64,
+     "jedną *kurtynę LED*",
+     "2728",
+     0.8
+    ]
+   ]
+  },
+  {
+   "dur": 4.25,
+   "segs": [
+    [
+     "b4.mp4",
+     2.7,
+     0.9
+    ],
+    [
+     "b4.mp4",
+     4.3,
+     1.1
+    ],
+    [
+     "b5.mp4",
+     0.2,
+     2.25
+    ]
+   ],
+   "subs": [
+    [
+     0.14,
+     "*Kilka minut*,",
+     "23f1",
+     0.8
+    ],
+    [
+     0.92,
+     "wtyczka do *USB*",
+     "1f50c",
+     0.8
+    ],
+    [
+     2.08,
+     "i wzór z *telefonu*",
+     "1f4f1",
+     0.69
+    ],
+    [
+     3.31,
+     "*WYGRAŁEM*",
+     "1f3c6",
+     0.69
+    ]
+   ]
+  },
+  {
+   "dur": 3.55,
+   "segs": [
+    [
+     "b6.mp4",
+     1.2,
+     3.55
+    ]
+   ],
+   "subs": [
+    [
+     0.05,
+     "A sąsiad|z trzeciego piętra…",
+     null,
+     0.27
+    ],
+    [
+     2.2,
+     "właśnie kupił",
+     null,
+     0.27
+    ],
+    [
+     2.71,
+     "*taką samą*",
+     "1f923",
+     0.27
+    ]
+   ]
+  },
+  {
+   "dur": 4.5,
+   "segs": [
+    [
+     "b6.mp4",
+     5.0,
+     4.5
+    ]
+   ]
+  }
+ ]
+}
