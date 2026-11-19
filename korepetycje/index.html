@@ -267,6 +267,17 @@ textarea{min-height:76px;resize:vertical}
 .methods{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
 .methods button{border:1px solid var(--line);background:var(--bg);border-radius:12px;padding:11px 4px;font-size:14px;font-weight:600}
 .methods button.on{background:var(--accent);color:var(--accent-text);border-color:var(--accent)}
+/* ---------- wpłaty tygodniowo ---------- */
+.mgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+.mtile{background:var(--chip);border-radius:14px;padding:12px}
+.mtile .l{font-size:13px;color:var(--muted);display:flex;align-items:center;gap:6px}
+.mtile .v{font-size:20px;font-weight:800;margin-top:2px;font-variant-numeric:tabular-nums}
+.mtile .n{font-size:12px;color:var(--muted)}
+.dayh{display:flex;align-items:baseline;gap:8px;padding:10px 2px 6px;border-bottom:1px solid var(--line)}
+.dayh b{font-size:16px}
+.dayh .amount{margin-left:auto}
+.daycard{padding:4px 14px 6px;margin-bottom:10px}
+.daycard.empty-day{padding:10px 14px;color:var(--muted);font-size:14px;display:flex}
 #toast{position:fixed;left:50%;bottom:calc(100px + env(safe-area-inset-bottom));transform:translateX(-50%) translateY(10px);background:var(--text);color:var(--bg);padding:11px 18px;border-radius:14px;opacity:0;transition:.2s;pointer-events:none;z-index:100;font-size:15px;max-width:90vw;text-align:center}
 #toast.on{opacity:1;transform:translateX(-50%)}
 </style>
@@ -379,6 +390,7 @@ function shiftMonth(ym, n){ const [y,m] = ym.split('-').map(Number); const d = n
 function monthLabel(ym){ const [y,m] = ym.split('-').map(Number); return MONTHS[m-1] + ' ' + y; }
 function fmtDate(s){ const d = parse(s); return `${d.getDate()} ${MONTHS_GEN[d.getMonth()]} ${d.getFullYear()}`; }
 function fmtDateShort(s){ const d = parse(s); return `${DAYS_SHORT[weekday(s)]} ${d.getDate()}.${pad(d.getMonth()+1)}`; }
+function fmtDayMonth(s){ const d = parse(s); return `${d.getDate()}.${pad(d.getMonth()+1)}`; }
 function fmtNum(s){ const d = parse(s); return `${pad(d.getDate())}.${pad(d.getMonth()+1)}.${String(d.getFullYear()).slice(2)}`; }
 function relDay(s){
   const n = daysBetween(today(), s);
@@ -545,7 +557,7 @@ function applyQuick(ev, how, attendance){
 const state = {
   tab:(() => { try{ return sessionStorage.getItem('kor.tab') || 'home'; }catch(e){ return 'home'; } })(),
   calDate:today(), studentId:null, groupId:null, seg:'students', subject:'', sort:'name',
-  finMonth:today().slice(0, 7), showArchived:false, search:''
+  finMonth:today().slice(0, 7), finSub:'', payWeek:today(), showArchived:false, search:''
 };
 if(!['home','students','cal','fin','set'].includes(state.tab)) state.tab = 'home';
 
@@ -870,7 +882,61 @@ function monthEarned(ym){
   const ms = ym + '-01', me = monthEnd(ms);
   return round2(db.lessons.filter(l => l.date >= ms && l.date <= me && isCharged(l)).reduce((a, l) => a + value(l), 0) + carryAmt(ym));
 }
+function weekLabel(ws){
+  const we = addDays(ws, 6), a = parse(ws), b = parse(we);
+  return a.getMonth() === b.getMonth()
+    ? `${a.getDate()}–${b.getDate()} ${MONTHS_GEN[b.getMonth()]} ${b.getFullYear()}`
+    : `${a.getDate()} ${MONTHS_GEN[a.getMonth()]} – ${b.getDate()} ${MONTHS_GEN[b.getMonth()]} ${b.getFullYear()}`;
+}
+function viewPayWeek(){
+  const ws = weekStart(state.payWeek), we = addDays(ws, 6), t = today(), isNow = ws === weekStart(t);
+  setBar(`<button class="bar-btn" data-act="finBack" aria-label="Wróć">${ic('left')}</button>`, 'Wpłaty tygodniowo',
+         `<button class="bar-btn" data-act="addPayment" data-date="${ws <= t && t <= we ? t : ws}" aria-label="Dodaj wpłatę">${ic('plus')}</button>`);
+  const pays = paymentsIn(ws, we).sort((a, b) => a.date.localeCompare(b.date));
+  const total = sumAmt(pays);
+  const methods = Object.keys(METHODS).map(k => { const ps = pays.filter(p => p.method === k); return {k, v:sumAmt(ps), n:ps.length}; });
+  const evs = events(ws, we), earned = sumEvents(evs, 'earned'), lessonsN = evs.filter(isCharged).length;
+  const byS = new Map();
+  for(const p of pays){
+    const r = byS.get(p.studentId) || {sid:p.studentId, total:0, n:0, m:{}};
+    r.total = round2(r.total + (+p.amount)); r.n++; r.m[p.method] = round2((r.m[p.method] || 0) + (+p.amount));
+    byS.set(p.studentId, r);
+  }
+  const people = [...byS.values()].sort((a, b) => b.total - a.total);
+  const prevTotal = sumAmt(paymentsIn(addDays(ws, -7), addDays(ws, -1)));
+  const diff = round2(total - prevTotal);
+  const payRow = p => `<div class="lrow" data-act="editPayment" data-id="${esc(p.id)}">
+      <div class="dot" style="--c:${METHOD_COLORS[p.method] || '#999'}"></div>
+      <div class="grow"><div class="ell">${esc(sname(p.studentId))}</div><div class="tiny muted">${METHODS[p.method] || p.method}${p.note ? ' · ' + esc(p.note) : ''}</div></div>
+      <div class="amount pos">${zl(p.amount)}</div></div>`;
+  const days = [0,1,2,3,4,5,6].map(i => {
+    const day = addDays(ws, i), dp = pays.filter(p => p.date === day);
+    if(!dp.length) return `<div class="card daycard empty-day"><span>${DAYS[i]} ${fmtDayMonth(day)}</span><span style="margin-left:auto">${day > t ? '—' : 'brak wpłat'}</span></div>`;
+    return `<div class="card daycard"><div class="dayh"><b>${DAYS[i]}</b><span class="muted small">${fmtDayMonth(day)}</span><span class="amount">${zl(sumAmt(dp))}</span></div>${dp.map(payRow).join('')}</div>`;
+  }).join('');
+  return `<div class="weekbar">
+      <button data-act="payWeekNav" data-dir="-1" aria-label="Poprzedni tydzień">${ic('left')}</button>
+      <h2 style="font-size:18px;text-align:center">${weekLabel(ws)}</h2>
+      <button data-act="payWeekNav" data-dir="1" aria-label="Następny tydzień">${ic('right')}</button>
+    </div>
+    ${isNow ? '' : `<div style="text-align:center;margin:-2px 0 10px"><button class="btn sm" data-act="payWeekToday">Wróć do tego tygodnia</button></div>`}
+    <div class="card">
+      <div class="muted small">Otrzymano ${isNow ? 'w tym tygodniu' : 'w tygodniu'}</div>
+      <div style="font-size:32px;font-weight:800" class="num">${zl(total)}</div>
+      <div class="small muted">${pays.length} ${pays.length === 1 ? 'wpłata' : 'wpłat'}${prevTotal || total ? ` · ${diff >= 0 ? '+' : ''}${zl(diff)} vs poprzedni tydzień` : ''}</div>
+      <div class="mgrid">${methods.map(x => `<div class="mtile"><div class="l"><span class="dot" style="--c:${METHOD_COLORS[x.k]}"></span>${METHODS[x.k]}</div><div class="v">${zl(x.v)}</div><div class="n">${x.n} ${x.n === 1 ? 'wpłata' : 'wpłat'}</div></div>`).join('')}</div>
+      <div class="hint">Przepracowano w tym tygodniu (odbyte lekcje): <b>${zl(earned)}</b> · ${lessonsN} lekcji</div>
+    </div>
+    <div class="sec">Dzień po dniu</div>
+    ${days}
+    <div class="sec">Od kogo</div>
+    <div class="card" style="padding:4px 14px">${people.length ? people.map(r => `<div class="lrow" data-act="openStudent" data-id="${esc(r.sid)}">
+        <div class="dot" style="--c:${esc(student(r.sid)?.color || '#999')}"></div>
+        <div class="grow"><div class="ell">${esc(sname(r.sid))}</div><div class="tiny muted">${Object.entries(r.m).map(([m, v]) => `${(METHODS[m] || m).toLowerCase()} ${zl(v)}`).join(' · ')}</div></div>
+        <div class="amount">${zl(r.total)}</div></div>`).join('') : '<div class="empty">Brak wpłat w tym tygodniu</div>'}</div>`;
+}
 function viewFin(){
+  if(state.finSub === 'week') return viewPayWeek();
   setBar('', 'Finanse', `<button class="bar-btn" data-act="addPayment" aria-label="Dodaj wpłatę">${ic('plus')}</button>`);
   const ym = state.finMonth, ms = ym + '-01', me = monthEnd(ms), t = today();
   const mName = MONTHS[+ym.slice(5) - 1];
@@ -930,6 +996,7 @@ function viewFin(){
           <div class="s">${isCurMonth ? `w tym tygodniu: <b>${zl(sumAmt(weekPays))}</b><br>` : ''}gotówką: ${zl(methods[0].v)}</div></div>
       </div>
     </div>
+    <div class="rowcard" data-act="openPayWeek">${ic('cal')}<div class="grow"><b style="font-size:18px">Wpłaty tygodniowo</b><div class="muted small">gotówka, BLIK, przelew · od kogo · dzień po dniu</div></div><div class="v pos">${zl(sumAmt(weekPays))}</div>${ic('right')}</div>
     <div class="rowcard" data-act="debtors">${ic('alert')}<div class="grow"><b style="font-size:18px">Zadłużenie</b><div class="muted small">Uczniów: ${debtors.length}</div>${confN ? `<div class="small" style="color:var(--warn);white-space:nowrap">+ ${confN} do potw.</div>` : ''}</div><div class="v ${debt ? 'neg' : ''}">${zl2(debt)}</div>${ic('right')}</div>
     ${over.length ? `<div class="rowcard" data-act="debtors" data-over="1">${ic('cash')}<div class="grow"><b style="font-size:18px">Nadpłaty</b><div class="muted small">Uczniów: ${over.length}</div></div><div class="v pos">${zl2(overSum)}</div>${ic('right')}</div>` : ''}
 
@@ -978,7 +1045,7 @@ function viewFin(){
         <div class="grow"><div class="ell">${esc(r.s.name)}</div><div class="tiny muted">${r.n} lekcji · ${hours(r.mins)} · wpłacił ${zl(r.paid)}</div></div>
         <div class="amount">${zl(r.e)}</div></div>`).join('') : '<div class="empty">Brak danych w tym miesiącu</div>'}</div>
 
-    <div class="sec">Wpłaty <button class="more" data-act="addPayment">+ Dodaj</button></div>
+    <div class="sec">Wpłaty <button class="more" data-act="openPayWeek">Tygodniowo</button><button class="more" style="margin-left:4px" data-act="addPayment">+ Dodaj</button></div>
     <div class="card" style="padding:4px 14px">${pays.length ? pays.slice().sort((a, b) => b.date.localeCompare(a.date)).map(p => `<div class="lrow" data-act="editPayment" data-id="${esc(p.id)}">
         <div class="dot" style="--c:${METHOD_COLORS[p.method] || '#999'}"></div>
         <div class="grow"><div class="ell">${esc(sname(p.studentId))}</div><div class="tiny muted">${fmtDateShort(p.date)} · ${METHODS[p.method] || p.method}${p.note ? ' · ' + esc(p.note) : ''}</div></div>
@@ -1217,7 +1284,7 @@ function paymentForm(p, preset = {}){
   const sid = p?.studentId || preset.sid || db.students.filter(s => !s.archived).sort(byName)[0]?.id;
   if(!sid){ toast('Najpierw dodaj ucznia'); studentForm(); return; }
   const b = balance(sid);
-  p = p || {studentId:sid, date:today(), amount:b < 0 ? -b : priceFor('s', sid, db.settings.defaultDuration), method:'cash', note:''};
+  p = p || {studentId:sid, date:preset.date || today(), amount:b < 0 ? -b : priceFor('s', sid, db.settings.defaultDuration), method:'cash', note:''};
   openModal(isNew ? 'Nowa wpłata' : 'Edytuj wpłatę', `
     <form class="f" data-form="payment" data-id="${esc(p.id || '')}">
       <label>Od kogo<select name="studentId" required>${studentOptions(p.studentId)}</select></label>
@@ -1371,7 +1438,7 @@ const forms = {
    AKCJE
    ========================================================= */
 const actions = {
-  tab(d){ closeModal(); state.tab = d.tab; state.studentId = state.groupId = null; render(); window.scrollTo(0, 0); if(d.tab === 'cal') setTimeout(scrollToTimeline, 30); },
+  tab(d){ closeModal(); state.tab = d.tab; state.studentId = state.groupId = null; state.finSub = ''; render(); window.scrollTo(0, 0); if(d.tab === 'cal') setTimeout(scrollToTimeline, 30); },
   closeModal,
   notif(){ notifSheet(); },
   debtors(d){ debtorsSheet(!!d.over); },
@@ -1444,7 +1511,7 @@ const actions = {
     }else db.lessons = db.lessons.filter(x => x.id !== l.id);
     save(); closeModal(); render(); toast('Usunięto');
   },
-  addPayment(d){ paymentForm(null, {sid:d.sid || (state.tab === 'students' ? state.studentId : null)}); },
+  addPayment(d){ paymentForm(null, {sid:d.sid || (state.tab === 'students' ? state.studentId : null), date:d.date}); },
   editPayment(d){ paymentForm(db.payments.find(p => p.id === d.id)); },
   deletePayment(d){
     if(!confirm('Usunąć tę wpłatę?')) return;
@@ -1457,6 +1524,10 @@ const actions = {
   calNav(d){ state.calDate = addDays(state.calDate, 7 * (+d.dir)); render(); },
   calToday(){ state.calDate = today(); render(); scrollToTimeline(); },
   calDay(d){ state.calDate = d.date; render(); },
+  openPayWeek(d){ state.finSub = 'week'; state.payWeek = d.date || today(); render(); window.scrollTo(0, 0); },
+  payWeekNav(d){ state.payWeek = addDays(weekStart(state.payWeek), 7 * (+d.dir)); render(); },
+  payWeekToday(){ state.payWeek = today(); render(); },
+  finBack(){ state.finSub = ''; render(); window.scrollTo(0, 0); },
   finNav(d){ state.finMonth = shiftMonth(state.finMonth, +d.dir); render(); },
   finMonth(d){ state.finMonth = d.m; render(); },
   exportJson(){
