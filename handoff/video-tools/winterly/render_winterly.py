@@ -152,7 +152,15 @@ def main(cfg_path):
     names = []; acc_t = 0.0
     for i, (src, start, ln, top, spd) in enumerate(segs):
         nfr = int(round((acc_t + ln) * FPS)) - int(round(acc_t * FPS)); acc_t += ln
-        crop = (f'setpts=PTS/{spd},' if spd != 1.0 else '') + (f'crop=iw*{1 - top}:ih*{1 - top}:iw*{top / 2}:ih*{top},' if top > 0 else '')
+        # top > 0: obcina górę (np. obcy napis na górze); top < 0: obcina dół (np. napisy na dole cudzego klipu)
+        if top > 0:
+            cr = f'crop=iw*{1 - top}:ih*{1 - top}:iw*{top / 2}:ih*{top},'
+        elif top < 0:
+            b = -top
+            cr = f'crop=iw*{1 - b}:ih*{1 - b}:iw*{b / 2}:0,'
+        else:
+            cr = ''
+        crop = (f'setpts=PTS/{spd},' if spd != 1.0 else '') + cr
         out = f'{work}/c{i:02d}.mp4'
         subprocess.run(['ffmpeg', '-nostdin', '-v', 'error', '-y', '-ss', str(start), '-t', f'{ln * spd + 0.2:.3f}', '-i', p(src), '-an',
                         '-vf', f'{crop}scale=1080:1920:force_original_aspect_ratio=increase:flags=lanczos,crop=1080:1920,fps=30,setsar=1,tpad=stop_mode=clone:stop_duration=1',
@@ -169,8 +177,8 @@ def main(cfg_path):
     for i, (a, txt, em, sy) in enumerate(subs):
         b = subs[i + 1][0] if i + 1 < len(subs) else end
         sub_imgs.append((a, b, fit(text_block(txt.split('|'), F_SUB, 7, E(em))) if txt else None, sy))
-    stickers = [(s['from'], s['to'], pill(s['text'], bg=tuple(s.get('bg', RED)), fg=tuple(s.get('fg', WHITE)), rot=s.get('rot', -4),
-                 emoji=E(s.get('emoji'))), s['x'], s['y']) for s in cfg.get('stickers', [])]
+    stickers = [(s['from'], s['to'], fit(pill(s['text'], bg=tuple(s.get('bg', RED)), fg=tuple(s.get('fg', WHITE)), rot=s.get('rot', -4),
+                 emoji=E(s.get('emoji'))), 1000), s['x'], s['y']) for s in cfg.get('stickers', [])]
     badge = pill(cfg.get('badge_text', 'winterly.pl'), bg=(255, 255, 255, 235), fg=INK, font=F_BADGE, rot=0, emoji=E('1f6d2'), padx=30)
     badge_from = cfg.get('badge_from', 3.0)
     if cfg.get('logo') and os.path.exists(p(cfg['logo'])):

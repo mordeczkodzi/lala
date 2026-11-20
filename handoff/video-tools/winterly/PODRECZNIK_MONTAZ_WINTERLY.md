@@ -105,7 +105,7 @@ ffmpeg -i lektor.mp3 -af silencedetect=n=-32dB:d=0.06 -f null - 2>&1 | grep -oE 
   - `dur`: czas od początku tego zdania do początku następnego.
   - `segs`: ujęcia w formacie `[plik, start_w_klipie, długość, kadrowanie_od_góry, {opcje}]`.
     - Długości w bicie są przeliczane proporcjonalnie do `dur`.
-    - `kadrowanie_od_góry` (np. 0.2) obcina górę, żeby ukryć obcy napis.
+    - `kadrowanie_od_góry` (np. 0.2) obcina górę, żeby ukryć obcy napis; wartość ujemna (np. -0.28) obcina dół (napisy na dole cudzego klipu).
     - Opcje: `{"flash": true}` to biały błysk na początku ujęcia (używaj tylko przy zmianie wzoru, wygląda jak „klik”). `{"speed": 0.9}` zwalnia ujęcie. `{"cover": {"y": 0.25, "h": 0.11, "w": 0.82, "label": "WZÓR Z TELEFONU", "emoji": "1f4f1"}}` to biała etykieta na obcy napis.
   - `subs`: napisy w formacie `[czas_od_początku_bitu, "tekst z *złotym* słowem", "emoji", wysokość]`.
     - `|` łamie linię.

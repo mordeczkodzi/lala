@@ -1,0 +1,279 @@
+{
+ "_opis": "Film 2 v3 (Black Week): ten sam lektor co film2, mocniejszy początek, Twoje klipy z kurtyną. Ujęcia gm3.mp4 (GlowMax) to zastępstwa do podmiany w Higgsfield.",
+ "out": "f2v3_obraz.mp4",
+ "emoji_dir": "emoji/64",
+ "sub_y": 0.69,
+ "punch": false,
+ "dissolve": 3,
+ "badge_from": 2.0,
+ "hook": {
+  "lines": [
+   "Sąsiedzi stoją",
+   "pod moim *balkonem*"
+  ],
+  "emoji": "1f440",
+  "until": 1.7,
+  "y": 0.2
+ },
+ "stickers": [
+  {
+   "from": 11.55,
+   "to": 17.58,
+   "text": "BLACK WEEK: druga kurtyna −40%",
+   "emoji": "1f525",
+   "x": 0.5,
+   "y": 0.235,
+   "rot": -3
+  }
+ ],
+ "end_dur": 3.92,
+ "end": {
+  "pill": "BLACK WEEK • 21–30.11",
+  "pill_emoji": "1f525",
+  "lines": [
+   "Druga kurtyna",
+   "*−40%*"
+  ],
+  "button": "ZAMÓW NA WINTERLY.PL",
+  "small": "Płatność przy odbiorze • 30 dni na zwrot"
+ },
+ "beats": [
+  {
+   "dur": 1.7,
+   "segs": [
+    [
+     "snow.mp4",
+     0.2,
+     1.7
+    ]
+   ],
+   "subs": []
+  },
+  {
+   "dur": 2.48,
+   "segs": [
+    [
+     "p_sanie.mp4",
+     0.0,
+     1.25
+    ],
+    [
+     "gm3.mp4",
+     13.0,
+     1.23,
+     -0.28
+    ]
+   ],
+   "subs": [
+    [
+     0.02,
+     "i mój *balkon*"
+    ],
+    [
+     0.86,
+     "stał się *atrakcją osiedla*",
+     "2728"
+    ]
+   ]
+  },
+  {
+   "dur": 4.11,
+   "segs": [
+    [
+     "gm3.mp4",
+     5.0,
+     0.81,
+     -0.28
+    ],
+    [
+     "gm3.mp4",
+     7.55,
+     0.88,
+     0,
+     {
+      "cover": {
+       "y": 0.737,
+       "h": 0.075,
+       "w": 0.78,
+       "label": "WZÓR Z TELEFONU",
+       "emoji": "1f4f1"
+      }
+     }
+    ],
+    [
+     "p_sanie.mp4",
+     1.4,
+     2.42
+    ]
+   ],
+   "subs": [
+    [
+     0.02,
+     "Zawiesiłam *lampki*,"
+    ],
+    [
+     0.81,
+     "odpaliłam *aplikację*",
+     null,
+     0.5
+    ],
+    [
+     1.69,
+     "i wybrałam"
+    ],
+    [
+     2.22,
+     "*Mikołaja* na saniach",
+     "1f385",
+     0.78
+    ]
+   ]
+  },
+  {
+   "dur": 3.26,
+   "segs": [
+    [
+     "gm3.mp4",
+     12.7,
+     1.6,
+     -0.28
+    ],
+    [
+     "snow.mp4",
+     4.0,
+     1.66
+    ]
+   ],
+   "subs": [
+    [
+     0.01,
+     "Wieczorem wracam z psem,"
+    ],
+    [
+     0.86,
+     "a pod *blokiem*"
+    ],
+    [
+     1.37,
+     "ludzie *patrzą w górę*",
+     "1f440"
+    ]
+   ]
+  },
+  {
+   "dur": 3.29,
+   "segs": [
+    [
+     "p_snieg.mp4",
+     0.5,
+     0.52,
+     0,
+     {
+      "flash": true
+     }
+    ],
+    [
+     "p_balwan.mp4",
+     1.0,
+     0.58,
+     0,
+     {
+      "flash": true
+     }
+    ],
+    [
+     "p_choinka.mp4",
+     0.3,
+     0.75,
+     0,
+     {
+      "flash": true
+     }
+    ],
+    [
+     "gm3.mp4",
+     21.6,
+     1.44,
+     0,
+     {
+      "cover": {
+       "y": 0.737,
+       "h": 0.075,
+       "w": 0.78,
+       "label": "1 KLIK = NOWY WZÓR",
+       "emoji": "2728"
+      }
+     }
+    ]
+   ],
+   "subs": [
+    [
+     0.0,
+     "*Śnieg*,",
+     "2744",
+     0.78
+    ],
+    [
+     0.52,
+     "*bałwan*,",
+     "26c4",
+     0.78
+    ],
+    [
+     1.1,
+     "*choinka*",
+     "1f384",
+     0.78
+    ],
+    [
+     1.85,
+     "jednym *kliknięciem*",
+     null,
+     0.52
+    ]
+   ]
+  },
+  {
+   "dur": 2.74,
+   "segs": [
+    [
+     "gm3.mp4",
+     16.0,
+     1.9,
+     -0.28
+    ],
+    [
+     "p_balwan.mp4",
+     5.0,
+     0.84
+    ]
+   ],
+   "subs": [
+    [
+     0.02,
+     "Rano *sąsiad*"
+    ],
+    [
+     0.62,
+     "pyta na grupie,"
+    ],
+    [
+     1.32,
+     "skąd mam *takie lampki*",
+     "1f60d"
+    ]
+   ]
+  },
+  {
+   "dur": 3.92,
+   "segs": [
+    [
+     "unbox.mp4",
+     4.0,
+     3.92
+    ]
+   ]
+  }
+ ],
+ "_pliki": "snow.mp4, p_sanie.mp4, p_balwan.mp4, p_choinka.mp4, p_snieg.mp4, unbox.mp4 = klipy właściciela; gm3.mp4 = reklama GlowMax (glowmaxpl-2254155385153968), tylko zastępstwo do podmiany; lektor = ścieżka dźwiękowa z film2 (Winterly_historia_lektor.mp4)"
+}
