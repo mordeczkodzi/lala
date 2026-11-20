@@ -223,7 +223,10 @@ def main(cfg_path):
         fr = fr.convert('RGBA')
         if t >= end:  # plansza końcowa
             te = t - end
-            fr = fr.filter(ImageFilter.GaussianBlur(16)); fr.alpha_composite(Image.new('RGBA', (W, H), (8, 20, 15, 130)))
+            ramp = min(1.0, te / 0.35)  # płynne wejście planszy: rozmycie i przyciemnienie narastają przez 0,35 s
+            if ramp > 0.02:
+                fr = fr.filter(ImageFilter.GaussianBlur(16 * ramp))
+            fr.alpha_composite(Image.new('RGBA', (W, H), (8, 20, 15, int(130 * ramp))))
             place(fr, logo, W / 2, H * 0.22, pop(te), min(1, te / 0.15))
             if te > 0.2: place(fr, e_pill, W / 2, H * 0.36, pop(te - 0.2))
             if te > 0.4: place(fr, e_txt, W / 2, H * 0.48, pop(te - 0.4))
