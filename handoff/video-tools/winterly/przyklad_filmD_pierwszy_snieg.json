@@ -1,0 +1,21 @@
+{
+ "_opis": "Film D: Pierwszy śnieg – wersja z napisami i muzyką, z naszych ujęć.",
+ "out": "filmD_obraz.mp4",
+ "emoji_dir": "/tmp/claude-0/-home-user-lala/9af5c72f-959d-5981-b926-47b34d7272d6/scratchpad/emo/pkg/package/img/google/64",
+ "sub_y": 0.69, "punch": false, "dissolve": 0, "badge_from": 2.2,
+ "hook": {"lines": ["Spadł pierwszy", "*śnieg*"], "emoji": "2744", "until": 2.2, "y": 0.2},
+ "stickers": [{"from": 4.8, "to": 14.7, "text": "BLACK WEEK: druga kurtyna −40%", "emoji": "1f525", "x": 0.5, "y": 0.235, "rot": -3}],
+ "end_dur": 3.5,
+ "end": {"pill": "BLACK WEEK • 21–30.11", "pill_emoji": "1f525", "lines": ["Druga kurtyna", "*−40%*"], "button": "ZAMÓW NA WINTERLY.PL", "small": "Płatność przy odbiorze • 30 dni na zwrot"},
+ "beats": [
+  {"dur": 2.2, "segs": [["../f2/snow.mp4", 0.3, 2.2]], "subs": []},
+  {"dur": 2.6, "segs": [["balkon_ciemny.mp4", 0.0, 2.6]], "subs": [[0.05, "a Twój balkon"], [1.1, "dalej *ciemny*?", "1f914"]]},
+  {"dur": 2.4, "segs": [["../f2/unbox.mp4", 1.0, 2.4]], "subs": [[0.05, "Wieszasz kurtynę LED,"], [1.2, "podłączasz do *USB*", "1f50c"]]},
+  {"dur": 1.4, "segs": [["../f2/p_balwan.mp4", 1.0, 1.4]], "subs": [[0.05, "*Bałwanek*", "2603"]]},
+  {"dur": 1.3, "segs": [["../f2/p_choinka.mp4", 0.3, 1.3]], "subs": [[0.05, "*Choinka*", "1f384"]]},
+  {"dur": 1.3, "segs": [["../f2/p_sanie.mp4", 0.3, 1.3]], "subs": [[0.05, "*Sanie Mikołaja*", "1f98c"]]},
+  {"dur": 1.3, "segs": [["../f2/p_snieg.mp4", 3.0, 1.3]], "subs": [[0.05, "*Śnieżynki*", "2744"]]},
+  {"dur": 2.2, "segs": [["../f2/snow.mp4", 5.0, 2.2]], "subs": [[0.05, "W te święta|to *Ty* się wyróżniasz", "2728"]]},
+  {"dur": 3.5, "segs": [["../f2/p_sanie.mp4", 4.0, 3.5]], "subs": []}
+ ]
+}
