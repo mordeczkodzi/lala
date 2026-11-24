@@ -37,10 +37,10 @@ def save(im,name): im.convert('RGB').save(LA+name,quality=94); print('OK',name)
 dom=Image.open(DOM).convert('RGB')
 tiles=[(Image.open(LA+'p_balwan_6.0.png'),(0,640,1080,1330),'Bałwanek'),
        (Image.open(LA+'p_choinka_0.4.png'),(0,560,1080,1250),'Choinka'),
-       (Image.open(LA+'p_sanie_2.5.png'),(0,880,1080,1570),'Sanie Mikołaja'),
-       (Image.open(LA+'p_snieg_8.0.png'),(0,620,1080,1310),'Śnieżynki'),
+       (Image.open(LA+'p_sanie_0.4.png'),(150,690,1070,1224),'Sanie Mikołaja'),
+       (Image.open(LA+'sn_3.5.png'),(0,640,1080,1266),'Śnieżynki'),
        (Image.open(LA+'snow_0.5.png'),(250,620,930,1055),'Mikołaj'),
-       (dom,(860,790,1560,1235),'Zimowa wioska')]
+       (tpl,(418,330,1100,726),'Zimowa wioska')]
 g=Image.new('RGB',(W,H),GREEN)
 # subtle radial vignette
 yy,xx=np.mgrid[0:H,0:W]; v=1-0.35*np.clip(np.hypot((xx-W/2)/W,(yy-H/2)/H)*1.6,0,1)
