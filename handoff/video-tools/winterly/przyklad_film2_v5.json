@@ -1,0 +1,19 @@
+{
+ "_opis": "Film 2 v5: te same ujęcia co film2, inny lektor i inne cięcie (start od pytania sąsiada). Ujęcia gm3.mp4 to zastępstwa do podmiany w Higgsfield.",
+ "out": "f2v5_obraz.mp4",
+ "emoji_dir": "/tmp/claude-0/-home-user-lala/9af5c72f-959d-5981-b926-47b34d7272d6/scratchpad/emo/pkg/package/img/google/64",
+ "sub_y": 0.69, "punch": false, "dissolve": 0, "badge_from": 3.0,
+ "hook": {"lines": ["Sąsiad zapytał na grupie:", "*skąd masz takie lampki?*"], "emoji": "1f440", "until": 3.0, "y": 0.2},
+ "stickers": [{"from": 5.4, "to": 13.4, "text": "BLACK WEEK: druga kurtyna −40%", "emoji": "1f525", "x": 0.5, "y": 0.235, "rot": -3}],
+ "end_dur": 3.5,
+ "end": {"pill": "BLACK WEEK • 21–30.11", "pill_emoji": "1f525", "lines": ["Druga kurtyna", "*−40%*"], "button": "ZAMÓW NA WINTERLY.PL", "small": "Płatność przy odbiorze • 30 dni na zwrot"},
+ "beats": [
+  {"dur": 3.0, "segs": [["gm3.mp4", 15.7, 3.0, -0.28, {"speed": 0.8}]], "subs": []},
+  {"dur": 2.4, "segs": [["snow.mp4", 0.2, 2.4]], "subs": [[0.02, "Odpisałam:|to nie lampki,"], [1.2, "to *kurtyna LED*", "2728"]]},
+  {"dur": 2.8, "segs": [["gm3.mp4", 5.0, 1.3, -0.28], ["gm3.mp4", 7.55, 1.5, 0, {"cover": {"y": 0.737, "h": 0.075, "w": 0.78, "label": "WZÓR Z TELEFONU", "emoji": "1f4f1"}}]], "subs": [[0.02, "Wieszasz na *balkonie*,"], [1.3, "w *aplikacji* wybierasz wzór:", "1f4f1", 0.5]]},
+  {"dur": 2.8, "segs": [["p_snieg.mp4", 0.6, 0.6], ["p_balwan.mp4", 1.0, 0.6], ["p_choinka.mp4", 0.3, 0.6], ["p_sanie.mp4", 0.3, 1.0]], "subs": [[0.0, "*Śnieg*,", "2744", 0.78], [0.6, "*bałwan*,", "26c4", 0.78], [1.2, "*choinka*", "1f384", 0.78], [1.8, "albo *Mikołaj na saniach*", "1f385", 0.78]]},
+  {"dur": 2.4, "segs": [["gm3.mp4", 12.75, 2.4, -0.28, {"speed": 0.87}]], "subs": [[0.02, "Wieczorem *ludzie pod blokiem*"], [1.1, "*patrzą w górę*", "1f440"]]},
+  {"dur": 3.0, "segs": [["snow.mp4", 2.6, 3.0]], "subs": [[0.02, "A w *Black Week*"], [1.1, "druga kurtyna *−40%*", "1f525"]]},
+  {"dur": 3.5, "segs": [["p_balwan.mp4", 2.0, 3.5]], "subs": []}
+ ]
+}
