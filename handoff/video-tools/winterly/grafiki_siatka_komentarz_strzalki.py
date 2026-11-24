@@ -64,37 +64,35 @@ d.line([(W/2-300,ly+40),(W/2-lg.width/2-24,ly+40)],fill=GOLD,width=2); d.line([(
 g.paste(lg,(int(W/2-lg.width/2),ly),lg)
 save(g,'winterly_bw_siatka_wzorow_4x5.jpg')
 
-# ---------- 2) KOMENTARZ + TAŚMA
+# ---------- 2) KOMENTARZ + TAŚMA (kurtyna odsłonięta)
 k=Image.new('RGB',(W,H),(10,10,12)); d=ImageDraw.Draw(k)
-ctext(d,92,'„Chcę!”',font('Montserrat-ExtraBold',120),(255,255,255))
-ctext(d,250,'Komentarz pod naszą reklamą',font('Montserrat-SemiBold',30),GOLD)
-photo=sharpen(cover(tpl.crop((418,282,1100,872)),W,640))
-py=360; k.paste(photo,(0,py))
-# fade photo edges into black
-fade=Image.new('L',(W,640),255); fd=ImageDraw.Draw(fade)
-for i in range(60): fd.line([(0,i),(W,i)],fill=int(255*i/60)); fd.line([(0,639-i),(W,639-i)],fill=int(255*i/60))
-k.paste(Image.new('RGB',(W,640),(10,10,12)),(0,py),ImageOps.invert(fade))
-def tape(img,y,ang,txt='BLACK WEEK  •  '):
-    f=font('Montserrat-ExtraBold',46); L=2200; T=Image.new('RGBA',(L,92),(242,194,48,255)); td=ImageDraw.Draw(T)
+ctext(d,58,'„Chcę!”',font('Montserrat-ExtraBold',116),(255,255,255))
+ctext(d,212,'Komentarz pod naszą reklamą',font('Montserrat-SemiBold',30),GOLD)
+PH=690; py=318
+photo=sharpen(cover(tpl.crop((418,282,1100,872)),W,PH,cy=0.2)); k.paste(photo,(0,py))
+fade=Image.new('L',(W,PH),255); fd=ImageDraw.Draw(fade)
+for i in range(50): fd.line([(0,i),(W,i)],fill=int(255*i/50)); fd.line([(0,PH-1-i),(W,PH-1-i)],fill=int(255*i/50))
+k.paste(Image.new('RGB',(W,PH),(10,10,12)),(0,py),ImageOps.invert(fade))
+def tape(img,y,ang,txt='BLACK WEEK  •  ',hgt=76,fs=38):
+    f=font('Montserrat-ExtraBold',fs); L=2200; T=Image.new('RGBA',(L,hgt),(242,194,48,255)); td=ImageDraw.Draw(T)
     x=-40
-    while x<L: td.text((x,14),txt,font=f,fill=(15,15,15)); x+=td.textlength(txt,font=f)
+    while x<L: td.text((x,(hgt-fs)//2-4),txt,font=f,fill=(15,15,15)); x+=td.textlength(txt,font=f)
     T=T.rotate(ang,expand=True,resample=Image.BICUBIC)
     sh=Image.new('RGBA',T.size,(0,0,0,0)); sh.putalpha(T.split()[3].point(lambda a:int(a*0.5))); sh=sh.filter(ImageFilter.GaussianBlur(8))
     img.paste(sh,((W-T.width)//2+4,y-T.height//2+10),sh); img.paste(T,((W-T.width)//2,y-T.height//2),T)
-tape(k,py+40,-7); tape(k,py+600,5)
-# red badge
-bx,by,R=860,py+470,118
+tape(k,py+8,-3); tape(k,py+PH-6,2.5)
+bx,by,R=905,py+PH-118,100
 bd=Image.new('RGBA',(2*R+40,2*R+40),(0,0,0,0)); dd=ImageDraw.Draw(bd)
-dd.ellipse([20,20,20+2*R,20+2*R],fill=RED); dd.ellipse([30,30,10+2*R,10+2*R],outline=(255,255,255),width=3)
-f1=font('Montserrat-ExtraBold',68); f2=font('Montserrat-SemiBold',24)
-w=dd.textlength('−40%',font=f1); dd.text((20+R-w/2,20+R-70),'−40%',font=f1,fill='white')
+dd.ellipse([20,20,20+2*R,20+2*R],fill=RED); dd.ellipse([29,29,11+2*R,11+2*R],outline=(255,255,255),width=3)
+f1=font('Montserrat-ExtraBold',60); f2=font('Montserrat-SemiBold',22)
+w=dd.textlength('−40%',font=f1); dd.text((20+R-w/2,20+R-60),'−40%',font=f1,fill='white')
 for j,t in enumerate(['na drugą','kurtynę']):
-    w=dd.textlength(t,font=f2); dd.text((20+R-w/2,20+R+18+j*28),t,font=f2,fill='white')
+    w=dd.textlength(t,font=f2); dd.text((20+R-w/2,20+R+14+j*25),t,font=f2,fill='white')
 bd=bd.rotate(-8,resample=Image.BICUBIC); k.paste(bd,(bx-R-20,by-R-20),bd)
 d=ImageDraw.Draw(k)
-ctext(d,1062,'Setki animowanych wzorów, sterowanych z telefonu',font('Montserrat-SemiBold',33),(255,255,255))
-ctext(d,1112,'Płatność przy odbiorze  •  30 dni na zwrot',font('Montserrat-SemiBold',28),(200,200,200))
-lg=logo(84); k.paste(lg,(int(W/2-lg.width/2),1200),lg)
+ctext(d,1072,'Setki animowanych wzorów, sterowanych z telefonu',font('Montserrat-SemiBold',33),(255,255,255))
+ctext(d,1122,'Płatność przy odbiorze  •  30 dni na zwrot',font('Montserrat-SemiBold',28),(200,200,200))
+lg=logo(80); k.paste(lg,(int(W/2-lg.width/2),1208),lg)
 save(k,'winterly_bw_komentarz_chce_4x5.jpg')
 
 # ---------- 3) ZDJĘCIE Z OPISAMI (strzałki)
@@ -150,3 +148,28 @@ for j,t in enumerate(['na drugą','kurtynę']):
 a.paste(bd,(905-R-20,1060-R-20),bd)
 lg=logo(70); a.paste(lg,(60,1220),lg)
 save(a,'winterly_bw_opisy_strzalki_4x5.jpg')
+
+# ---------- 4) BAŁWAN, KTÓRY NIE TOPNIEJE (nasze ujęcie)
+b=Image.open(LA+'balwan_3.0.png').convert('RGB')
+b=sharpen(b.crop((0,400,1080,1750)))
+grad=Image.new('L',(1,H))
+for y in range(H):
+    v=0.92*max(0,min(1,(y-H*0.64)/(H*0.26))) if y>H*0.64 else 0.8*max(0,(H*0.24-y)/(H*0.24))
+    grad.putpixel((0,y),int(255*v))
+b.paste(Image.new('RGB',(W,H),(5,8,14)),(0,0),grad.resize((W,H)))
+d=ImageDraw.Draw(b)
+ctext(d,44,'Bałwan, który',font('Montserrat-ExtraBold',84),(255,255,255),shadow=(0,0,0))
+ctext(d,138,'nie topnieje.',font('Montserrat-ExtraBold',84),(255,255,255),shadow=(0,0,0))
+ctext(d,250,'Kurtyna LED Winterly – setki wzorów z telefonu',font('Montserrat-SemiBold',31),(235,235,235),shadow=(0,0,0))
+d.text((60,972),'BLACK WEEK',font=font('Montserrat-ExtraBold',74),fill=(255,255,255))
+d.text((62,1068),'Druga kurtyna −40%',font=font('Montserrat-Bold',38),fill=(242,194,48))
+d.text((62,1122),'Płatność przy odbiorze  •  30 dni na zwrot',font=font('Montserrat-SemiBold',28),fill=(225,225,225))
+R=118; bd=Image.new('RGBA',(2*R+40,2*R+40),(0,0,0,0)); dd=ImageDraw.Draw(bd)
+dd.ellipse([20,20,20+2*R,20+2*R],fill=RED); dd.ellipse([30,30,10+2*R,10+2*R],outline=(255,255,255),width=3)
+f1=font('Montserrat-ExtraBold',68); f2=font('Montserrat-SemiBold',24)
+w=dd.textlength('−40%',font=f1); dd.text((20+R-w/2,20+R-66),'−40%',font=f1,fill='white')
+for j,t in enumerate(['na drugą','kurtynę']):
+    w=dd.textlength(t,font=f2); dd.text((20+R-w/2,20+R+18+j*28),t,font=f2,fill='white')
+bd=bd.rotate(-8,resample=Image.BICUBIC); b.paste(bd,(905-R-20,1060-R-20),bd)
+lg=logo(70); b.paste(lg,(60,1220),lg)
+save(b,'winterly_bw_balwan_4x5.jpg')
