@@ -1,0 +1,253 @@
+{
+ "_opis": "Pierwszy śnieg v4 – tempo filmu 2, ujęcia tylko z bezpiecznych fragmentów (bez mignięć), lektor 1.17x z pełnymi końcówkami słów.",
+ "out": "snieg_v4_obraz.mp4",
+ "emoji_dir": "/tmp/claude-0/-home-user-lala/9af5c72f-959d-5981-b926-47b34d7272d6/scratchpad/emo/pkg/package/img/google/64",
+ "sub_y": 0.69,
+ "punch": false,
+ "dissolve": 0,
+ "badge_from": 1.504,
+ "hook": {
+  "lines": [
+   "Spadł pierwszy",
+   "*śnieg*…"
+  ],
+  "emoji": "2744",
+  "until": 1.504,
+  "y": 0.2
+ },
+ "stickers": [
+  {
+   "from": 5.231,
+   "to": 15.265,
+   "text": "BLACK WEEK: druga kurtyna −40%",
+   "emoji": "1f525",
+   "x": 0.5,
+   "y": 0.235,
+   "rot": -3
+  }
+ ],
+ "end_dur": 3.665,
+ "end": {
+  "pill": "BLACK WEEK • 21–30.11",
+  "pill_emoji": "1f525",
+  "lines": [
+   "Druga kurtyna",
+   "*−40%*"
+  ],
+  "button": "ZAMÓW NA WINTERLY.PL",
+  "small": "Płatność przy odbiorze • 30 dni na zwrot"
+ },
+ "beats": [
+  {
+   "dur": 1.504,
+   "segs": [
+    [
+     "s15.mp4",
+     0.3,
+     1.504
+    ]
+   ],
+   "subs": []
+  },
+  {
+   "dur": 1.453,
+   "segs": [
+    [
+     "s11.mp4",
+     33.98,
+     0.73
+    ],
+    [
+     "s16.mp4",
+     21.65,
+     0.723
+    ]
+   ],
+   "subs": [
+    [
+     0.06,
+     "Sąsiedzi już *świecą*,",
+     "2728"
+    ]
+   ]
+  },
+  {
+   "dur": 2.274,
+   "segs": [
+    [
+     "balkon_ciemny.mp4",
+     0.2,
+     2.274
+    ]
+   ],
+   "subs": [
+    [
+     0.04,
+     "a mój balkon…"
+    ],
+    [
+     1.419,
+     "dalej *ciemny*",
+     "1f914"
+    ]
+   ]
+  },
+  {
+   "dur": 1.572,
+   "segs": [
+    [
+     "s5.mp4",
+     3.9,
+     1.572
+    ]
+   ],
+   "subs": [
+    [
+     0.06,
+     "Zamówiłam więc *kurtynę LED*"
+    ]
+   ]
+  },
+  {
+   "dur": 1.966,
+   "segs": [
+    [
+     "s16.mp4",
+     7.15,
+     1.966,
+     0,
+     {
+      "speed": 0.788
+     }
+    ]
+   ],
+   "subs": [
+    [
+     0.04,
+     "Powiesiłam,"
+    ],
+    [
+     0.706,
+     "podłączyłam do *USB*",
+     "1f50c"
+    ]
+   ]
+  },
+  {
+   "dur": 1.47,
+   "segs": [
+    [
+     "s16.mp4",
+     1.15,
+     1.47
+    ]
+   ],
+   "subs": [
+    [
+     0.06,
+     "i w *aplikacji* wybrałam wzór",
+     "1f4f1"
+    ]
+   ]
+  },
+  {
+   "dur": 2.564,
+   "segs": [
+    [
+     "s18.mp4",
+     1.0,
+     0.718
+    ],
+    [
+     "s19.mp4",
+     0.3,
+     0.735
+    ],
+    [
+     "s16.mp4",
+     15.25,
+     0.487
+    ],
+    [
+     "s11.mp4",
+     26.6,
+     0.624
+    ]
+   ],
+   "subs": [
+    [
+     0.06,
+     "*Bałwanek*",
+     "2603",
+     0.78
+    ],
+    [
+     0.778,
+     "*choinka*",
+     "1f384",
+     0.78
+    ],
+    [
+     1.513,
+     "*Mikołaj na saniach*",
+     "1f385",
+     0.78
+    ]
+   ]
+  },
+  {
+   "dur": 2.462,
+   "segs": [
+    [
+     "s11.mp4",
+     12.75,
+     1.324
+    ],
+    [
+     "s11.mp4",
+     15.72,
+     1.138
+    ]
+   ],
+   "subs": [
+    [
+     0.06,
+     "Teraz pod *moim* balkonem"
+    ],
+    [
+     1.324,
+     "ludzie się *zatrzymują*",
+     "1f440"
+    ]
+   ]
+  },
+  {
+   "dur": 0.846,
+   "segs": [
+    [
+     "s16.mp4",
+     3.72,
+     0.846
+    ]
+   ],
+   "subs": [
+    [
+     0.05,
+     "A w *Black Week*",
+     "1f525"
+    ]
+   ]
+  },
+  {
+   "dur": 3.665,
+   "segs": [
+    [
+     "s18.mp4",
+     2.0,
+     3.665
+    ]
+   ],
+   "subs": []
+  }
+ ]
+}

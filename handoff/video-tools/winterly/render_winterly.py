@@ -9,7 +9,7 @@ Użycie:   python3 -I render_winterly.py config.json
 Dźwięk:   ten skrypt robi sam obraz; głos i muzykę dokłada miks_audio.sh (osobno, żeby łatwo stroić).
 Wymaga:   ffmpeg, Python 3 + Pillow, czcionka Inter (Inter-Black/Bold/ExtraBold), opcjonalnie emoji Google.
 """
-import json, math, os, subprocess, sys, tempfile
+import json, math, os, re, subprocess, sys, tempfile
 from PIL import Image, ImageDraw, ImageFilter, ImageFont
 
 W, H, FPS = 1080, 1920, 30
@@ -148,6 +148,18 @@ def main(cfg_path):
             subs.append([t0 + s[0], s[1], s[2] if len(s) > 2 else None, s[3] if len(s) > 3 else None])
         t0 += dur
     D = t0; end = D - float(cfg['end_dur'])
+    # --- kontrola: czy któreś ujęcie nie łapie cięcia z oryginalnego klipu (mignięcie obcej sceny na kilka klatek)
+    scene_cache = {}
+    for (src, start, ln, top, spd) in segs:
+        if src not in scene_cache:
+            r = subprocess.run(['ffmpeg', '-nostdin', '-i', p(src), '-vf', "select='gt(scene,0.2)',showinfo", '-an', '-f', 'null', '-'],
+                               capture_output=True, text=True)
+            scene_cache[src] = [float(m) for m in re.findall(r'pts_time:([0-9.]+)', r.stderr)]
+        a, b = start, start + ln * spd
+        bad = [c for c in scene_cache[src] if a + 0.02 < c < b - 0.02]
+        if bad:
+            print(f'UWAGA: {src} {a:.2f}-{b:.2f} s zawiera cięcie oryginału w {", ".join(f"{c:.2f}" for c in bad)} s '
+                  f'(mignie obca scena) – przesuń start/długość', file=sys.stderr)
     # --- cięcie ujęć (liczba klatek liczona narastająco, żeby nic się nie rozjeżdżało)
     names = []; acc_t = 0.0
     for i, (src, start, ln, top, spd) in enumerate(segs):
