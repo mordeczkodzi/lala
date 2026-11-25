@@ -30,12 +30,25 @@ def hook_img(lines, code):
     out = Image.new('RGBA', img.size, (0, 0, 0, 0)); out.alpha_composite(sh.filter(ImageFilter.GaussianBlur(8))); out.alpha_composite(img)
     return out
 
+SUB_MAXW = 760  # bezpieczna szerokość: nie wchodzi pod przyciski Reels/TikTok po prawej
+
+def wrap(text, font, maxw):
+    """Łamie zdanie na maks. 2 wyrównane linie (dzieli w miejscu, gdzie obie są najbardziej równe)."""
+    if font.getlength(text) <= maxw: return [text]
+    words = text.split(); best = None
+    for i in range(1, len(words)):
+        a, b = ' '.join(words[:i]), ' '.join(words[i:]); w = max(font.getlength(a), font.getlength(b))
+        if best is None or w < best[0]: best = (w, [a, b])
+    return best[1]
+
 def sub_img(text):
-    pad = 20; w = int(F_SUB.getlength(text)); img = Image.new('RGBA', (w + 2 * pad, 41 + 2 * pad + 12), (0, 0, 0, 0))
-    ImageDraw.Draw(img).text((pad, pad), text, font=F_SUB, fill='white')
-    sh = Image.new('RGBA', img.size, (0, 0, 0, 0)); sh.putalpha(img.split()[3].point(lambda a: int(a * 0.75)))
-    out = Image.new('RGBA', img.size, (0, 0, 0, 0)); out.alpha_composite(sh.filter(ImageFilter.GaussianBlur(3)), (0, 2)); out.alpha_composite(img)
-    if out.width > 1020: out = out.resize((1020, int(out.height * 1020 / out.width)), Image.LANCZOS)
+    lines = [l for part in text.split('|') for l in wrap(part, F_SUB, SUB_MAXW)]
+    pad = 22; lh = 54; ws = [F_SUB.getlength(l) for l in lines]
+    img = Image.new('RGBA', (int(max(ws)) + 2 * pad, lh * len(lines) + 2 * pad), (0, 0, 0, 0)); d = ImageDraw.Draw(img)
+    for i, l in enumerate(lines):
+        d.text(((img.width - ws[i]) / 2, pad + i * lh), l, font=F_SUB, fill='white', stroke_width=2, stroke_fill=(0, 0, 0, 150))
+    sh = Image.new('RGBA', img.size, (0, 0, 0, 0)); sh.putalpha(img.split()[3].point(lambda a: int(a * 0.85)))
+    out = Image.new('RGBA', img.size, (0, 0, 0, 0)); out.alpha_composite(sh.filter(ImageFilter.GaussianBlur(5)), (0, 3)); out.alpha_composite(img)
     return out
 
 def end_card(lines):
