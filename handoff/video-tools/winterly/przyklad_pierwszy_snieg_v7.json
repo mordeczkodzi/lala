@@ -1,0 +1,156 @@
+{
+ "_opis": "Pierwszy śnieg v6 – styl filmu 2, lektor kończy się na 'ludzie się zatrzymują', plansza jak w Black Month",
+ "out": "snieg_v7_czysty.mp4",
+ "emoji_dir": "/tmp/claude-0/-home-user-lala/9af5c72f-959d-5981-b926-47b34d7272d6/scratchpad/emo/pkg/package/img/google/64",
+ "sub_y": 0.69,
+ "punch": false,
+ "dissolve": 0,
+ "badge_from": 999,
+ "hook": {
+  "lines": [],
+  "until": 0
+ },
+ "stickers": [],
+ "end_dur": 3.6,
+ "end": {
+  "pill": "BLACK MONTH • do −35%",
+  "pill_emoji": "1f525",
+  "lines": [
+   "Zamów na",
+   "*winterly.pl*"
+  ],
+  "button": "KUP TERAZ",
+  "small": "Drugi zestaw 50 zł taniej • 30 dni na zwrot"
+ },
+ "beats": [
+  {
+   "dur": 1.504,
+   "segs": [
+    [
+     "s15.mp4",
+     0.3,
+     1.504
+    ]
+   ],
+   "subs": []
+  },
+  {
+   "dur": 1.453,
+   "segs": [
+    [
+     "s11.mp4",
+     33.98,
+     1.453
+    ]
+   ],
+   "subs": []
+  },
+  {
+   "dur": 2.274,
+   "segs": [
+    [
+     "balkon_ciemny.mp4",
+     0.2,
+     2.274
+    ]
+   ],
+   "subs": []
+  },
+  {
+   "dur": 1.572,
+   "segs": [
+    [
+     "s5.mp4",
+     3.9,
+     1.572
+    ]
+   ],
+   "subs": []
+  },
+  {
+   "dur": 1.966,
+   "segs": [
+    [
+     "s11.mp4",
+     0.72,
+     1.966,
+     0,
+     {
+      "speed": 0.7
+     }
+    ]
+   ],
+   "subs": []
+  },
+  {
+   "dur": 1.47,
+   "segs": [
+    [
+     "s16.mp4",
+     1.15,
+     1.47
+    ]
+   ],
+   "subs": []
+  },
+  {
+   "dur": 2.564,
+   "segs": [
+    [
+     "s18.mp4",
+     1.0,
+     0.718
+    ],
+    [
+     "s19.mp4",
+     0.3,
+     0.735
+    ],
+    [
+     "s16.mp4",
+     15.25,
+     0.487
+    ],
+    [
+     "s11.mp4",
+     26.6,
+     0.624
+    ]
+   ],
+   "subs": []
+  },
+  {
+   "dur": 2.462,
+   "segs": [
+    [
+     "s11.mp4",
+     12.75,
+     1.324
+    ],
+    [
+     "s11.mp4",
+     15.72,
+     1.138
+    ]
+   ],
+   "subs": []
+  },
+  {
+   "dur": 3.6,
+   "segs": [
+    [
+     "s16.mp4",
+     3.72,
+     3.6,
+     0,
+     {
+      "speed": 0.41
+     }
+    ]
+   ],
+   "subs": []
+  }
+ ],
+ "logo": "/home/user/lala/handoff/video-tools/winterly/logo_winterly_zlote.png",
+ "logo_w": 400
+}

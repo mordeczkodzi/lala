@@ -1,0 +1,63 @@
+{
+ "in": "snieg_v7_czysty.mp4",
+ "out": "snieg_v7_napisy.mp4",
+ "emoji_dir": "/tmp/claude-0/-home-user-lala/9af5c72f-959d-5981-b926-47b34d7272d6/scratchpad/emo/pkg/package/img/google/64",
+ "sub_y": 0.66,
+ "hook": {
+  "lines": [
+   "Cały blok patrzy",
+   "na mój balkon"
+  ],
+  "emoji": "1f440",
+  "until": 1.504,
+  "y": 0.3
+ },
+ "subs": [
+  [
+   1.544,
+   2.957,
+   "Sąsiedzi już świecą,"
+  ],
+  [
+   2.997,
+   5.231,
+   "a mój balkon… dalej ciemny."
+  ],
+  [
+   5.271,
+   6.803,
+   "Zamówiłam więc kurtynę LED."
+  ],
+  [
+   6.843,
+   8.769,
+   "Powiesiłam, podłączyłam do USB"
+  ],
+  [
+   8.809,
+   10.239,
+   "i w aplikacji wybrałam wzór."
+  ],
+  [
+   10.279,
+   12.803,
+   "Bałwanek, choinka, Mikołaj na saniach."
+  ],
+  [
+   12.843,
+   14.127,
+   "Teraz to pod moim balkonem"
+  ],
+  [
+   14.127,
+   15.265,
+   "ludzie się zatrzymują!"
+  ]
+ ],
+ "end": {
+  "from": 999,
+  "lines": [
+   "-"
+  ]
+ }
+}
