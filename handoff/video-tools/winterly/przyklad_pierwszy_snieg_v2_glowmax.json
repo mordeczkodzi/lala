@@ -1,0 +1,21 @@
+{
+ "_opis": "Pierwszy śnieg v2 – głównie ujęcia GlowMax (s16, s11, s6) + nasze (unboxing Winterly, ciemny balkon, choinka). Cięcie pod lektora z ElevenLabs.",
+ "out": "snieg_gm_obraz.mp4",
+ "emoji_dir": "/tmp/claude-0/-home-user-lala/9af5c72f-959d-5981-b926-47b34d7272d6/scratchpad/emo/pkg/package/img/google/64",
+ "sub_y": 0.69, "punch": false, "dissolve": 0, "badge_from": 2.0,
+ "hook": {"lines": ["Spadł pierwszy", "*śnieg*…"], "emoji": "2744", "until": 2.0, "y": 0.2},
+ "stickers": [{"from": 6.7, "to": 16.0, "text": "BLACK WEEK: druga kurtyna −40%", "emoji": "1f525", "x": 0.5, "y": 0.235, "rot": -3}],
+ "end_dur": 3.5,
+ "end": {"pill": "BLACK WEEK • 21–30.11", "pill_emoji": "1f525", "lines": ["Druga kurtyna", "*−40%*"], "button": "ZAMÓW NA WINTERLY.PL", "small": "Płatność przy odbiorze • 30 dni na zwrot"},
+ "beats": [
+  {"dur": 2.0, "segs": [["s11.mp4", 12.0, 2.0]], "subs": []},
+  {"dur": 2.8, "segs": [["s11.mp4", 34.0, 1.3], ["balkon_ciemny.mp4", 0.0, 1.5]], "subs": [[0.02, "Sąsiedzi już *świecą*,", "2728"], [1.32, "a mój balkon…|dalej *ciemny*", "1f914"]]},
+  {"dur": 1.9, "segs": [["s5.mp4", 4.3, 1.0], ["s6.mp4", 0.2, 0.9]], "subs": [[0.02, "Zamówiłam więc|*kurtynę LED*", "1f381"]]},
+  {"dur": 2.0, "segs": [["s16.mp4", 7.2, 0.9], ["s6.mp4", 3.2, 1.1]], "subs": [[0.02, "Powiesiłam,"], [0.9, "podłączyłam do *USB*", "1f50c"]]},
+  {"dur": 2.2, "segs": [["s16.mp4", 1.0, 2.2]], "subs": [[0.02, "i w *aplikacji*|wybrałam wzór", "1f4f1"]]},
+  {"dur": 2.6, "segs": [["s16.mp4", 12.5, 0.8], ["s19.mp4", 0.3, 0.8], ["s16.mp4", 15.2, 1.0]], "subs": [[0.0, "*Bałwanek*", "2603", 0.78], [0.8, "*choinka*", "1f384", 0.78], [1.6, "*Mikołaj na saniach*", "1f385", 0.78]]},
+  {"dur": 2.6, "segs": [["s11.mp4", 13.0, 1.3], ["s11.mp4", 15.6, 1.3]], "subs": [[0.02, "Teraz pod *moim* balkonem"], [1.3, "ludzie się *zatrzymują*", "1f440"]]},
+  {"dur": 2.8, "segs": [["s16.mp4", 21.6, 2.8]], "subs": [[0.02, "A w *Black Week*"], [1.1, "druga kurtyna *−40%*", "1f525"]]},
+  {"dur": 3.5, "segs": [["s16.mp4", 3.6, 3.5]], "subs": []}
+ ]
+}
