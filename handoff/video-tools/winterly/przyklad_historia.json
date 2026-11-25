@@ -1,0 +1,277 @@
+{
+ "_opis": "Winterly historia (schemat filmu 2) – generowane z czasów lektora przez build_historia.py",
+ "out": "historia_obraz.mp4",
+ "emoji_dir": "/tmp/claude-0/-home-user-lala/9af5c72f-959d-5981-b926-47b34d7272d6/scratchpad/emo/pkg/package/img/google/64",
+ "sub_y": 0.69,
+ "punch": false,
+ "dissolve": 0,
+ "badge_from": 1.64,
+ "hook": {
+  "lines": [
+   "Sąsiedzi stoją",
+   "pod moim *balkonem*"
+  ],
+  "emoji": "1f440",
+  "until": 1.64,
+  "y": 0.2
+ },
+ "stickers": [
+  {
+   "from": 8.17,
+   "to": 17.52,
+   "text": "BLACK WEEK: druga kurtyna −40%",
+   "emoji": "1f525",
+   "x": 0.5,
+   "y": 0.235,
+   "rot": -3
+  }
+ ],
+ "end_dur": 4.33,
+ "end": {
+  "pill": "BLACK WEEK • druga kurtyna −40%",
+  "pill_emoji": "1f525",
+  "lines": [
+   "Balkon,",
+   "na który się *patrzy*"
+  ],
+  "button": "ZAMÓW NA WINTERLY.PL",
+  "small": "Płatność przy odbiorze • 30 dni na zwrot"
+ },
+ "beats": [
+  {
+   "dur": 1.64,
+   "segs": [
+    [
+     "s5.mp4",
+     3.25,
+     1.64
+    ]
+   ],
+   "subs": []
+  },
+  {
+   "dur": 2.32,
+   "segs": [
+    [
+     "s16.mp4",
+     21.65,
+     1.16
+    ],
+    [
+     "s11.mp4",
+     32.4,
+     1.16
+    ]
+   ],
+   "subs": [
+    [
+     0.06,
+     "i mój balkon stał się",
+     null
+    ],
+    [
+     1.036,
+     "*atrakcją osiedla*",
+     "2728"
+    ]
+   ]
+  },
+  {
+   "dur": 1.155,
+   "segs": [
+    [
+     "s16.mp4",
+     7.15,
+     1.155
+    ]
+   ],
+   "subs": [
+    [
+     0.06,
+     "Zawiesiłam *lampki*,",
+     null
+    ]
+   ]
+  },
+  {
+   "dur": 1.078,
+   "segs": [
+    [
+     "s11.mp4",
+     2.2,
+     1.078
+    ]
+   ],
+   "subs": [
+    [
+     0.06,
+     "odpaliłam *aplikację*",
+     "1f4f1"
+    ]
+   ]
+  },
+  {
+   "dur": 1.977,
+   "segs": [
+    [
+     "s11.mp4",
+     26.55,
+     1.977,
+     0,
+     {
+      "speed": 0.843
+     }
+    ]
+   ],
+   "subs": [
+    [
+     0.06,
+     "i wybrałam|*Mikołaja na saniach*",
+     "1f385"
+    ]
+   ]
+  },
+  {
+   "dur": 1.368,
+   "segs": [
+    [
+     "s11.mp4",
+     12.75,
+     1.368
+    ]
+   ],
+   "subs": [
+    [
+     0.06,
+     "Wieczorem wracam z psem,",
+     null
+    ]
+   ]
+  },
+  {
+   "dur": 1.952,
+   "segs": [
+    [
+     "s11.mp4",
+     10.45,
+     1.952,
+     0,
+     {
+      "speed": 0.854
+     }
+    ]
+   ],
+   "subs": [
+    [
+     0.06,
+     "a pod blokiem ludzie|*patrzą w górę*",
+     "1f440"
+    ]
+   ]
+  },
+  {
+   "dur": 1.829,
+   "segs": [
+    [
+     "s20.mp4",
+     3.5,
+     0.649
+    ],
+    [
+     "s18.mp4",
+     1.0,
+     0.59
+    ],
+    [
+     "s19.mp4",
+     0.3,
+     0.59
+    ]
+   ],
+   "subs": [
+    [
+     0.06,
+     "*Śnieg*,",
+     "2744"
+    ],
+    [
+     0.709,
+     "*bałwan*,",
+     "2603"
+    ],
+    [
+     1.299,
+     "*choinka*",
+     "1f384"
+    ]
+   ]
+  },
+  {
+   "dur": 1.281,
+   "segs": [
+    [
+     "s16.mp4",
+     1.15,
+     1.281
+    ]
+   ],
+   "subs": [
+    [
+     0.06,
+     "jednym *kliknięciem*",
+     "1f446"
+    ]
+   ]
+  },
+  {
+   "dur": 1.28,
+   "segs": [
+    [
+     "s11.mp4",
+     15.72,
+     1.28
+    ]
+   ],
+   "subs": [
+    [
+     0.06,
+     "Rano *sąsiad* pyta na grupie,",
+     null
+    ]
+   ]
+  },
+  {
+   "dur": 1.64,
+   "segs": [
+    [
+     "s11.mp4",
+     25.48,
+     0.9
+    ],
+    [
+     "s16.mp4",
+     5.32,
+     0.74
+    ]
+   ],
+   "subs": [
+    [
+     0.06,
+     "skąd mam *takie lampki*",
+     "1f60d"
+    ]
+   ]
+  },
+  {
+   "dur": 4.33,
+   "segs": [
+    [
+     "s5.mp4",
+     5.0,
+     4.33
+    ]
+   ],
+   "subs": []
+  }
+ ]
+}

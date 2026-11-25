@@ -199,7 +199,7 @@ def main(cfg_path):
     else:  # brak pliku z logo: złoty napis zamiast logo
         logo = text_block([f"*{cfg.get('logo_text', 'Winterly')}*"], F_BIG, 6)
     ec = cfg['end']
-    e_pill = pill(ec['pill'], rot=-3, emoji=E(ec.get('pill_emoji')))
+    e_pill = fit(pill(ec['pill'], rot=-3, emoji=E(ec.get('pill_emoji'))), 980)
     e_txt = text_block(ec['lines'], F_BIG, 8)
     e_btn = pill(ec['button'], bg=GREEN, fg=WHITE, font=F_BTN, rot=0, padx=90)
     e_arrow = Image.open(E('1f447')).convert('RGBA').resize((120, 120), Image.LANCZOS) if E('1f447') else None
