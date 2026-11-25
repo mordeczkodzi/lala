@@ -194,7 +194,7 @@ def main(cfg_path):
     badge = pill(cfg.get('badge_text', 'winterly.pl'), bg=(255, 255, 255, 235), fg=INK, font=F_BADGE, rot=0, emoji=E('1f6d2'), padx=30)
     badge_from = cfg.get('badge_from', 3.0)
     if cfg.get('logo') and os.path.exists(p(cfg['logo'])):
-        logo = Image.open(p(cfg['logo'])).convert('RGBA'); lw = 470
+        logo = Image.open(p(cfg['logo'])).convert('RGBA'); lw = cfg.get('logo_w', 470)
         logo = logo.resize((lw, int(logo.height * lw / logo.width)), Image.LANCZOS)
     else:  # brak pliku z logo: złoty napis zamiast logo
         logo = text_block([f"*{cfg.get('logo_text', 'Winterly')}*"], F_BIG, 6)
