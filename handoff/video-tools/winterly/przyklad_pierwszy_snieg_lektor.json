@@ -1,0 +1,22 @@
+{
+ "_opis": "Pierwszy śnieg – finalny montaż pod lektora (vo1, pauzy skrócone). Głównie ujęcia GlowMax.",
+ "out": "snieg_vo_obraz.mp4",
+ "emoji_dir": "/tmp/claude-0/-home-user-lala/9af5c72f-959d-5981-b926-47b34d7272d6/scratchpad/emo/pkg/package/img/google/64",
+ "sub_y": 0.69, "punch": false, "dissolve": 0, "badge_from": 2.2,
+ "hook": {"lines": ["Spadł pierwszy", "*śnieg*…"], "emoji": "2744", "until": 2.2, "y": 0.2},
+ "stickers": [{"from": 7.35, "to": 20.7, "text": "BLACK WEEK: druga kurtyna −40%", "emoji": "1f525", "x": 0.5, "y": 0.235, "rot": -3}],
+ "end_dur": 3.9,
+ "end": {"pill": "BLACK WEEK • 21–30.11", "pill_emoji": "1f525", "lines": ["Druga kurtyna", "*−40%*"], "button": "ZAMÓW NA WINTERLY.PL", "small": "Płatność przy odbiorze • 30 dni na zwrot"},
+ "beats": [
+  {"dur": 2.2, "segs": [["s11.mp4", 12.0, 2.2]], "subs": []},
+  {"dur": 1.95, "segs": [["s11.mp4", 34.0, 1.95]], "subs": [[0.1, "Sąsiedzi już *świecą*,", "2728"]]},
+  {"dur": 3.2, "segs": [["balkon_ciemny.mp4", 0.0, 3.2, 0, {"speed": 0.93}]], "subs": [[0.1, "a mój balkon…"], [1.99, "dalej *ciemny*", "1f914"]]},
+  {"dur": 2.05, "segs": [["s5.mp4", 4.3, 1.1], ["s6.mp4", 0.2, 0.95]], "subs": [[0.1, "Zamówiłam więc|*kurtynę LED*", "1f381"]]},
+  {"dur": 2.75, "segs": [["s16.mp4", 7.2, 1.0], ["s6.mp4", 3.2, 1.75]], "subs": [[0.1, "Powiesiłam,"], [1.0, "podłączyłam do *USB*", "1f50c"]]},
+  {"dur": 1.95, "segs": [["s16.mp4", 1.0, 1.95]], "subs": [[0.1, "i w *aplikacji*|wybrałam wzór", "1f4f1"]]},
+  {"dur": 3.4, "segs": [["s16.mp4", 12.5, 0.95], ["s19.mp4", 0.3, 1.05], ["s16.mp4", 15.0, 1.4]], "subs": [[0.1, "*Bałwanek*", "2603", 0.78], [1.0, "*choinka*", "1f384", 0.78], [2.05, "*Mikołaj na saniach*", "1f385", 0.78]]},
+  {"dur": 3.2, "segs": [["s11.mp4", 10.6, 1.5], ["s11.mp4", 15.6, 1.7]], "subs": [[0.2, "Teraz pod *moim* balkonem"], [1.5, "ludzie się *zatrzymują*", "1f440"]]},
+  {"dur": 1.15, "segs": [["s16.mp4", 21.6, 1.15]], "subs": [[0.1, "A w *Black Week*", "1f525"]]},
+  {"dur": 3.9, "segs": [["s18.mp4", 2.0, 3.9]], "subs": []}
+ ]
+}
