@@ -1,0 +1,22 @@
+{
+ "_opis": "Pierwszy śnieg v3 – tempo jak w filmie 2: lektor przyspieszony 1.17x, pauzy 0.1 s, ujęcia 1–1.5 s, szybki montaż wzorów.",
+ "out": "snieg_v3_obraz.mp4",
+ "emoji_dir": "/tmp/claude-0/-home-user-lala/9af5c72f-959d-5981-b926-47b34d7272d6/scratchpad/emo/pkg/package/img/google/64",
+ "sub_y": 0.69, "punch": false, "dissolve": 0, "badge_from": 1.5,
+ "hook": {"lines": ["Spadł pierwszy", "*śnieg*…"], "emoji": "2744", "until": 1.5, "y": 0.2},
+ "stickers": [{"from": 5.15, "to": 15.33, "text": "BLACK WEEK: druga kurtyna −40%", "emoji": "1f525", "x": 0.5, "y": 0.235, "rot": -3}],
+ "end_dur": 3.65,
+ "end": {"pill": "BLACK WEEK • 21–30.11", "pill_emoji": "1f525", "lines": ["Druga kurtyna", "*−40%*"], "button": "ZAMÓW NA WINTERLY.PL", "small": "Płatność przy odbiorze • 30 dni na zwrot"},
+ "beats": [
+  {"dur": 1.5, "segs": [["s15.mp4", 0.3, 1.5]], "subs": []},
+  {"dur": 1.45, "segs": [["s11.mp4", 34.0, 0.75], ["s16.mp4", 21.6, 0.7]], "subs": [[0.03, "Sąsiedzi już *świecą*,", "2728"]]},
+  {"dur": 2.2, "segs": [["balkon_ciemny.mp4", 0.2, 2.2]], "subs": [[0.0, "a mój balkon…"], [1.36, "dalej *ciemny*", "1f914"]]},
+  {"dur": 1.6, "segs": [["s5.mp4", 3.9, 1.6]], "subs": [[0.06, "Zamówiłam więc *kurtynę LED*"]]},
+  {"dur": 2.17, "segs": [["s16.mp4", 6.95, 2.17, 0, {"speed": 0.88}]], "subs": [[0.0, "Powiesiłam,"], [0.8, "podłączyłam do *USB*", "1f50c"]]},
+  {"dur": 1.45, "segs": [["s16.mp4", 1.15, 1.45]], "subs": [[0.03, "i w *aplikacji* wybrałam wzór", "1f4f1"]]},
+  {"dur": 2.49, "segs": [["s18.mp4", 1.0, 0.7], ["s19.mp4", 0.3, 0.71], ["s16.mp4", 15.0, 0.47], ["s11.mp4", 26.6, 0.61]], "subs": [[0.04, "*Bałwanek*", "2603", 0.78], [0.73, "*choinka*", "1f384", 0.78], [1.44, "*Mikołaj na saniach*", "1f385", 0.78]]},
+  {"dur": 2.47, "segs": [["s11.mp4", 12.4, 1.25], ["s11.mp4", 15.6, 1.22]], "subs": [[0.05, "Teraz pod *moim* balkonem"], [1.15, "ludzie się *zatrzymują*", "1f440"]]},
+  {"dur": 0.84, "segs": [["s16.mp4", 3.6, 0.84]], "subs": [[0.04, "A w *Black Week*", "1f525"]]},
+  {"dur": 3.65, "segs": [["s18.mp4", 2.0, 3.65]], "subs": []}
+ ]
+}
