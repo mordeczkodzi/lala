@@ -1,0 +1,105 @@
+{
+ "_opis": "Dziecko boi się ciemności – pełny ekran, klipy AI-upscale (ESRGAN x3), jedna historia w pokoju dziecka",
+ "out": "dziecko_final_end.mp4",
+ "emoji_dir": "/tmp/claude-0/-home-user-lala/9af5c72f-959d-5981-b926-47b34d7272d6/scratchpad/emo/pkg/package/img/google/64",
+ "punch": false,
+ "dissolve": 0,
+ "badge_from": 999,
+ "hook": {
+  "lines": [],
+  "until": 0
+ },
+ "stickers": [],
+ "end_dur": 3.4,
+ "logo": "/home/user/lala/handoff/video-tools/winterly/logo_winterly_zlote.png",
+ "logo_w": 400,
+ "end": {
+  "pill": "BLACK MONTH • do −35%",
+  "pill_emoji": "1f525",
+  "lines": [
+   "Zamów na",
+   "*winterly.pl*"
+  ],
+  "button": "KUP TERAZ",
+  "small": "Drugi zestaw 50 zł taniej • 30 dni na zwrot"
+ },
+ "beats": [
+  {
+   "dur": 1.404,
+   "segs": [
+    [
+     "k9_ai.mp4",
+     0.1,
+     1.404
+    ]
+   ],
+   "subs": []
+  },
+  {
+   "dur": 2.34,
+   "segs": [
+    [
+     "k8_ai.mp4",
+     0.1,
+     2.34
+    ]
+   ],
+   "subs": []
+  },
+  {
+   "dur": 2.357,
+   "segs": [
+    [
+     "k7_ai.mp4",
+     0.1,
+     2.357
+    ]
+   ],
+   "subs": []
+  },
+  {
+   "dur": 4.473,
+   "segs": [
+    [
+     "k6_ai.mp4",
+     0.0,
+     4.473
+    ]
+   ],
+   "subs": []
+  },
+  {
+   "dur": 2.928,
+   "segs": [
+    [
+     "k5_ai.mp4",
+     0.1,
+     2.928
+    ]
+   ],
+   "subs": []
+  },
+  {
+   "dur": 2.072,
+   "segs": [
+    [
+     "k10_ai.mp4",
+     0.1,
+     2.072
+    ]
+   ],
+   "subs": []
+  },
+  {
+   "dur": 5.971,
+   "segs": [
+    [
+     "/tmp/claude-0/-home-user-lala/9af5c72f-959d-5981-b926-47b34d7272d6/scratchpad/src_f2/s18.mp4",
+     1.0,
+     5.971
+    ]
+   ],
+   "subs": []
+  }
+ ]
+}
